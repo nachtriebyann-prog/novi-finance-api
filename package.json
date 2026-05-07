@@ -1,14 +1,9 @@
 {
-    "name": "novi-finance-form",
-    "version": "1.0.0",
-    "description": "Lead generation form for Novi Finance",
-    "main": "index.js",
-    "scripts": {
-          "dev": "node -e 'console.log(\"Development server\")'"
-    },
-    "dependencies": {
-          "twilio": "^3.85.0",
-          "@vercel/kv": "^0.2.0"
-            "@vercel/kv": "^0.2.0"
-    }
+      "name": "novi-finance-form",
+      "version": "1.0.0",
+      "private": true,
+      "dependencies": {
+              "twilio": "^4.10.0",
+              "@vercel/kv": "^0.2.0"
+      }
 }
