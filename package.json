@@ -1,0 +1,15 @@
+cd C:\Users\PC\OneDrive\Bureau\Claude Code
+
+git clone https://github.com/nachtriebyann-prog/novi-finance-form.git temp-repo
+cd temp-repo
+{
+  "name": "novi-finance-form",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "twilio": "^4.10.0"
+  }
+}
+git add .
+git commit -m "Initial commit: form with Twilio OTP and GHL integration"
+git push origin main
