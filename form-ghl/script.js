@@ -147,7 +147,7 @@ prevBtn.addEventListener('click', goToPreviousStep);
 nextBtn.addEventListener('click', goToNextStep);
 submitBtn.addEventListener('click', submitForm);
 form.addEventListener('submit', (e) => e.preventDefault());
-sendOtpBtn.addEventListener('click', sendOTP);
+if (sendOtpBtn) sendOtpBtn.addEventListener('click', sendOTP);
 
 // ===== SWIPE GESTURE STATE =====
 let swipeState = {
@@ -204,10 +204,12 @@ function renderQuestion(stepNum) {
     }
 
     // Special handling for Q8 - show OTP block after selection
-    if (stepNum === 8 && formData.q8_phone) {
-        otpBlock.style.display = 'block';
-    } else {
-        otpBlock.style.display = 'none';
+    if (otpBlock) {
+        if (stepNum === 8 && formData.q8_phone) {
+            otpBlock.style.display = 'block';
+        } else {
+            otpBlock.style.display = 'none';
+        }
     }
 
     // Scroll to top
@@ -584,6 +586,11 @@ function normalizePhoneNumber(phone) {
 
 // ===== OTP HANDLING =====
 async function sendOTP() {
+    if (!otpStatus || !sendOtpBtn) {
+        console.error('OTP elements not found in DOM');
+        return;
+    }
+
     let phoneNumber = formData.q8_phone?.trim();
 
     if (!phoneNumber) {
@@ -623,9 +630,12 @@ async function sendOTP() {
 
         startOTPTimer();
 
-        setTimeout(() => {
-            document.getElementById('otpCode').focus();
-        }, 300);
+        const otpCodeInput = document.getElementById('otpCode');
+        if (otpCodeInput) {
+            setTimeout(() => {
+                otpCodeInput.focus();
+            }, 300);
+        }
     } catch (error) {
         console.error('Erreur OTP:', error);
         otpStatus.textContent = '❌ Erreur lors de l\'envoi. Réessayez.';
@@ -636,6 +646,8 @@ async function sendOTP() {
 
 function startOTPTimer() {
     const otpInput = document.getElementById('otpCode');
+    if (!otpInput || !otpTimer) return;
+
     otpInput.addEventListener('input', verifyOTPRealtime);
 
     const timerInterval = setInterval(() => {
@@ -647,10 +659,12 @@ function startOTPTimer() {
 
         if (remaining === 0) {
             clearInterval(timerInterval);
-            otpBlock.style.display = 'none';
-            otpStatus.textContent = '⚠️ Le code a expiré. Envoyez un nouveau code.';
-            otpStatus.classList.add('error');
-            sendOtpBtn.disabled = false;
+            if (otpBlock) otpBlock.style.display = 'none';
+            if (otpStatus) {
+                otpStatus.textContent = '⚠️ Le code a expiré. Envoyez un nouveau code.';
+                otpStatus.classList.add('error');
+            }
+            if (sendOtpBtn) sendOtpBtn.disabled = false;
             otpInput.removeEventListener('input', verifyOTPRealtime);
         }
     }, 1000);
@@ -658,6 +672,8 @@ function startOTPTimer() {
 
 async function verifyOTPRealtime() {
     const otpInput = document.getElementById('otpCode');
+    if (!otpInput || !otpStatus) return;
+
     const enteredCode = otpInput.value.trim();
 
     if (enteredCode.length === CONFIG.OTP_LENGTH) {
@@ -683,7 +699,7 @@ async function verifyOTPRealtime() {
                 otpStatus.classList.add('success');
                 otpStatus.classList.remove('error');
                 otpInput.disabled = true;
-                sendOtpBtn.disabled = true;
+                if (sendOtpBtn) sendOtpBtn.disabled = true;
             } else {
                 const error = await response.json();
                 otpStatus.textContent = '❌ ' + (error.error || 'Code incorrect');
