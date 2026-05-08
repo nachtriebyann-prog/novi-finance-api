@@ -91,6 +91,13 @@ const QUESTIONS = {
         type: "text",
         placeholder: "Jean"
     },
+    "6b": {
+        title: "Quel est votre nom de famille ?",
+        subtitle: "",
+        fieldName: "q6b_nom",
+        type: "text",
+        placeholder: "Dupont"
+    },
     7: {
         title: "Quel est votre email ?",
         subtitle: "",
@@ -109,7 +116,7 @@ const QUESTIONS = {
 
 // State management
 let currentStep = 1;
-let visibleSteps = [1, 2, 3, 4, 5, 6, 7, 8]; // Default visible steps
+let visibleSteps = [1, 2, 3, 4, 5, 6, '6b', 7, 8]; // Default visible steps
 let otpVerified = false;
 let otpCode = null;
 let otpExpiry = null;
@@ -473,7 +480,7 @@ function triggerCardExit() {
 
 // ===== CONDITIONAL STEPS LOGIC =====
 function updateConditionalSteps() {
-    visibleSteps = [1, 2, 3, 4, 5, 6, 7, 8];
+    visibleSteps = [1, 2, 3, 4, 5, 6, '6b', 7, 8];
 
     const q2Value = formData.q2_profession;
     const q4Value = formData.q4_revenu;
@@ -688,7 +695,7 @@ async function verifyOTPRealtime() {
                     phoneNumber: normalizePhoneNumber(formData.q8_phone),
                     otpCode: enteredCode,
                     firstName: formData.q6_prenom,
-                    lastName: formData.q6_prenom,
+                    lastName: formData.q6b_nom,
                     email: formData.q7_email,
                 }),
             });
