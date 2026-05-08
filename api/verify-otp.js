@@ -1,14 +1,15 @@
-import { kv } from '@vercel/kv';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SECRET_KEY
+);
 
 export default async function handler(req, res) {
-  // CORS headers
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  );
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
   if (req.method === 'OPTIONS') {
     res.status(200).end();
@@ -26,14 +27,25 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Récupérer le code OTP stocké
-    const storedOtp = await kv.get(`otp:${phoneNumber}`);
+    // Récupérer le code OTP depuis Supabase
+    const { data, error: dbError } = await supabase
+      .from('otp_codes')
+      .select('code, expires_at')
+      .eq('phone_number', phoneNumber)
+      .single();
 
-    if (!storedOtp) {
+    if (dbError || !data) {
       return res.status(400).json({ error: 'OTP expired or invalid' });
     }
 
-    if (storedOtp !== otpCode) {
+    // Vérifier l'expiration
+    if (new Date() > new Date(data.expires_at)) {
+      await supabase.from('otp_codes').delete().eq('phone_number', phoneNumber);
+      return res.status(400).json({ error: 'OTP expired' });
+    }
+
+    // Vérifier le code
+    if (data.code !== otpCode) {
       return res.status(400).json({ error: 'Invalid OTP code' });
     }
 
@@ -50,7 +62,7 @@ export default async function handler(req, res) {
     }
 
     // Supprimer le code OTP après utilisation
-    await kv.del(`otp:${phoneNumber}`);
+    await supabase.from('otp_codes').delete().eq('phone_number', phoneNumber);
 
     return res.status(200).json({
       success: true,
@@ -58,11 +70,8 @@ export default async function handler(req, res) {
       contactId: ghlResponse.contactId,
     });
   } catch (error) {
-    console.error('Error verifying OTP:', error);
-    return res.status(500).json({
-      error: 'Failed to verify OTP',
-      details: error.message,
-    });
+    console.error('Error:', error);
+    return res.status(500).json({ error: error.message });
   }
 }
 
@@ -97,11 +106,7 @@ async function createContactInGHL({ firstName, lastName, email, phone }) {
     }
 
     const data = await response.json();
-
-    return {
-      success: true,
-      contactId: data.id,
-    };
+    return { success: true, contactId: data.id };
   } catch (error) {
     console.error('GHL API error:', error);
     throw error;
