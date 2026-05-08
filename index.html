@@ -1,156 +1,520 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bilan Patrimonial Offert - Novi Finance</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bilan Patrimonial Gratuit - Novi Finance</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+      color: #b87333;
+    }
+
+    .header p {
+      color: #666666;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #1a1a1a;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 16px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #b87333;
+      box-shadow: 0 0 0 3px rgba(184, 115, 51, 0.1);
+    }
+
+    .button {
+      width: 100%;
+      padding: 14px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      background: #b87333;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 10px;
+    }
+
+    .button:hover {
+      background: #a0602a;
+    }
+
+    .button:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+    }
+
+    .button-secondary {
+      background: transparent;
+      color: #b87333;
+      border: 1px solid #b87333;
+    }
+
+    .button-secondary:hover {
+      background: rgba(184, 115, 51, 0.05);
+    }
+
+    .error {
+      color: #d32f2f;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .success {
+      color: #388e3c;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    .step-indicator {
+      text-align: center;
+      color: #666666;
+      font-size: 13px;
+      margin-bottom: 30px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #b2fbda;
+      color: #1a1a1a;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .success-message {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .success-message h2 {
+      color: #388e3c;
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    .success-message p {
+      color: #666666;
+      margin-bottom: 10px;
+    }
+
+    .otp-section {
+      text-align: center;
+    }
+
+    .otp-code {
+      font-family: monospace;
+      font-size: 32px;
+      font-weight: bold;
+      color: #b87333;
+      letter-spacing: 8px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .info {
+      background: #ede8fa;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #666666;
+      margin-bottom: 20px;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #ffffff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <span class="logo-icon">💰</span>
-                <span class="logo-text">Novi Finance</span>
-            </div>
-        </div>
-    </header>
+  <div class="container">
+    <!-- STEP 1: First Name -->
+    <div class="step active" data-step="1">
+      <div class="step-indicator">Étape 1/4</div>
+      <div class="header">
+        <h1>Bienvenue !</h1>
+        <p>Commençons par vos informations de base</p>
+      </div>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title">Votre Bilan Patrimonial <span class="highlight">100% Gratuit</span></h1>
-                <p class="hero-subtitle">Découvrez comment optimiser votre patrimoine en 3 minutes seulement</p>
-                <div class="hero-badges">
-                    <span class="badge-pill">✓ Sans engagement</span>
-                    <span class="badge-pill">✓ Confidentiel</span>
-                    <span class="badge-pill">✓ Gratuit</span>
-                </div>
-            </div>
-        </div>
-    </section>
+      <div class="form-group">
+        <label for="firstName">Prénom *</label>
+        <input
+          type="text"
+          id="firstName"
+          placeholder="Votre prénom"
+          autocomplete="given-name"
+        >
+        <div class="error" id="firstNameError"></div>
+      </div>
 
-    <!-- Form Section -->
-    <section class="form-section" id="formSection">
-        <div class="form-container">
-            <!-- Progress Bar -->
-            <div class="progress-bar-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <div class="progress-text">
-                    <span class="step-counter"><span id="stepNumber">1</span>/<span id="totalSteps">6</span></span>
-                </div>
-            </div>
-
-            <!-- Question Card -->
-            <div class="question-card" id="questionCard">
-                <div class="question-wrapper">
-                    <h2 class="question-title" id="questionTitle"></h2>
-                    <p class="question-subtitle" id="questionSubtitle"></p>
-                </div>
-
-                <!-- Options Container -->
-                <div class="options-container" id="optionsContainer">
-                    <!-- Options will be inserted here by JS -->
-                </div>
-            </div>
-
-            <!-- Navigation -->
-            <div class="form-navigation">
-                <button class="nav-btn nav-btn-prev" id="prevBtn" style="display: none;">
-                    <span class="arrow">←</span> Retour
-                </button>
-                <button class="nav-btn nav-btn-next" id="nextBtn" style="display: none;">
-                    Suivant <span class="arrow">→</span>
-                </button>
-                <button class="nav-btn nav-btn-submit" id="submitBtn" style="display: none;">
-                    Envoyer
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- OTP Block (shown after Q8) -->
-    <div class="otp-block" id="otpBlock" style="display: none;">
-        <div class="otp-content">
-            <h3>Vérifiez votre numéro</h3>
-            <p>Nous avons envoyé un code à votre téléphone</p>
-
-            <div class="otp-input-group">
-                <input
-                    type="text"
-                    id="otpCode"
-                    class="otp-input"
-                    placeholder="000000"
-                    maxlength="6"
-                    autocomplete="one-time-code"
-                >
-                <div id="otpStatus" class="otp-status"></div>
-                <div id="otpTimer" class="otp-timer"></div>
-            </div>
-
-            <button class="btn btn-secondary" id="sendOtpBtn">Envoyer le code</button>
-        </div>
+      <button class="button" onclick="nextStep(1)">Continuer →</button>
     </div>
 
-    <!-- Thank You Page -->
-    <div class="thank-you-page" id="thankYouPage" style="display: none;">
-        <div class="thank-you-content">
-            <div class="thank-you-icon">✨</div>
-            <h2>Merci <span id="thankYouName"></span>!</h2>
-            <p>Votre demande de bilan patrimonial a été reçue.</p>
-            <p class="thank-you-subtitle">Un expert Novi Finance vous appellera très bientôt pour analyser votre situation.</p>
-            <div class="thank-you-features">
-                <div class="feature">
-                    <span class="feature-icon">📞</span>
-                    <span>Appel gratuit</span>
-                </div>
-                <div class="feature">
-                    <span class="feature-icon">🛡️</span>
-                    <span>Données sécurisées</span>
-                </div>
-                <div class="feature">
-                    <span class="feature-icon">⏱️</span>
-                    <span>20 minutes max</span>
-                </div>
-            </div>
+    <!-- STEP 2: Last Name -->
+    <div class="step" data-step="2">
+      <div class="step-indicator">Étape 2/4</div>
+      <div class="header">
+        <h1>Et votre nom ?</h1>
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Nom *</label>
+        <input
+          type="text"
+          id="lastName"
+          placeholder="Votre nom"
+          autocomplete="family-name"
+        >
+        <div class="error" id="lastNameError"></div>
+      </div>
+
+      <button class="button" onclick="nextStep(2)">Continuer →</button>
+      <button class="button button-secondary" onclick="prevStep()">← Retour</button>
+    </div>
+
+    <!-- STEP 3: Email -->
+    <div class="step" data-step="3">
+      <div class="step-indicator">Étape 3/4</div>
+      <div class="header">
+        <h1>Votre email ?</h1>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input
+          type="email"
+          id="email"
+          placeholder="votre@email.com"
+          autocomplete="email"
+        >
+        <div class="error" id="emailError"></div>
+      </div>
+
+      <button class="button" onclick="nextStep(3)">Continuer →</button>
+      <button class="button button-secondary" onclick="prevStep()">← Retour</button>
+    </div>
+
+    <!-- STEP 4: Phone Number -->
+    <div class="step" data-step="4">
+      <div class="step-indicator">Étape 4/4</div>
+      <div class="header">
+        <h1>Votre numéro de téléphone ?</h1>
+        <p>Nous l'utiliserons pour vous envoyer votre code OTP</p>
+      </div>
+
+      <div class="form-group">
+        <label for="phoneNumber">Téléphone *</label>
+        <input
+          type="tel"
+          id="phoneNumber"
+          placeholder="+33 7 XX XX XX XX"
+          autocomplete="tel"
+        >
+        <div class="error" id="phoneError"></div>
+        <div class="info">Format: +33 suivi de 9 chiffres</div>
+      </div>
+
+      <button class="button" id="sendOtpBtn" onclick="sendOTP()">Recevoir mon code SMS →</button>
+      <button class="button button-secondary" onclick="prevStep()">← Retour</button>
+    </div>
+
+    <!-- STEP 5: OTP Verification -->
+    <div class="step" data-step="5">
+      <div class="step-indicator">Vérification</div>
+      <div class="header">
+        <h1>Vérifiez votre numéro</h1>
+        <p>Entrez le code reçu par SMS</p>
+      </div>
+
+      <div class="otp-section">
+        <div class="form-group">
+          <label for="otpCode">Code OTP (6 chiffres) *</label>
+          <input
+            type="text"
+            id="otpCode"
+            placeholder="000000"
+            maxlength="6"
+            inputmode="numeric"
+          >
+          <div class="error" id="otpError"></div>
         </div>
+
+        <div id="otpTimer" style="color: #666666; font-size: 13px; margin-bottom: 15px;"></div>
+
+        <button class="button" id="verifyOtpBtn" onclick="verifyOTP()">Vérifier et créer le contact →</button>
+        <button class="button button-secondary" onclick="sendOTP()" id="resendBtn">Renvoyer le code</button>
+      </div>
     </div>
 
-    <!-- Exclusion Page -->
-    <div class="exclusion-page" id="exclusionPage" style="display: none;">
-        <div class="exclusion-content">
-            <div class="exclusion-icon">⚠️</div>
-            <h2>Merci pour votre intérêt</h2>
-            <p>Malheureusement, votre profil ne correspond pas aux critères actuels de nos services.</p>
-            <p class="exclusion-subtitle">Nous vous recommandons de nous contacter directement pour discuter de vos options.</p>
-            <a href="https://novifinance.fr" class="btn btn-primary">Visiter notre site</a>
-        </div>
+    <!-- SUCCESS PAGE -->
+    <div class="step" data-step="success">
+      <div class="success-message">
+        <h2>✓ Contact créé avec succès !</h2>
+        <p>Vos informations ont bien été envoyées à Novi Finance.</p>
+        <p>Un conseiller vous contactera très prochainement.</p>
+
+        <div class="badge">Merci pour votre confiance</div>
+      </div>
     </div>
+  </div>
 
-    <!-- Loading Message -->
-    <div class="loading-message" id="loadingMessage" style="display: none;">
-        <div class="spinner"></div>
-        <p>Envoi de vos données...</p>
-    </div>
+  <script>
+    let currentStep = 1;
+    let otpTimerInterval = null;
+    let otpExpiryTime = null;
 
-    <form id="polarisFunnel" style="display: none;">
-        <!-- Hidden inputs for form data -->
-        <input type="hidden" name="q1_project" id="q1_project">
-        <input type="hidden" name="q2_profession" id="q2_profession">
-        <input type="hidden" name="q2b_patrimoine" id="q2b_patrimoine">
-        <input type="hidden" name="q3_family" id="q3_family">
-        <input type="hidden" name="q4_revenu" id="q4_revenu">
-        <input type="hidden" name="q4b_patrimoine" id="q4b_patrimoine">
-        <input type="hidden" name="q5_age" id="q5_age">
-        <input type="hidden" name="q6_prenom" id="q6_prenom">
-        <input type="hidden" name="q7_email" id="q7_email">
-        <input type="hidden" name="q8_phone" id="q8_phone">
-    </form>
+    function showStep(step) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      const stepEl = document.querySelector(`[data-step="${step}"]`);
+      if (stepEl) {
+        stepEl.classList.add('active');
+        window.scrollTo(0, 0);
+      }
+      currentStep = step;
+    }
 
-    <script src="script.js"></script>
+    function nextStep(fromStep) {
+      clearErrors();
+
+      if (fromStep === 1) {
+        if (!validate('firstName')) return;
+        showStep(2);
+      } else if (fromStep === 2) {
+        if (!validate('lastName')) return;
+        showStep(3);
+      } else if (fromStep === 3) {
+        if (!validate('email')) return;
+        showStep(4);
+      }
+    }
+
+    function prevStep() {
+      clearErrors();
+      showStep(currentStep - 1);
+    }
+
+    function validate(fieldId) {
+      const field = document.getElementById(fieldId);
+      const value = field.value.trim();
+      const errorEl = document.getElementById(`${fieldId}Error`);
+
+      if (!value) {
+        errorEl.textContent = 'Ce champ est obligatoire';
+        return false;
+      }
+
+      if (fieldId === 'email') {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+          errorEl.textContent = 'Email invalide';
+          return false;
+        }
+      }
+
+      if (fieldId === 'phoneNumber') {
+        const phoneRegex = /^\+33\s?\d{9}$|^\+33\d{9}$/;
+        if (!phoneRegex.test(value.replace(/\s/g, ''))) {
+          errorEl.textContent = 'Format: +33 suivi de 9 chiffres';
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    function clearErrors() {
+      document.querySelectorAll('.error').forEach(el => el.textContent = '');
+    }
+
+    async function sendOTP() {
+      clearErrors();
+      if (!validate('phoneNumber')) return;
+
+      const phoneNumber = document.getElementById('phoneNumber').value.replace(/\s/g, '');
+      const btn = document.getElementById('sendOtpBtn');
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span> Envoi...';
+
+      try {
+        const response = await fetch('/api/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phoneNumber }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          document.getElementById('phoneError').textContent = data.error || 'Erreur lors de l\'envoi';
+          btn.disabled = false;
+          btn.innerHTML = 'Recevoir mon code SMS →';
+          return;
+        }
+
+        showStep(5);
+        startOTPTimer();
+      } catch (error) {
+        document.getElementById('phoneError').textContent = 'Erreur réseau';
+        btn.disabled = false;
+        btn.innerHTML = 'Recevoir mon code SMS →';
+      }
+    }
+
+    function startOTPTimer() {
+      otpExpiryTime = Date.now() + 5 * 60 * 1000; // 5 minutes
+      updateOTPTimer();
+
+      if (otpTimerInterval) clearInterval(otpTimerInterval);
+      otpTimerInterval = setInterval(updateOTPTimer, 1000);
+    }
+
+    function updateOTPTimer() {
+      const remaining = Math.max(0, Math.floor((otpExpiryTime - Date.now()) / 1000));
+      const minutes = Math.floor(remaining / 60);
+      const seconds = remaining % 60;
+
+      const timerEl = document.getElementById('otpTimer');
+      const resendBtn = document.getElementById('resendBtn');
+
+      if (remaining <= 0) {
+        timerEl.textContent = 'Code expiré';
+        resendBtn.style.display = 'block';
+        clearInterval(otpTimerInterval);
+      } else {
+        timerEl.textContent = `Code valide pendant: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+        resendBtn.style.display = minutes === 0 && seconds < 30 ? 'block' : 'none';
+      }
+    }
+
+    async function verifyOTP() {
+      clearErrors();
+
+      const otpCode = document.getElementById('otpCode').value.trim();
+      if (!otpCode || otpCode.length !== 6) {
+        document.getElementById('otpError').textContent = 'Entrez un code à 6 chiffres';
+        return;
+      }
+
+      const btn = document.getElementById('verifyOtpBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span> Vérification...';
+
+      try {
+        const response = await fetch('/api/verify-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            phoneNumber: document.getElementById('phoneNumber').value.replace(/\s/g, ''),
+            otpCode,
+            firstName: document.getElementById('firstName').value.trim(),
+            lastName: document.getElementById('lastName').value.trim(),
+            email: document.getElementById('email').value.trim(),
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          document.getElementById('otpError').textContent = data.error || 'Erreur de vérification';
+          btn.disabled = false;
+          btn.innerHTML = 'Vérifier et créer le contact →';
+          return;
+        }
+
+        clearInterval(otpTimerInterval);
+        showStep('success');
+      } catch (error) {
+        document.getElementById('otpError').textContent = 'Erreur réseau';
+        btn.disabled = false;
+        btn.innerHTML = 'Vérifier et créer le contact →';
+      }
+    }
+
+    // Auto-format phone number
+    document.getElementById('phoneNumber')?.addEventListener('input', (e) => {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.startsWith('33')) {
+        value = '+' + value;
+      }
+      e.target.value = value;
+    });
+
+    // Only allow numbers in OTP field
+    document.getElementById('otpCode')?.addEventListener('input', (e) => {
+      e.target.value = e.target.value.replace(/\D/g, '');
+    });
+  </script>
 </body>
 </html>
