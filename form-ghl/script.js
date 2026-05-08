@@ -103,7 +103,7 @@ const QUESTIONS = {
         subtitle: "",
         fieldName: "q8_phone",
         type: "tel",
-        placeholder: "+33 6 12 34 56 78"
+        placeholder: "06 12 34 56 78"
     }
 };
 
@@ -573,9 +573,18 @@ function updateFormInputs() {
     }
 }
 
+// ===== PHONE NORMALIZATION =====
+function normalizePhoneNumber(phone) {
+    const cleaned = phone.replace(/\s/g, '');
+    if (cleaned.startsWith('06') || cleaned.startsWith('07')) {
+        return '+33' + cleaned.slice(1);
+    }
+    return cleaned;
+}
+
 // ===== OTP HANDLING =====
 async function sendOTP() {
-    const phoneNumber = formData.q8_phone?.trim();
+    let phoneNumber = formData.q8_phone?.trim();
 
     if (!phoneNumber) {
         otpStatus.textContent = '❌ Veuillez entrer votre numéro';
@@ -583,11 +592,15 @@ async function sendOTP() {
         return;
     }
 
-    if (!/^\+?[0-9\s]{9,}$/.test(phoneNumber)) {
+    // Validate French phone format (06/07 or +33)
+    if (!/^(\+33|0)[1-9]\d{8}$/.test(phoneNumber.replace(/\s/g, ''))) {
         otpStatus.textContent = '❌ Numéro de téléphone invalide';
         otpStatus.classList.add('error');
         return;
     }
+
+    // Normalize to +33 format
+    phoneNumber = normalizePhoneNumber(phoneNumber);
 
     sendOtpBtn.disabled = true;
     otpStatus.textContent = '⏳ Envoi du code...';
@@ -656,7 +669,7 @@ async function verifyOTPRealtime() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    phoneNumber: formData.q8_phone,
+                    phoneNumber: normalizePhoneNumber(formData.q8_phone),
                     otpCode: enteredCode,
                     firstName: formData.q6_prenom,
                     lastName: formData.q6_prenom,
