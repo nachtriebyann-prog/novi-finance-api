@@ -37,8 +37,8 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // Générer un code OTP aléatoire (4 chiffres)
-    const otpCode = Math.floor(1000 + Math.random() * 9000).toString();
+    // Générer un code OTP aléatoire (6 chiffres)
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
 
     // Stocker le code dans Supabase avec expiration 5 minutes
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
@@ -50,7 +50,7 @@ module.exports = async function handler(req, res) {
 
     // Envoyer le SMS via Twilio
     await twilioClient.messages.create({
-      body: `Votre code de vérification Novi Finance est: ${otpCode}. Valide pendant 5 minutes.`,
+      body: `Votre code de vérification Novi Finance est: ${otpCode}. Code à 6 chiffres. Valide pendant 5 minutes.`,
       from: process.env.TWILIO_PHONE_NUMBER,
       to: phoneNumber,
     });
