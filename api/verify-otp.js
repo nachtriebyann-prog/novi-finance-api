@@ -101,6 +101,7 @@ async function createContactInGHL({ firstName, lastName, email, phone }) {
       headers: {
         'Authorization': `Bearer ${ghlApiKey}`,
         'Content-Type': 'application/json',
+        'Version': '2021-07-28',
       },
       body: JSON.stringify({
         firstName,
