@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
-import twilio from 'twilio';
+const { createClient } = require('@supabase/supabase-js');
+const twilio = require('twilio');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -11,7 +11,7 @@ const twilioClient = twilio(
   process.env.TWILIO_AUTH_TOKEN
 );
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');

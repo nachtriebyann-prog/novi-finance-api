@@ -1,6 +1,11 @@
-import { kv } from '@vercel/kv';
+const { createClient } = require('@supabase/supabase-js');
 
-export default async function handler(req, res) {
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SECRET_KEY
+);
+
+module.exports = async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -26,14 +31,23 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Récupérer le code OTP stocké
-    const storedOtp = await kv.get(`otp:${phoneNumber}`);
+    // Récupérer le code OTP stocké depuis Supabase
+    const { data: otpRecord, error: fetchError } = await supabase
+      .from('otp_codes')
+      .select('code, expires_at')
+      .eq('phone_number', phoneNumber)
+      .single();
 
-    if (!storedOtp) {
+    if (fetchError || !otpRecord) {
       return res.status(400).json({ error: 'OTP expired or invalid' });
     }
 
-    if (storedOtp !== otpCode) {
+    // Vérifier si l'OTP a expiré
+    if (new Date(otpRecord.expires_at) < new Date()) {
+      return res.status(400).json({ error: 'OTP expired or invalid' });
+    }
+
+    if (otpRecord.code !== otpCode) {
       return res.status(400).json({ error: 'Invalid OTP code' });
     }
 
@@ -50,7 +64,10 @@ export default async function handler(req, res) {
     }
 
     // Supprimer le code OTP après utilisation
-    await kv.del(`otp:${phoneNumber}`);
+    await supabase
+      .from('otp_codes')
+      .delete()
+      .eq('phone_number', phoneNumber);
 
     return res.status(200).json({
       success: true,
