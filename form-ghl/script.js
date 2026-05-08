@@ -2,7 +2,7 @@
 const CONFIG = {
     GHL_API_KEY: 'pit-b513c222-b83a-44db-87d2-dbcad3291bae',
     OTP_TIMEOUT: 10 * 60 * 1000,
-    OTP_LENGTH: 6,
+    OTP_LENGTH: 4,
 };
 
 // Question Definitions

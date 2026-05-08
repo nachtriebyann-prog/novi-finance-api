@@ -57,7 +57,8 @@
       "mcp__Claude_in_Chrome__tabs_close_mcp",
       "Bash(npm install *)",
       "Bash(git push *)",
-      "Bash(vercel --version)"
+      "Bash(vercel --version)",
+      "Bash(git remote *)"
     ]
   }
 }
