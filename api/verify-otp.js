@@ -191,6 +191,16 @@ async function createOrUpdateContactInGHL({ firstName, lastName, email, phone })
     const data = await response.json();
     console.log('GHL Response Data:', JSON.stringify(data, null, 2));
 
+    // Handle 400 error for duplicate contacts - this is OK, contact already exists
+    if (response.status === 400 && data.message && data.message.includes('duplicated contacts')) {
+      console.log('Contact already exists (duplicate error) - this is OK');
+      return {
+        success: true,
+        contactId: null,
+        isDuplicate: true,
+      };
+    }
+
     if (!response.ok) {
       console.error('GHL API Error - Not OK:', data);
       throw new Error(`GHL API error (${response.status}): ${data.message || data.error || response.statusText}`);
