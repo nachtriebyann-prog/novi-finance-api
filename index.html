@@ -401,7 +401,13 @@
       clearErrors();
       if (!validate('phoneNumber')) return;
 
-      const phoneNumber = document.getElementById('phoneNumber').value.replace(/\s/g, '');
+      let phoneNumber = document.getElementById('phoneNumber').value.trim();
+      // Normalize: remove all spaces, ensure it starts with +33
+      phoneNumber = phoneNumber.replace(/\s/g, '');
+      if (!phoneNumber.startsWith('+')) {
+        phoneNumber = '+' + phoneNumber;
+      }
+      console.log('Sending OTP for phone:', phoneNumber);
       const btn = document.getElementById('sendOtpBtn');
 
       btn.disabled = true;
@@ -472,11 +478,18 @@
       btn.innerHTML = '<span class="loading"></span> Vérification...';
 
       try {
+        let phoneNumber = document.getElementById('phoneNumber').value.trim();
+        phoneNumber = phoneNumber.replace(/\s/g, '');
+        if (!phoneNumber.startsWith('+')) {
+          phoneNumber = '+' + phoneNumber;
+        }
+        console.log('Verifying OTP for phone:', phoneNumber, 'Code:', otpCode);
+
         const response = await fetch('/api/verify-otp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            phoneNumber: document.getElementById('phoneNumber').value.replace(/\s/g, ''),
+            phoneNumber,
             otpCode,
             firstName: document.getElementById('firstName').value.trim(),
             lastName: document.getElementById('lastName').value.trim(),
