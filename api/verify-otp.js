@@ -26,6 +26,14 @@ module.exports = async function handler(req, res) {
 
   const { phoneNumber, otpCode, firstName, lastName, email } = req.body;
 
+  console.log('=== OTP Verification Request ===');
+  console.log('Phone:', phoneNumber);
+  console.log('OTP Code:', otpCode);
+  console.log('First Name:', firstName);
+  console.log('Last Name:', lastName);
+  console.log('Email:', email);
+  console.log('All fields present:', !(!phoneNumber || !otpCode || !firstName || !lastName || !email));
+
   if (!phoneNumber || !otpCode || !firstName || !lastName || !email) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
@@ -56,6 +64,7 @@ module.exports = async function handler(req, res) {
     }
 
     // OTP valide - créer le contact dans GHL
+    console.log('OTP verified successfully, creating contact in GHL');
     const ghlResponse = await createContactInGHL({
       firstName,
       lastName,
@@ -63,7 +72,10 @@ module.exports = async function handler(req, res) {
       phone: phoneNumber,
     });
 
+    console.log('GHL Response:', ghlResponse);
+
     if (!ghlResponse.success) {
+      console.error('GHL contact creation failed');
       return res.status(500).json({ error: 'Failed to create contact in GHL' });
     }
 
@@ -91,11 +103,26 @@ async function createContactInGHL({ firstName, lastName, email, phone }) {
   const ghlApiKey = process.env.GHL_API_KEY;
   const ghlLocationId = process.env.GHL_LOCATION_ID;
 
+  console.log('=== GHL Contact Creation ===');
+  console.log('API Key exists:', !!ghlApiKey);
+  console.log('Location ID:', ghlLocationId);
+
   if (!ghlApiKey || !ghlLocationId) {
     throw new Error('GHL credentials not configured');
   }
 
   try {
+    const payload = {
+      firstName,
+      lastName,
+      email,
+      phone,
+      locationId: ghlLocationId,
+      tags: ['lead-novi-finance', 'source-web-form'],
+    };
+
+    console.log('Sending to GHL:', JSON.stringify(payload, null, 2));
+
     const response = await fetch('https://services.leadconnectorhq.com/contacts/', {
       method: 'POST',
       headers: {
@@ -103,22 +130,19 @@ async function createContactInGHL({ firstName, lastName, email, phone }) {
         'Content-Type': 'application/json',
         'Version': '2021-07-28',
       },
-      body: JSON.stringify({
-        firstName,
-        lastName,
-        email,
-        phone,
-        locationId: ghlLocationId,
-        tags: ['lead-novi-finance', 'source-web-form'],
-      }),
+      body: JSON.stringify(payload),
     });
+
+    console.log('GHL Response Status:', response.status);
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(`GHL API error: ${error.message || response.statusText}`);
+      console.error('GHL API Error:', error);
+      throw new Error(`GHL API error (${response.status}): ${error.message || response.statusText}`);
     }
 
     const data = await response.json();
+    console.log('GHL Response Data:', data);
 
     return {
       success: true,
