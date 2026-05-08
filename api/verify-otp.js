@@ -80,11 +80,20 @@ module.exports = async function handler(req, res) {
     }
 
     // Supprimer le code OTP après utilisation
-    await supabase
+    console.log('Deleting OTP code from Supabase');
+    const { error: deleteError } = await supabase
       .from('otp_codes')
       .delete()
       .eq('phone_number', phoneNumber);
 
+    if (deleteError) {
+      console.error('Error deleting OTP code:', deleteError);
+      // Don't fail the request, OTP is already verified
+    } else {
+      console.log('OTP code deleted successfully');
+    }
+
+    console.log('Returning success response');
     return res.status(200).json({
       success: true,
       message: 'Contact created successfully',
@@ -177,15 +186,15 @@ async function createOrUpdateContactInGHL({ firstName, lastName, email, phone })
     });
 
     console.log('GHL Response Status:', response.status);
-
-    if (!response.ok) {
-      const error = await response.json();
-      console.error('GHL API Error:', error);
-      throw new Error(`GHL API error (${response.status}): ${error.message || response.statusText}`);
-    }
+    console.log('GHL Response OK:', response.ok);
 
     const data = await response.json();
-    console.log('GHL Response Data:', data);
+    console.log('GHL Response Data:', JSON.stringify(data, null, 2));
+
+    if (!response.ok) {
+      console.error('GHL API Error - Not OK:', data);
+      throw new Error(`GHL API error (${response.status}): ${data.message || data.error || response.statusText}`);
+    }
 
     const contactId = data.id || existingContactId;
 
