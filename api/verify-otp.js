@@ -32,11 +32,15 @@ module.exports = async function handler(req, res) {
 
   try {
     // Récupérer le code OTP stocké depuis Supabase
+    console.log('Verifying OTP for phone:', phoneNumber);
     const { data: otpRecord, error: fetchError } = await supabase
       .from('otp_codes')
       .select('code, expires_at')
       .eq('phone_number', phoneNumber)
       .single();
+
+    console.log('OTP Record found:', !!otpRecord, 'Error:', fetchError);
+    if (fetchError) console.log('Fetch error details:', fetchError);
 
     if (fetchError || !otpRecord) {
       return res.status(400).json({ error: 'OTP expired or invalid' });

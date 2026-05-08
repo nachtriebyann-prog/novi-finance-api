@@ -39,14 +39,21 @@ module.exports = async function handler(req, res) {
   try {
     // Générer un code OTP aléatoire (6 chiffres)
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log('Generated OTP:', otpCode, 'for phone:', phoneNumber);
 
     // Stocker le code dans Supabase avec expiration 5 minutes
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString();
-    await supabase.from('otp_codes').upsert({
+    const { error: upsertError } = await supabase.from('otp_codes').upsert({
       phone_number: phoneNumber,
       code: otpCode,
       expires_at: expiresAt,
     }, { onConflict: 'phone_number' });
+
+    if (upsertError) {
+      console.error('Upsert error:', upsertError);
+      throw upsertError;
+    }
+    console.log('OTP stored successfully');
 
     // Envoyer le SMS via Twilio
     await twilioClient.messages.create({
