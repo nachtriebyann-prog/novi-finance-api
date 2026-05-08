@@ -1,782 +1,548 @@
-// Configuration
-const CONFIG = {
-    GHL_API_KEY: 'pit-b513c222-b83a-44db-87d2-dbcad3291bae',
-    OTP_TIMEOUT: 10 * 60 * 1000,
-    OTP_LENGTH: 6,
-};
+// Get URL parameters
+const params = new URLSearchParams(window.location.search);
+const variant = params.get('v') || 'a';
 
-// Question Definitions
-const QUESTIONS = {
-    1: {
-        title: "Quel est votre principal projet en ce moment ?",
-        subtitle: "",
-        fieldName: "q1_project",
-        options: [
-            { value: "preparer_retraite", text: "Préparer ma retraite", icon: "🏠" },
-            { value: "reduire_impots", text: "Réduire mes impôts", icon: "💰" },
-            { value: "epargner_fructifier", text: "Épargner et faire fructifier mon argent", icon: "📈" },
-            { value: "investir_immobilier", text: "Investir dans l'immobilier", icon: "🏢" }
-        ]
-    },
-    2: {
-        title: "Quelle est votre situation professionnelle ?",
-        subtitle: "",
-        fieldName: "q2_profession",
-        options: [
-            { value: "salarie", text: "Salarié", icon: "💼" },
-            { value: "independant", text: "Indépendant / TNS", icon: "🤝" },
-            { value: "cadre_dirigeant", text: "Cadre ou dirigeant", icon: "👔" },
-            { value: "sans_activite", text: "Sans activité professionnelle", icon: "🏛️" }
-        ]
-    },
-    "2b": {
-        title: "Disposez-vous déjà d'un patrimoine ?",
-        subtitle: "(Pour les sans activité professionnelle)",
-        fieldName: "q2b_patrimoine",
-        options: [
-            { value: "moins_10k", text: "Moins de 10 000€", icon: "📉" },
-            { value: "10k_50k", text: "Entre 10 000€ et 50 000€", icon: "📊" },
-            { value: "50k_100k", text: "Entre 50 000€ et 100 000€", icon: "📈" },
-            { value: "plus_100k", text: "Plus de 100 000€", icon: "🚀" }
-        ]
-    },
-    3: {
-        title: "Quelle est votre situation familiale ?",
-        subtitle: "",
-        fieldName: "q3_family",
-        options: [
-            { value: "celibataire", text: "Célibataire", icon: "👤" },
-            { value: "couple", text: "En couple", icon: "👥" },
-            { value: "famille", text: "Famille avec enfants", icon: "👨‍👩‍👧‍👦" },
-            { value: "autre", text: "Autre situation", icon: "🤔" }
-        ]
-    },
-    4: {
-        title: "Quel est votre revenu mensuel net approximatif ?",
-        subtitle: "",
-        fieldName: "q4_revenu",
-        options: [
-            { value: "moins_2k", text: "Moins de 2 000€", icon: "📉" },
-            { value: "2k_4k", text: "Entre 2 000€ et 4 000€", icon: "📊" },
-            { value: "4k_6k", text: "Entre 4 000€ et 6 000€", icon: "📈" },
-            { value: "plus_6k", text: "Plus de 6 000€", icon: "🚀" }
-        ]
-    },
-    "4b": {
-        title: "Disposez-vous déjà d'un patrimoine ?",
-        subtitle: "(Pour les revenus faibles)",
-        fieldName: "q4b_patrimoine",
-        options: [
-            { value: "moins_10k", text: "Moins de 10 000€", icon: "📉" },
-            { value: "10k_50k", text: "Entre 10 000€ et 50 000€", icon: "📊" },
-            { value: "50k_100k", text: "Entre 50 000€ et 100 000€", icon: "📈" },
-            { value: "plus_100k", text: "Plus de 100 000€", icon: "🚀" }
-        ]
-    },
-    5: {
-        title: "Quelle est votre tranche d'âge ?",
-        subtitle: "",
-        fieldName: "q5_age",
-        options: [
-            { value: "30_40", text: "30 - 40 ans", icon: "📆" },
-            { value: "40_50", text: "40 - 50 ans", icon: "📆" },
-            { value: "50_60", text: "50 - 60 ans", icon: "📆" },
-            { value: "60_plus", text: "60 ans et plus", icon: "📆" }
-        ]
-    },
-    6: {
-        title: "Quel est votre prénom ?",
-        subtitle: "",
-        fieldName: "q6_prenom",
-        type: "text",
-        placeholder: "Jean"
-    },
-    "6b": {
-        title: "Quel est votre nom de famille ?",
-        subtitle: "",
-        fieldName: "q6b_nom",
-        type: "text",
-        placeholder: "Dupont"
-    },
-    7: {
-        title: "Quel est votre email ?",
-        subtitle: "",
-        fieldName: "q7_email",
-        type: "email",
-        placeholder: "jean@example.com"
-    },
-    8: {
-        title: "Quel est votre numéro de téléphone ?",
-        subtitle: "",
-        fieldName: "q8_phone",
-        type: "tel",
-        placeholder: "06 12 34 56 78"
-    }
-};
+// Form data storage
+const formData = {};
+let currentStep = 0; // 0-based index into STEPS array
+const STEPS = [
+  { id: 'age', fieldName: 'q1_age', title: 'Tranche d\'âge' },
+  { id: 'famille', fieldName: 'q2_family', title: 'Situation familiale' },
+  { id: 'impots', fieldName: 'q3_taxes', title: 'Montant d\'impôts annuel' },
+  { id: 'patrimoine', fieldName: 'q4_patrimoine', title: 'Patrimoine financier' },
+  { id: 'objectif', fieldName: 'q5_objective', title: 'Objectif principal' },
+  { id: 'contact', fieldName: 'contact', title: 'Vos coordonnées' },
+  { id: 'otp', fieldName: 'otp', title: 'Vérifiez votre numéro' }
+];
 
-// State management
-let currentStep = 1;
-let visibleSteps = [1, 2, 3, 4, 5, 6, '6b', 7, 8]; // Default visible steps
 let otpVerified = false;
-let otpCode = null;
-let otpExpiry = null;
-let formData = {};
+let userPhone = '';
 
-// DOM Elements
-const form = document.getElementById('polarisFunnel');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const submitBtn = document.getElementById('submitBtn');
-const progressFill = document.getElementById('progressFill');
-const stepNumber = document.getElementById('stepNumber');
-const totalStepsDisplay = document.getElementById('totalSteps');
-const questionCard = document.getElementById('questionCard');
-const optionsContainer = document.getElementById('optionsContainer');
-const sendOtpBtn = document.getElementById('sendOtpBtn');
-const otpBlock = document.getElementById('otpBlock');
-const otpStatus = document.getElementById('otpStatus');
-const otpTimer = document.getElementById('otpTimer');
-const thankYouPage = document.getElementById('thankYouPage');
-const exclusionPage = document.getElementById('exclusionPage');
-const thankYouName = document.getElementById('thankYouName');
-const loadingMessage = document.getElementById('loadingMessage');
-const questionTitle = document.getElementById('questionTitle');
-const questionSubtitle = document.getElementById('questionSubtitle');
-
-// ===== INITIALIZATION =====
-document.addEventListener('DOMContentLoaded', function () {
-    updateConditionalSteps();
-    updateProgress();
-    renderQuestion(currentStep);
-});
-
-prevBtn.addEventListener('click', goToPreviousStep);
-nextBtn.addEventListener('click', goToNextStep);
-submitBtn.addEventListener('click', submitForm);
-form.addEventListener('submit', (e) => e.preventDefault());
-if (sendOtpBtn) sendOtpBtn.addEventListener('click', sendOTP);
-
-// ===== SWIPE GESTURE STATE =====
-let swipeState = {
-    startX: 0,
-    startY: 0,
-    currentX: 0,
-    currentY: 0,
-    isDragging: false,
-    startTime: 0,
-    velocityX: 0,
-};
-
-let optionState = {
-    currentOptionIndex: 0,
-    question: null,
-    stepNum: null,
-};
-
-// ===== QUESTION RENDERING =====
-function renderQuestion(stepNum) {
-    const question = QUESTIONS[stepNum];
-    if (!question) return;
-
-    questionTitle.textContent = question.title;
-    questionSubtitle.textContent = question.subtitle || '';
-    optionsContainer.innerHTML = '';
-
-    // Reset swipe state
-    swipeState = {
-        startX: 0,
-        startY: 0,
-        currentX: 0,
-        currentY: 0,
-        isDragging: false,
-        startTime: 0,
-        velocityX: 0,
-    };
-    questionCard.style.transform = '';
-    questionCard.style.opacity = '1';
-    questionCard.classList.remove('dragging', 'removed');
-
-    // Text input fields
-    if (question.type) {
-        renderTextInput(question);
-        // Remove swipe handlers for text input questions
-        questionCard.removeEventListener('mousedown', handleSwipeStart);
-        questionCard.removeEventListener('touchstart', handleSwipeStart);
-    } else {
-        // Render swipeable option cards
-        renderSwipeableOptions(question, stepNum);
-        // Add swipe handlers
-        questionCard.addEventListener('mousedown', handleSwipeStart);
-        questionCard.addEventListener('touchstart', handleSwipeStart);
-    }
-
-    // Special handling for Q8 - show OTP block after selection
-    if (otpBlock) {
-        if (stepNum === 8 && formData.q8_phone) {
-            otpBlock.style.display = 'block';
-        } else {
-            otpBlock.style.display = 'none';
-        }
-    }
-
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function renderSwipeableOptions(question, stepNum) {
-    optionState.question = question;
-    optionState.stepNum = stepNum;
-    optionState.currentOptionIndex = 0;
-
-    renderCurrentOption();
-
-    // Store question on the card for swipe detection
-    questionCard.dataset.stepNum = stepNum;
-    questionCard.dataset.question = JSON.stringify(question);
-}
-
-function renderCurrentOption() {
-    const question = optionState.question;
-    const currentIndex = optionState.currentOptionIndex;
-    const option = question.options[currentIndex];
-
-    optionsContainer.innerHTML = '';
-
-    if (!option) return;
-
-    // Large option card for the current choice
-    const optionCard = document.createElement('div');
-    optionCard.style.cssText = `
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-        color: white;
-        padding: 40px 24px;
-        border-radius: 16px;
-        text-align: center;
-        margin-bottom: 24px;
-        min-height: 200px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-    `;
-
-    optionCard.innerHTML = `
-        <div style="font-size: 48px;">${option.icon}</div>
-        <div style="font-size: 22px; font-weight: 600;">${option.text}</div>
-        <div style="font-size: 12px; opacity: 0.8;">Option ${currentIndex + 1}/${question.options.length}</div>
-    `;
-
-    optionsContainer.appendChild(optionCard);
-
-    // Swipe instructions
-    const swipeHint = document.createElement('div');
-    swipeHint.style.cssText = `
-        text-align: center;
-        color: var(--text-light);
-        font-size: 13px;
-        padding: 16px;
-        background: var(--bg-mint);
-        border-radius: 10px;
-        line-height: 1.5;
-    `;
-    swipeHint.innerHTML = `
-        <div>👉 Swipe RIGHT to select this option</div>
-        <div style="margin-top: 6px;">👈 Swipe LEFT to see next option</div>
-    `;
-    optionsContainer.appendChild(swipeHint);
-}
-
-function renderTextInput(question) {
-    const inputWrapper = document.createElement('div');
-    inputWrapper.className = 'text-input-field';
-
-    const input = document.createElement('input');
-    input.type = question.type;
-    input.placeholder = question.placeholder || '';
-    input.value = formData[question.fieldName] || '';
-
-    input.addEventListener('input', (e) => {
-        formData[question.fieldName] = e.target.value;
-        updateFormInputs();
-    });
-
-    input.addEventListener('focus', (e) => {
-        e.target.style.borderColor = 'var(--primary)';
-    });
-
-    input.addEventListener('blur', (e) => {
-        e.target.style.borderColor = 'var(--border)';
-    });
-
-    inputWrapper.appendChild(input);
-    optionsContainer.appendChild(inputWrapper);
-
-    // Auto-focus input
-    setTimeout(() => input.focus(), 100);
-}
-
-function selectOption(fieldName, value) {
-    // Update form data
-    formData[fieldName] = value;
-    updateFormInputs();
-
-    // Update conditional steps based on new selection
-    updateConditionalSteps();
-
-    // Trigger card exit animation
-    triggerCardExit();
-}
-
-// ===== SWIPE GESTURE HANDLERS =====
-function handleSwipeStart(e) {
-    if (questionCard.querySelector('.text-input-field')) return; // Skip on text input questions
-
-    swipeState.isDragging = true;
-    swipeState.startTime = Date.now();
-    swipeState.startX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-    swipeState.startY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
-    swipeState.currentX = swipeState.startX;
-
-    questionCard.classList.add('dragging');
-
-    const moveHandler = handleSwipeMove;
-    const endHandler = handleSwipeEnd;
-
-    // Remove previous listeners to avoid duplicates
-    document.removeEventListener('mousemove', moveHandler);
-    document.removeEventListener('mouseup', endHandler);
-    document.removeEventListener('touchmove', moveHandler);
-    document.removeEventListener('touchend', endHandler);
-
-    document.addEventListener(e.type.includes('mouse') ? 'mousemove' : 'touchmove', moveHandler);
-    document.addEventListener(e.type.includes('mouse') ? 'mouseup' : 'touchend', endHandler);
-
-    e.preventDefault();
-}
-
-function handleSwipeMove(e) {
-    if (!swipeState.isDragging) return;
-
-    swipeState.currentX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-    const deltaX = swipeState.currentX - swipeState.startX;
-
-    // Apply transform to card
-    const rotation = (deltaX / window.innerWidth) * 20; // Max 20 degree rotation
-    questionCard.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
-
-    // Calculate opacity based on distance
-    const opacity = 1 - Math.abs(deltaX) / (window.innerWidth * 0.8);
-    questionCard.style.opacity = Math.max(0.3, opacity);
-
-    // Visual feedback overlay
-    updateSwipeIndicator(deltaX);
-
-    e.preventDefault();
-}
-
-function updateSwipeIndicator(deltaX) {
-    let indicator = document.getElementById('swipeIndicator');
-
-    if (!indicator) {
-        indicator = document.createElement('div');
-        indicator.id = 'swipeIndicator';
-        indicator.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translateX(-50%) translateY(-50%);
-            font-size: 64px;
-            font-weight: 700;
-            pointer-events: none;
-            z-index: 999;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            opacity: 0;
-            transition: opacity 0.1s;
-        `;
-        document.body.appendChild(indicator);
-    }
-
-    if (Math.abs(deltaX) > 30) {
-        if (deltaX > 0) {
-            indicator.textContent = '✓ SELECT';
-            indicator.style.color = 'var(--success)';
-            indicator.style.opacity = Math.min(1, Math.abs(deltaX) / 200);
-        } else {
-            indicator.textContent = 'SKIP ✕';
-            indicator.style.color = 'var(--error)';
-            indicator.style.opacity = Math.min(1, Math.abs(deltaX) / 200);
-        }
-    } else {
-        indicator.style.opacity = 0;
-    }
-}
-
-function handleSwipeEnd(e) {
-    if (!swipeState.isDragging) return;
-
-    swipeState.isDragging = false;
-    questionCard.classList.remove('dragging');
-
-    const deltaX = swipeState.currentX - swipeState.startX;
-    const deltaTime = Date.now() - swipeState.startTime;
-    const velocity = deltaX / deltaTime; // px/ms
-
-    // Swipe threshold: 50px distance OR 0.3 px/ms velocity
-    const minDistance = 50;
-    const minVelocity = 0.3;
-    const isSwipeRight = Math.abs(deltaX) > minDistance || Math.abs(velocity) > minVelocity;
-    const direction = deltaX > 0 ? 'right' : 'left';
-
-    document.removeEventListener('mousemove', handleSwipeMove);
-    document.removeEventListener('mouseup', handleSwipeEnd);
-    document.removeEventListener('touchmove', handleSwipeMove);
-    document.removeEventListener('touchend', handleSwipeEnd);
-
-    if (!isSwipeRight) {
-        // Snap back to center
-        questionCard.style.transform = '';
-        questionCard.style.opacity = '1';
-        return;
-    }
-
-    // Process swipe
-    processSwiperAnswer(direction);
-}
-
-function processSwiperAnswer(direction) {
-    const question = optionState.question;
-    const currentIndex = optionState.currentOptionIndex;
-    const option = question.options[currentIndex];
-
-    if (direction === 'right') {
-        // Swipe right = select this option and advance
-        selectOption(question.fieldName, option.value);
-    } else {
-        // Swipe left = show next option or advance if at end
-        if (currentIndex < question.options.length - 1) {
-            optionState.currentOptionIndex++;
-
-            // Reset card animation state
-            questionCard.classList.remove('removed');
-            questionCard.style.transform = '';
-            questionCard.style.opacity = '1';
-
-            renderCurrentOption();
-        } else {
-            // No more options, skip to next question
-            goToNextStep();
-        }
-    }
-}
-
-function triggerCardExit() {
-    questionCard.classList.add('removed');
-
-    setTimeout(() => {
-        goToNextStep();
-    }, 400);
-}
-
-// ===== CONDITIONAL STEPS LOGIC =====
-function updateConditionalSteps() {
-    visibleSteps = [1, 2, 3, 4, 5, 6, '6b', 7, 8];
-
-    const q2Value = formData.q2_profession;
-    const q4Value = formData.q4_revenu;
-
-    // Add Q2b if sans activité
-    if (q2Value === 'sans_activite') {
-        visibleSteps.splice(visibleSteps.indexOf(3), 0, '2b');
-    }
-
-    // Add Q4b if revenu < 2k
-    if (q4Value === 'moins_2k') {
-        visibleSteps.splice(visibleSteps.indexOf(6), 0, '4b');
-    }
-
-    updateProgress();
-}
-
-// ===== FORM VALIDATION =====
-function isCurrentStepValid() {
-    const question = QUESTIONS[currentStep];
-    if (!question) return false;
-
-    const value = formData[question.fieldName];
-
-    if (question.type) {
-        // Text field validation
-        return value && value.trim().length > 0;
-    } else {
-        // Option validation
-        return !!value;
-    }
-}
-
-// ===== NAVIGATION =====
-function goToNextStep() {
-    if (!isCurrentStepValid()) {
-        alert('Veuillez compléter cette question');
-        return;
-    }
-
-    if (currentStep === 8 && !otpVerified) {
-        alert('Veuillez vérifier votre numéro de téléphone');
-        return;
-    }
-
-    const currentIndex = visibleSteps.indexOf(currentStep);
-    if (currentIndex < visibleSteps.length - 1) {
-        currentStep = visibleSteps[currentIndex + 1];
-        updateProgress();
-        renderQuestion(currentStep);
-        updateButtonVisibility();
-    }
-}
-
-function goToPreviousStep() {
-    const currentIndex = visibleSteps.indexOf(currentStep);
-    if (currentIndex > 0) {
-        currentStep = visibleSteps[currentIndex - 1];
-        updateProgress();
-        renderQuestion(currentStep);
-        updateButtonVisibility();
-    }
-}
-
-function updateButtonVisibility() {
-    const currentIndex = visibleSteps.indexOf(currentStep);
-    const isFirstStep = currentIndex === 0;
-    const isLastStep = currentIndex === visibleSteps.length - 1;
-    const question = QUESTIONS[currentStep];
-    const isTextInput = question && question.type;
-
-    // Show buttons only for text input questions
-    if (isTextInput) {
-        prevBtn.style.display = isFirstStep ? 'none' : 'block';
-        nextBtn.style.display = isLastStep ? 'none' : 'block';
-        submitBtn.style.display = isLastStep ? 'block' : 'none';
-    } else {
-        // Hide buttons for swipe questions
-        prevBtn.style.display = 'none';
-        nextBtn.style.display = 'none';
-        submitBtn.style.display = 'none';
-    }
-}
-
+// Update progress bar
 function updateProgress() {
-    const currentIndex = visibleSteps.indexOf(currentStep);
-    const progress = ((currentIndex + 1) / visibleSteps.length) * 100;
-    progressFill.style.width = progress + '%';
-    stepNumber.textContent = currentIndex + 1;
-    totalStepsDisplay.textContent = visibleSteps.length;
-    updateButtonVisibility();
+  const pct = Math.round((currentStep / (STEPS.length - 1)) * 100);
+  const progressBar = document.getElementById('progressBar');
+  if (progressBar) {
+    progressBar.style.width = pct + '%';
+  }
+  // Update percentage text if it exists
+  const progressPct = document.querySelector('[data-progress-pct]');
+  if (progressPct) {
+    progressPct.textContent = pct + '%';
+  }
 }
 
-function updateFormInputs() {
-    // Update hidden form inputs
-    for (let [key, value] of Object.entries(formData)) {
-        const input = document.getElementById(key);
-        if (input) input.value = value;
+// Select option for a question
+function selectOption(questionId, value, element) {
+  // Find the step card for this question
+  const stepCard = document.querySelector(`[data-step-id="${questionId}"]`);
+  if (!stepCard) return;
+
+  // Update all option rows in this step
+  const optionRows = stepCard.querySelectorAll('.option-row');
+  optionRows.forEach(row => {
+    if (row.getAttribute('data-value') === value) {
+      row.classList.add('selected');
+    } else {
+      row.classList.remove('selected');
     }
+  });
+
+  // Store the selection
+  formData[questionId] = value;
+
+  // Auto-advance to next step after short delay
+  setTimeout(() => {
+    nextQuestion();
+  }, 220);
 }
 
-// ===== PHONE NORMALIZATION =====
-function normalizePhoneNumber(phone) {
-    const cleaned = phone.replace(/\s/g, '');
-    if (cleaned.startsWith('06') || cleaned.startsWith('07')) {
-        return '+33' + cleaned.slice(1);
-    }
-    return cleaned;
+// Advance to next question
+function nextQuestion() {
+  // Find current step
+  const currentStepData = STEPS[currentStep];
+
+  // Validate current step based on type
+  if (currentStepData.id === 'contact') {
+    if (!validateContactInfo()) return;
+  } else if (currentStepData.id === 'otp') {
+    if (!validateOTP()) return;
+  } else {
+    // For option-based steps, check if answer is selected
+    if (!formData[currentStepData.id]) return;
+  }
+
+  // Hide current step card
+  const currentStepCard = document.querySelector(`[data-step-id="${currentStepData.id}"]`);
+  if (currentStepCard) {
+    currentStepCard.classList.remove('active');
+    currentStepCard.classList.add('completed');
+  }
+
+  // Move to next step
+  currentStep++;
+  if (currentStep >= STEPS.length) {
+    currentStep = STEPS.length - 1;
+    return;
+  }
+
+  // Show next step card
+  const nextStepData = STEPS[currentStep];
+  const nextStepCard = document.querySelector(`[data-step-id="${nextStepData.id}"]`);
+  if (nextStepCard) {
+    nextStepCard.classList.add('active');
+    nextStepCard.classList.remove('completed', 'future');
+  }
+
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ===== OTP HANDLING =====
+// Go back to previous question
+function prevQuestion() {
+  // Hide current step
+  const currentStepData = STEPS[currentStep];
+  const currentStepCard = document.querySelector(`[data-step-id="${currentStepData.id}"]`);
+  if (currentStepCard) {
+    currentStepCard.classList.remove('active');
+  }
+
+  // Move to previous step
+  currentStep--;
+  if (currentStep < 0) {
+    currentStep = 0;
+  }
+
+  // Show previous step
+  const prevStepData = STEPS[currentStep];
+  const prevStepCard = document.querySelector(`[data-step-id="${prevStepData.id}"]`);
+  if (prevStepCard) {
+    prevStepCard.classList.remove('completed', 'future');
+    prevStepCard.classList.add('active');
+  }
+
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Contact info validation (FIX BUG 2: Updated field IDs)
+function validateContactInfo() {
+  let valid = true;
+  const errorNom = document.getElementById('error-nom') || document.getElementById('contact-error-nom');
+  const errorEmail = document.getElementById('error-email') || document.getElementById('contact-error-email');
+  const errorPhone = document.getElementById('error-phone') || document.getElementById('contact-error-phone');
+
+  // Clear errors
+  if (errorNom) errorNom.textContent = '';
+  if (errorEmail) errorEmail.textContent = '';
+  if (errorPhone) errorPhone.textContent = '';
+
+  // Get form fields with new IDs
+  const nomField = document.getElementById('q6_nom');
+  const nomLastField = document.getElementById('q6_nom_last');
+  const emailField = document.getElementById('q6_email');
+  const phoneField = document.getElementById('q7_phone');
+
+  const nom = nomField ? nomField.value.trim() : '';
+  const nomLast = nomLastField ? nomLastField.value.trim() : '';
+  const email = emailField ? emailField.value.trim() : '';
+  const phone = phoneField ? phoneField.value.trim() : '';
+
+  // Validate name
+  if (!nom || !nomLast) {
+    if (errorNom) errorNom.textContent = 'Veuillez entrer votre nom complet';
+    if (nomField) nomField.classList.add('input-error');
+    if (nomLastField) nomLastField.classList.add('input-error');
+    valid = false;
+  } else {
+    if (nomField) nomField.classList.remove('input-error');
+    if (nomLastField) nomLastField.classList.remove('input-error');
+  }
+
+  // Validate email
+  if (!email || !email.includes('@')) {
+    if (errorEmail) errorEmail.textContent = 'Veuillez entrer un email valide';
+    if (emailField) emailField.classList.add('input-error');
+    valid = false;
+  } else {
+    if (emailField) emailField.classList.remove('input-error');
+  }
+
+  // Validate phone
+  if (!phone) {
+    if (errorPhone) errorPhone.textContent = 'Veuillez entrer votre téléphone';
+    if (phoneField) phoneField.classList.add('input-error');
+    valid = false;
+  } else {
+    if (phoneField) phoneField.classList.remove('input-error');
+  }
+
+  if (valid) {
+    formData.q6_nom = nom;
+    formData.q6_nom_last = nomLast;
+    formData.q6_email = email;
+    userPhone = phone;
+  }
+
+  return valid;
+}
+
+// Send OTP via Twilio
 async function sendOTP() {
-    if (!otpStatus || !sendOtpBtn) {
-        console.error('OTP elements not found in DOM');
-        return;
+  if (!validateContactInfo()) return;
+
+  const btn = document.getElementById('sendOtpBtn') || document.querySelector('button[onclick="sendOTP()"]');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Envoi en cours...';
+  }
+
+  try {
+    const response = await fetch('/api/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phone: userPhone,
+        variant: variant
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      // Move to OTP step
+      currentStep = STEPS.findIndex(s => s.id === 'otp');
+
+      // Hide contact step, show OTP step
+      const contactCard = document.querySelector('[data-step-id="contact"]');
+      if (contactCard) {
+        contactCard.classList.remove('active');
+        contactCard.classList.add('completed');
+      }
+
+      const otpCard = document.querySelector('[data-step-id="otp"]');
+      if (otpCard) {
+        otpCard.classList.add('active');
+      }
+
+      // Update progress
+      updateProgress();
+
+      // Show OTP message
+      const otpMessage = document.getElementById('otp-message');
+      if (otpMessage) {
+        otpMessage.textContent = 'Code envoyé. Consultez vos SMS.';
+      }
+
+      // Track OTP event
+      if (typeof fbq !== 'undefined') {
+        fbq('track', 'OTPSent', { phone: userPhone, variant: variant });
+      }
+    } else {
+      const errorPhone = document.getElementById('contact-error-phone');
+      if (errorPhone) {
+        errorPhone.textContent = data.message || 'Erreur lors de l\'envoi du code';
+      }
     }
-
-    let phoneNumber = formData.q8_phone?.trim();
-
-    if (!phoneNumber) {
-        otpStatus.textContent = '❌ Veuillez entrer votre numéro';
-        otpStatus.classList.add('error');
-        return;
+  } catch (error) {
+    console.error('OTP Error:', error);
+    const errorPhone = document.getElementById('contact-error-phone');
+    if (errorPhone) {
+      errorPhone.textContent = 'Erreur réseau. Veuillez réessayer.';
     }
-
-    // Validate French phone format (06/07 or +33)
-    if (!/^(\+33|0)[1-9]\d{8}$/.test(phoneNumber.replace(/\s/g, ''))) {
-        otpStatus.textContent = '❌ Numéro de téléphone invalide';
-        otpStatus.classList.add('error');
-        return;
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = 'Envoyer le code';
     }
-
-    // Normalize to +33 format
-    phoneNumber = normalizePhoneNumber(phoneNumber);
-
-    sendOtpBtn.disabled = true;
-    otpStatus.textContent = '⏳ Envoi du code...';
-    otpStatus.classList.remove('error', 'success');
-
-    try {
-        const response = await fetch('/api/send-otp', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phoneNumber }),
-        });
-
-        if (!response.ok) throw new Error('Erreur lors de l\'envoi du code');
-
-        otpExpiry = Date.now() + CONFIG.OTP_TIMEOUT;
-
-        otpStatus.textContent = '✓ Code envoyé avec succès';
-        otpStatus.classList.add('success');
-        otpStatus.classList.remove('error');
-
-        startOTPTimer();
-
-        const otpCodeInput = document.getElementById('otpCode');
-        if (otpCodeInput) {
-            setTimeout(() => {
-                otpCodeInput.focus();
-            }, 300);
-        }
-    } catch (error) {
-        console.error('Erreur OTP:', error);
-        otpStatus.textContent = '❌ Erreur lors de l\'envoi. Réessayez.';
-        otpStatus.classList.add('error');
-        sendOtpBtn.disabled = false;
-    }
+  }
 }
 
-function startOTPTimer() {
-    const otpInput = document.getElementById('otpCode');
-    if (!otpInput || !otpTimer) return;
+// Handle OTP input - auto-fill and focus next field
+function handleOtpInput(e) {
+  const input = e.target;
 
-    otpInput.addEventListener('input', verifyOTPRealtime);
+  // Only allow digits
+  input.value = input.value.replace(/[^0-9]/g, '');
 
-    const timerInterval = setInterval(() => {
-        const remaining = Math.max(0, Math.ceil((otpExpiry - Date.now()) / 1000));
-        const minutes = Math.floor(remaining / 60);
-        const seconds = remaining % 60;
+  // Move to next field
+  if (input.value && input.nextElementSibling) {
+    input.nextElementSibling.focus();
+  }
 
-        otpTimer.textContent = `Expire dans: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+  // Check if all fields are filled
+  const otpSlots = document.querySelectorAll('.otp-slot input');
+  const allFilled = Array.from(otpSlots).every(el => el.value !== '');
 
-        if (remaining === 0) {
-            clearInterval(timerInterval);
-            if (otpBlock) otpBlock.style.display = 'none';
-            if (otpStatus) {
-                otpStatus.textContent = '⚠️ Le code a expiré. Envoyez un nouveau code.';
-                otpStatus.classList.add('error');
-            }
-            if (sendOtpBtn) sendOtpBtn.disabled = false;
-            otpInput.removeEventListener('input', verifyOTPRealtime);
-        }
-    }, 1000);
+  if (allFilled) {
+    verifyOTP();
+  }
 }
 
-async function verifyOTPRealtime() {
-    const otpInput = document.getElementById('otpCode');
-    if (!otpInput || !otpStatus) return;
+// Verify OTP code
+async function verifyOTP() {
+  const otpSlots = document.querySelectorAll('.otp-slot input');
+  const otp = Array.from(otpSlots).map(el => el.value).join('');
 
-    const enteredCode = otpInput.value.trim();
-
-    if (enteredCode.length === CONFIG.OTP_LENGTH) {
-        otpStatus.textContent = '⏳ Vérification...';
-        otpStatus.classList.remove('error', 'success');
-
-        try {
-            const response = await fetch('/api/verify-otp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    phoneNumber: normalizePhoneNumber(formData.q8_phone),
-                    otpCode: enteredCode,
-                    firstName: formData.q6_prenom,
-                    lastName: formData.q6b_nom,
-                    email: formData.q7_email,
-                }),
-            });
-
-            if (response.ok) {
-                otpVerified = true;
-                otpStatus.textContent = '✓ Numéro de téléphone vérifié';
-                otpStatus.classList.add('success');
-                otpStatus.classList.remove('error');
-                otpInput.disabled = true;
-                if (sendOtpBtn) sendOtpBtn.disabled = true;
-            } else {
-                const error = await response.json();
-                otpStatus.textContent = '❌ ' + (error.error || 'Code incorrect');
-                otpStatus.classList.add('error');
-                otpStatus.classList.remove('success');
-                otpVerified = false;
-            }
-        } catch (error) {
-            console.error('Erreur vérification OTP:', error);
-            otpStatus.textContent = '❌ Erreur lors de la vérification';
-            otpStatus.classList.add('error');
-            otpVerified = false;
-        }
+  if (otp.length !== 6) {
+    const errorOtp = document.getElementById('otp-error');
+    if (errorOtp) {
+      errorOtp.textContent = 'Veuillez entrer les 6 chiffres';
     }
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phoneNumber: userPhone,
+        otp: otp,
+        email: formData.q6_email,
+        nom: formData.q6_nom,
+        variant: variant
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      otpVerified = true;
+
+      const errorOtp = document.getElementById('otp-error');
+      if (errorOtp) {
+        errorOtp.textContent = '';
+      }
+
+      const otpMessage = document.getElementById('otp-message');
+      if (otpMessage) {
+        otpMessage.textContent = 'Code vérifié! ✓';
+        otpMessage.style.color = 'var(--copper-light)';
+      }
+
+      // Track OTP verified event
+      if (typeof fbq !== 'undefined') {
+        fbq('track', 'OTPVerified', { phone: userPhone, variant: variant });
+      }
+
+      // Auto-submit form after OTP verification
+      setTimeout(() => {
+        submitForm();
+      }, 1000);
+    } else {
+      const errorOtp = document.getElementById('otp-error');
+      if (errorOtp) {
+        errorOtp.textContent = data.message || 'Code incorrect';
+      }
+
+      otpSlots.forEach(el => {
+        el.classList.remove('filled');
+      });
+    }
+  } catch (error) {
+    console.error('Verify OTP Error:', error);
+    const errorOtp = document.getElementById('otp-error');
+    if (errorOtp) {
+      errorOtp.textContent = 'Erreur réseau';
+    }
+  }
 }
 
-// ===== FORM SUBMISSION =====
-async function submitForm(e) {
-    e.preventDefault();
-
-    const q2Value = formData.q2_profession;
-    const q4Value = formData.q4_revenu;
-
-    // Exclusion checks
-    if (q2Value === 'sans_activite' && formData.q2b_patrimoine === 'moins_10k') {
-        showExclusionPage();
-        return;
+// Validate OTP (check it's been verified)
+function validateOTP() {
+  if (!otpVerified) {
+    const errorOtp = document.getElementById('otp-error');
+    if (errorOtp) {
+      errorOtp.textContent = 'Veuillez vérifier votre code OTP';
     }
-
-    if (q4Value === 'moins_2k' && formData.q4b_patrimoine === 'moins_10k') {
-        showExclusionPage();
-        return;
-    }
-
-    const leadData = {
-        firstName: formData.q6_prenom,
-        lastName: formData.q6_prenom, // Using same for last name
-        email: formData.q7_email,
-        phone: formData.q8_phone,
-        tags: [],
-        custom: {
-            q1_project: formData.q1_project,
-            q2_profession: formData.q2_profession,
-            q3_family: formData.q3_family,
-            q4_revenu: formData.q4_revenu,
-            q5_age: formData.q5_age,
-        },
-    };
-
-    if (q2Value === 'sans_activite' && formData.q2b_patrimoine) {
-        leadData.tags.push('Sans activité — patrimoine existant');
-    }
-
-    if (q4Value === 'moins_2k' && formData.q4b_patrimoine) {
-        leadData.tags.push('Revenu faible — patrimoine existant');
-    }
-
-    submitBtn.disabled = true;
-    showThankYouPage();
+    return false;
+  }
+  return true;
 }
 
-function showThankYouPage() {
-    document.querySelector('.form-section').style.display = 'none';
-    thankYouName.textContent = formData.q6_prenom;
-    thankYouPage.classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+// FIX BUG 1: Check exclusions with correct field logic
+// Exclusion criteria: if impots < 2000€ OR patrimoine < 20000€
+function checkExclusions() {
+  const impots = formData.q3_taxes;
+  const patrimoine = formData.q4_patrimoine;
+
+  // Parse tax values: <2k, 2-5k, 5-10k, >10k
+  const impottsExcluded = impots === '<2k';
+
+  // Parse patrimoine values: <20k, 20-100k, 100-300k, >300k
+  const patrimoineExcluded = patrimoine === '<20k';
+
+  // Exclude if either condition is met
+  return impottsExcluded || patrimoineExcluded;
 }
 
-function showExclusionPage() {
-    document.querySelector('.form-section').style.display = 'none';
-    exclusionPage.classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+// Submit form after OTP verification
+async function submitForm() {
+  if (!otpVerified) {
+    const errorOtp = document.getElementById('otp-error');
+    if (errorOtp) {
+      errorOtp.textContent = 'Veuillez vérifier votre code OTP';
+    }
+    return;
+  }
+
+  // Collect all form data
+  const nomComplet = (formData.q6_nom || '') + ' ' + (formData.q6_nom_last || '');
+  const prenom = (formData.q6_nom || '').split(' ')[0];
+
+  const formDataFinal = {
+    ...formData,
+    q6_nom_complet: nomComplet.trim(),
+    q6_email: formData.q6_email,
+    q7_phone: userPhone,
+    variant: variant,
+    timestamp: new Date().toISOString()
+  };
+
+  // Check exclusions - show exclusion page if needed
+  if (checkExclusions()) {
+    // Show exclusion loader briefly, then redirect to exclusion page
+    const loaderCard = document.querySelector('[data-exclusion-loader]');
+    const otpCard = document.querySelector('[data-step-id="otp"]');
+
+    if (otpCard) {
+      otpCard.classList.remove('active');
+    }
+
+    if (loaderCard) {
+      loaderCard.classList.add('active');
+    }
+
+    // Silent redirect after 800ms (as per design spec)
+    setTimeout(() => {
+      window.location.href = '/exclusion.html?v=' + variant;
+    }, 800);
+
+    return;
+  }
+
+  // FIX BUG 3: Call /api/trigger-ghl-automation endpoint
+  const btn = document.getElementById('submitBtn') || document.querySelector('button[onclick="submitForm()"]');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Envoi...';
+  }
+
+  try {
+    // Trigger GHL automation (create lead + send email)
+    const ghlResponse = await fetch('/api/trigger-ghl-automation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formDataFinal)
+    });
+
+    const ghlData = await ghlResponse.json();
+
+    // Track form submission
+    if (typeof fbq !== 'undefined') {
+      fbq('track', 'FormSubmitted', {
+        email: formDataFinal.q6_email,
+        variant: variant
+      });
+    }
+
+    // Send to Meta CAPI (Conversions API) if endpoint exists
+    await fetch('/api/track-meta-event', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event: 'FormSubmitted',
+        email: formDataFinal.q6_email,
+        phone: formDataFinal.q7_phone,
+        variant: variant
+      })
+    }).catch(e => console.log('Meta CAPI call failed (non-critical):', e));
+
+    // Redirect to thank you page
+    const redirectUrl = '/thank-you.html?v=' + variant + '&name=' + encodeURIComponent(prenom);
+    window.location.href = redirectUrl;
+  } catch (error) {
+    console.error('Form submission error:', error);
+    alert('Une erreur s\'est produite. Veuillez réessayer.');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = 'Recevoir mon bilan';
+    }
+  }
+}
+
+// Show form and hide CTA
+function showForm() {
+  const ctaContainer = document.getElementById('ctaContainer');
+  const formContainer = document.getElementById('formContainer');
+
+  if (ctaContainer) {
+    ctaContainer.style.display = 'none';
+  }
+
+  if (formContainer) {
+    formContainer.classList.add('show');
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Toggle FAQ items
+function toggleFaq(element) {
+  const answer = element.nextElementSibling;
+  const isOpen = element.classList.contains('open');
+
+  // Close all other FAQ items
+  document.querySelectorAll('.faq-question').forEach(faq => {
+    if (faq !== element) {
+      faq.classList.remove('open');
+      if (faq.nextElementSibling) {
+        faq.nextElementSibling.style.display = 'none';
+      }
+    }
+  });
+
+  // Toggle current item
+  if (isOpen) {
+    element.classList.remove('open');
+    if (answer) answer.style.display = 'none';
+  } else {
+    element.classList.add('open');
+    if (answer) answer.style.display = 'block';
+  }
+}
+
+// Initialize form
+function initializeForm() {
+  currentStep = 0;
+
+  // Show first step card
+  const firstStepCard = document.querySelector('[data-step-id="age"]');
+  if (firstStepCard) {
+    firstStepCard.classList.add('active');
+  }
+
+  // Mark other steps as future
+  STEPS.slice(1).forEach(step => {
+    const card = document.querySelector(`[data-step-id="${step.id}"]`);
+    if (card && !card.classList.contains('completed')) {
+      card.classList.add('future');
+    }
+  });
+
+  updateProgress();
+
+  // Clear all error messages
+  document.querySelectorAll('[class*="error"]').forEach(el => {
+    el.textContent = '';
+  });
+}
+
+// Run initialization when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeForm);
+} else {
+  initializeForm();
 }

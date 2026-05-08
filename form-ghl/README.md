@@ -32,14 +32,14 @@ http://localhost:3000
 ## 🔑 Configuration
 
 ### Variables d'environnement
-Les clés API sont configurées dans `server.js` :
+Les clés API sont configurées via des variables d'environnement dans `server.js` :
 
-- **Twilio Account SID**: `ACee4fa3c14f361c864d89d194497dae62`
-- **Twilio Auth Token**: `6f0d3564f2d7a9e66c4ee27b1aca239c`
-- **Twilio Phone**: `+33757594907`
-- **GHL API Key**: `pit-b513c222-b83a-44db-87d2-dbcad3291bae`
+- **Twilio Account SID**: Voir `.env.example`
+- **Twilio Auth Token**: Voir `.env.example`
+- **Twilio Phone**: Voir `.env.example`
+- **GHL API Key**: Voir `.env.example`
 
-⚠️ **En production**: Déplacer ces clés dans un fichier `.env`
+⚠️ **Configuration**: Copier `.env.example` en `.env` et remplir avec vos vraies clés API
 
 ## 📱 Flux du formulaire
 

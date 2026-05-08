@@ -20,7 +20,30 @@
       "mcp__Claude_in_Chrome__javascript_tool",
       "Bash(curl -s http://localhost:3000/)",
       "Bash(curl -s https://novi-finance-form.vercel.app)",
-      "Bash(grep -E \"\\\\.\\(html|js|css\\)$\")"
+      "Bash(grep -E \"\\\\.\\(html|js|css\\)$\")",
+      "Bash(curl -s \"https://novi-finance-form.vercel.app?t=$\\(date +%s\\)\")",
+      "Bash(vercel env *)",
+      "Bash(vercel deploy *)",
+      "Bash(vercel logs *)",
+      "mcp__Claude_in_Chrome__get_page_text",
+      "Read(//c/Users/PC/Downloads/**)",
+      "Bash(dir Novi_Finance*.*)",
+      "Bash(ls -la \"C:\\\\Users\\\\PC\\\\OneDrive\\\\Bureau\\\\Claude Code\\\\\" | grep -E \"^d\" | head -20)",
+      "mcp__mcp-registry__search_mcp_registry",
+      "Bash(node -c script.js)",
+      "Bash(curl -s \"https://novi-finance-form.vercel.app/form-ghl/script.js\")",
+      "Bash(vercel --prod)",
+      "Bash(curl -s -o /dev/null -w \"HTTP Status: %{http_code}\\\\n\" \"https://novi-finance-form.vercel.app/form-ghl/script.js\")",
+      "mcp__Claude_in_Chrome__tabs_close_mcp",
+      "Bash(ls \"/mnt/c/Users/PC/OneDrive/Bureau/Claude Code/form-ghl/\" 2>&1 | head -20)",
+      "Bash(find /mnt/c/Users/PC -name \"index.html\" -path \"*form*\" 2>/dev/null)",
+      "Bash(cat /proc/mounts | grep -i mnt | head)",
+      "mcp__Claude_Preview__preview_start",
+      "mcp__a820c179-7f43-4a58-93c6-78e5267360ac__deploy_to_vercel",
+      "Bash(git --version)",
+      "Bash(git config *)",
+      "Bash(git remote *)",
+      "Bash(git reset *)"
     ]
   }
 }

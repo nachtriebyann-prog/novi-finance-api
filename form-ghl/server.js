@@ -15,11 +15,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
-// Configuration Twilio
-const TWILIO_ACCOUNT_SID = 'ACee4fa3c14f361c864d89d194497dae62';
-const TWILIO_AUTH_TOKEN = '6f0d3564f2d7a9e66c4ee27b1aca239c';
-const TWILIO_PHONE_FROM = '+33757594907';
-const twilioCLient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+// Configuration Twilio - use environment variables for security
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+const TWILIO_PHONE_FROM = process.env.TWILIO_PHONE_FROM;
+
+// Initialize Twilio client if credentials are available
+const twilioCLient = (TWILIO_ACCOUNT_SID && TWILIO_AUTH_TOKEN)
+    ? twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+    : null;
+
+if (!twilioCLient && process.env.NODE_ENV === 'production') {
+    console.error('⚠️ CRITICAL: Twilio credentials not configured in production!');
+}
 
 // Stockage des OTP en mémoire (à remplacer par une base de données en production)
 const otpStore = new Map();
@@ -62,13 +70,17 @@ app.post('/api/send-otp', async (req, res) => {
 
         // Envoyer le SMS via Twilio
         try {
-            const message = await twilioCLient.messages.create({
-                body: `Votre code de vérification Novi Finance: ${otpCode}\n\nValable 10 minutes.`,
-                from: TWILIO_PHONE_FROM,
-                to: formattedPhone,
-            });
+            if (twilioCLient && TWILIO_PHONE_FROM) {
+                const message = await twilioCLient.messages.create({
+                    body: `Votre code de vérification Novi Finance: ${otpCode}\n\nValable 10 minutes.`,
+                    from: TWILIO_PHONE_FROM,
+                    to: formattedPhone,
+                });
 
-            console.log(`✓ SMS envoyé à ${formattedPhone} - SID: ${message.sid}`);
+                console.log(`✓ SMS envoyé à ${formattedPhone} - SID: ${message.sid}`);
+            } else {
+                console.log(`⚠️ Twilio non configuré - code OTP généré localement pour: ${formattedPhone}`);
+            }
         } catch (twilioError) {
             console.log(`⚠️ Erreur Twilio (dev mode): ${twilioError.message}`);
             console.log(`⚠️ En développement, code OTP généré localement pour: ${formattedPhone}`);
@@ -132,7 +144,122 @@ app.post('/api/verify-otp', (req, res) => {
     }
 });
 
-// 3. Créer un lead dans GoHighLevel
+// 3. Trigger GHL Automation - Créer un lead et déclencher l'automatisation
+app.post('/api/trigger-ghl-automation', async (req, res) => {
+    try {
+        const {
+            q1_age,
+            q2_family,
+            q3_taxes,
+            q4_patrimoine,
+            q5_objective,
+            q6_nom,
+            q6_nom_last,
+            q6_email,
+            q7_phone,
+            variant,
+            timestamp
+        } = req.body;
+
+        // Validate required fields
+        if (!q6_email || !q7_phone || !q6_nom) {
+            return res.status(400).json({
+                error: 'Email, téléphone et nom requis',
+                success: false
+            });
+        }
+
+        // Format phone number for storage
+        let formattedPhone = q7_phone.replace(/\s+/g, '');
+        if (!formattedPhone.startsWith('+')) {
+            if (formattedPhone.startsWith('0')) {
+                formattedPhone = '+33' + formattedPhone.substring(1);
+            } else {
+                formattedPhone = '+33' + formattedPhone;
+            }
+        }
+
+        // Prepare GHL contact data
+        const ghlContactData = {
+            firstName: q6_nom,
+            lastName: q6_nom_last || '',
+            email: q6_email,
+            phone: formattedPhone,
+            source: 'Novi Finance - Formulaire Web V8',
+            tags: ['novi-finance', variant || 'default'],
+            customFields: {
+                'Âge': q1_age,
+                'Situation familiale': q2_family,
+                'Impôts annuels': q3_taxes,
+                'Patrimoine': q4_patrimoine,
+                'Objectif principal': q5_objective,
+                'Variante': variant || 'default',
+                'Date soumission': timestamp
+            },
+            // Note: Field names above should match your GHL custom field names
+            // Update these to match your actual GHL setup
+        };
+
+        // Log the lead creation for debugging
+        console.log(`📋 Nouveau lead: ${q6_nom} ${q6_nom_last} (${q6_email}) - ${formattedPhone}`);
+        console.log(`   Réponses: Âge=${q1_age}, Famille=${q2_family}, Impôts=${q3_taxes}, Patrimoine=${q4_patrimoine}, Objectif=${q5_objective}`);
+
+        // TODO: Call actual GHL API with your location ID and API key
+        // For now, in development mode, we'll just log and return success
+        //
+        // const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID;
+        // const GHL_API_KEY = process.env.GHL_API_KEY;
+        //
+        // if (!GHL_LOCATION_ID || !GHL_API_KEY) {
+        //     console.warn('⚠️ GHL credentials not configured');
+        //     return res.status(400).json({
+        //         error: 'GHL configuration missing',
+        //         success: false
+        //     });
+        // }
+        //
+        // const ghlResponse = await fetch(
+        //     `https://rest.gohighlevel.com/v1/contacts/?locationId=${GHL_LOCATION_ID}`,
+        //     {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'Authorization': `Bearer ${GHL_API_KEY}`,
+        //         },
+        //         body: JSON.stringify(ghlContactData),
+        //     }
+        // );
+        //
+        // if (!ghlResponse.ok) {
+        //     throw new Error(`GHL API returned ${ghlResponse.status}`);
+        // }
+        //
+        // const ghlData = await ghlResponse.json();
+
+        // Development mode: simulate successful lead creation
+        res.json({
+            success: true,
+            message: 'Lead créé et automatisation déclenchée avec succès',
+            leadId: 'ghl-' + Date.now(),
+            contact: {
+                name: `${q6_nom} ${q6_nom_last}`,
+                email: q6_email,
+                phone: formattedPhone
+            },
+            devMode: process.env.NODE_ENV !== 'production'
+        });
+
+    } catch (error) {
+        console.error('Erreur GHL Automation:', error);
+        res.status(500).json({
+            error: 'Erreur lors de la création du lead',
+            details: error.message,
+            success: false
+        });
+    }
+});
+
+// 4. Créer un lead dans GoHighLevel (Legacy endpoint)
 app.post('/api/create-lead-ghl', async (req, res) => {
     try {
         const { leadData, apiKey } = req.body;

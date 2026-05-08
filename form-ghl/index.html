@@ -3,155 +3,309 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bilan Patrimonial Offert - Novi Finance</title>
+    <meta name="description" content="Bilan Patrimonial Gratuit - 5 questions, 90 secondes">
+    <title>Novi Finance · Bilan Patrimonial</title>
+
+    <!-- Google Fonts (Velvet/Glass design system) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Meta Pixel -->
+    <script>
+        const META_PIXEL_ID = '1106232608366988';
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', META_PIXEL_ID);
+        fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1106232608366988&ev=PageView&noscript=1" /></noscript>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: #0A0908;
+        }
+    </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <span class="logo-icon">💰</span>
-                <span class="logo-text">Novi Finance</span>
-            </div>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title">Votre Bilan Patrimonial <span class="highlight">100% Gratuit</span></h1>
-                <p class="hero-subtitle">Découvrez comment optimiser votre patrimoine en 3 minutes seulement</p>
-                <div class="hero-badges">
-                    <span class="badge-pill">✓ Sans engagement</span>
-                    <span class="badge-pill">✓ Confidentiel</span>
-                    <span class="badge-pill">✓ Gratuit</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Form Section -->
-    <section class="form-section" id="formSection">
-        <div class="form-container">
-            <!-- Progress Bar -->
-            <div class="progress-bar-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <div class="progress-text">
-                    <span class="step-counter"><span id="stepNumber">1</span>/<span id="totalSteps">6</span></span>
+    <!-- Main Form Stage -->
+    <div class="nv-stage nv-grain viewport-desktop">
+        <div class="nv-conic"></div>
+        <div class="nv-content">
+            <!-- Header with Progress -->
+            <div style="padding: 14px 0 10px; position: sticky; top: 0; z-index: 5; background: linear-gradient(180deg, rgba(10,9,8,.95), rgba(10,9,8,.7)); backdrop-filter: blur(20px);">
+                <div style="padding: 0 56px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-family: var(--mono); font-size: 10px; color: var(--ink-50); letter-spacing: .1em;">
+                        <span>— FORMULAIRE</span>
+                        <span id="progressPercent">0%</span>
+                    </div>
+                    <div class="progress"><i id="progressBar" style="width: 0%; transition: width 0.3s ease;"></i></div>
                 </div>
             </div>
 
-            <!-- Question Card -->
-            <div class="question-card" id="questionCard">
-                <div class="question-wrapper">
-                    <h2 class="question-title" id="questionTitle"></h2>
-                    <p class="question-subtitle" id="questionSubtitle"></p>
+            <!-- Main Content -->
+            <div style="padding: 32px 56px 56px; max-width: 880px; margin: 0 auto;">
+                <!-- Hero Section -->
+                <div style="margin-bottom: 40px;">
+                    <div class="eyebrow" style="margin-bottom: 14px;">— Bilan patrimonial</div>
+                    <h1 class="serif" style="font-size: 72px; letter-spacing: -0.04em; line-height: 0.95; color: var(--ink-90); margin: 0 0 32px;">
+                        5 questions.<br><span class="serif-it copper-text">90 secondes.</span>
+                    </h1>
+                    <div style="color: var(--ink-50); font-size: 14px; margin-top: 14px; font-family: var(--mono); letter-spacing: .05em;">
+                        VOUS · DIAGNOSE · 30–40 ANS
+                    </div>
                 </div>
 
-                <!-- Options Container -->
-                <div class="options-container" id="optionsContainer">
-                    <!-- Options will be inserted here by JS -->
+                <!-- Form Steps Container -->
+                <div id="stepsContainer" style="display: grid; gap: 14px;">
+                    <!-- Q1: Age -->
+                    <div class="step-card future">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <span class="step-num">1</span>
+                            <span style="font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; color: var(--ink-50); text-transform: uppercase;">
+                                Étape 1 · Tranche d'âge
+                            </span>
+                        </div>
+                        <div class="step-content" style="display: none; margin-top: 18px;">
+                            <div style="font-family: var(--serif); font-size: 28px; letter-spacing: -0.02em; color: var(--ink-90); margin-bottom: 18px;">Tranche d'âge ?</div>
+                            <div style="display: grid; gap: 10px;">
+                                <div class="option-row" onclick="selectOption('q1_age', '20-30', this)">
+                                    <span>20–30 ans</span>
+                                    <span class="check"></span>
+                                </div>
+                                <div class="option-row selected" onclick="selectOption('q1_age', '30-40', this)">
+                                    <span>30–40 ans</span>
+                                    <span class="check"></span>
+                                </div>
+                                <div class="option-row" onclick="selectOption('q1_age', '40-50', this)">
+                                    <span>40–50 ans</span>
+                                    <span class="check"></span>
+                                </div>
+                                <div class="option-row" onclick="selectOption('q1_age', '50+', this)">
+                                    <span>50 ans et +</span>
+                                    <span class="check"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-summary" style="color: var(--ink-70); font-size: 13.5px; margin-left: 38px; margin-top: 6px; display: none;">—</div>
+                    </div>
+
+                    <!-- Q2: Famille -->
+                    <div class="step-card future">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <span class="step-num">2</span>
+                            <span style="font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; color: var(--ink-50); text-transform: uppercase;">
+                                Étape 2 · Situation familiale
+                            </span>
+                        </div>
+                        <div class="step-content" style="display: none; margin-top: 18px;">
+                            <div style="font-family: var(--serif); font-size: 28px; letter-spacing: -0.02em; color: var(--ink-90); margin-bottom: 18px;">Situation familiale ?</div>
+                            <div style="display: grid; gap: 10px;">
+                                <div class="option-row" onclick="selectOption('q2_family', 'celib', this)">
+                                    <span>Célibataire</span>
+                                    <span class="check"></span>
+                                </div>
+                                <div class="option-row selected" onclick="selectOption('q2_family', 'couple', this)">
+                                    <span>En couple</span>
+                                    <span class="check"></span>
+                                </div>
+                                <div class="option-row" onclick="selectOption('q2_family', 'famille', this)">
+                                    <span>En couple avec enfants</span>
+                                    <span class="check"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-summary" style="color: var(--ink-70); font-size: 13.5px; margin-left: 38px; margin-top: 6px; display: none;">—</div>
+                    </div>
+
+                    <!-- Q3: Impôts -->
+                    <div class="step-card future">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <span class="step-num">3</span>
+                            <span style="font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; color: var(--ink-50); text-transform: uppercase;">
+                                Étape 3 · Montant d'impôts annuel
+                            </span>
+                        </div>
+                        <div class="step-content" style="display: none; margin-top: 18px;">
+                            <div style="font-family: var(--serif); font-size: 28px; letter-spacing: -0.02em; color: var(--ink-90); margin-bottom: 18px;">Montant d'impôts annuel ?</div>
+                            <div style="display: grid; gap: 10px;">
+                                <div class="option-row excluded-option" onclick="selectOption('q3_taxes', '<2k', this); checkExclusions()">
+                                    <span>Moins de 2 000 € / an</span>
+                                    <span class="check"></span>
+                                </div>
+                                <div class="option-row" onclick="selectOption('q3_taxes', '2-5k', this)">
+                                    <span>Entre 2 000 € et 5 000 € / an</span>
+                                    <span class="check"></span>
+                                </div>
+                                <div class="option-row selected" onclick="selectOption('q3_taxes', '5-10k', this)">
+                                    <span>Entre 5 000 € et 10 000 € / an</span>
+                                    <span class="check"></span>
+                                </div>
+                                <div class="option-row" onclick="selectOption('q3_taxes', '>10k', this)">
+                                    <span>Plus de 10 000 € / an</span>
+                                    <span class="check"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-summary" style="color: var(--ink-70); font-size: 13.5px; margin-left: 38px; margin-top: 6px; display: none;">—</div>
+                    </div>
+
+                    <!-- Q4: Patrimoine -->
+                    <div class="step-card future">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <span class="step-num">4</span>
+                            <span style="font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; color: var(--ink-50); text-transform: uppercase;">
+                                Étape 4 · Patrimoine financier
+                            </span>
+                        </div>
+                        <div class="step-content" style="display: none; margin-top: 18px;">
+                            <div style="font-family: var(--serif); font-size: 28px; letter-spacing: -0.02em; color: var(--ink-90); margin-bottom: 18px;">Patrimoine financier ?</div>
+                            <div style="display: grid; gap: 10px;">
+                                <div class="option-row excluded-option" onclick="selectOption('q4_patrimoine', '<20k', this); checkExclusions()">
+                                    <span>Moins de 20 000 €</span>
+                                    <span class="check"></span>
+                                </div>
+                                <div class="option-row" onclick="selectOption('q4_patrimoine', '20-100k', this)">
+                                    <span>Entre 20 000 € et 100 000 €</span>
+                                    <span class="check"></span>
+                                </div>
+                                <div class="option-row selected" onclick="selectOption('q4_patrimoine', '100-300k', this)">
+                                    <span>Entre 100 000 € et 300 000 €</span>
+                                    <span class="check"></span>
+                                </div>
+                                <div class="option-row" onclick="selectOption('q4_patrimoine', '>300k', this)">
+                                    <span>Plus de 300 000 €</span>
+                                    <span class="check"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-summary" style="color: var(--ink-70); font-size: 13.5px; margin-left: 38px; margin-top: 6px; display: none;">—</div>
+                    </div>
+
+                    <!-- Q5: Objectif -->
+                    <div class="step-card future">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <span class="step-num">5</span>
+                            <span style="font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; color: var(--ink-50); text-transform: uppercase;">
+                                Étape 5 · Objectif principal
+                            </span>
+                        </div>
+                        <div class="step-content" style="display: none; margin-top: 18px;">
+                            <div style="font-family: var(--serif); font-size: 28px; letter-spacing: -0.02em; color: var(--ink-90); margin-bottom: 18px;">Objectif principal ?</div>
+                            <div style="display: grid; gap: 10px;">
+                                <div class="option-row" onclick="selectOption('q5_objective', 'impots', this)">
+                                    <span>Réduire mes impôts</span>
+                                    <span class="check"></span>
+                                </div>
+                                <div class="option-row selected" onclick="selectOption('q5_objective', 'retraite', this)">
+                                    <span>Préparer ma retraite</span>
+                                    <span class="check"></span>
+                                </div>
+                                <div class="option-row" onclick="selectOption('q5_objective', 'transmission', this)">
+                                    <span>Transmettre à mes enfants</span>
+                                    <span class="check"></span>
+                                </div>
+                                <div class="option-row" onclick="selectOption('q5_objective', 'epargne', this)">
+                                    <span>Faire fructifier mon épargne</span>
+                                    <span class="check"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-summary" style="color: var(--ink-70); font-size: 13.5px; margin-left: 38px; margin-top: 6px; display: none;">—</div>
+                    </div>
+
+                    <!-- Q6: Contact -->
+                    <div class="step-card future">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <span class="step-num">6</span>
+                            <span style="font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; color: var(--ink-50); text-transform: uppercase;">
+                                Étape 6 · Vos coordonnées
+                            </span>
+                        </div>
+                        <div class="step-content" style="display: none; margin-top: 18px;">
+                            <div style="font-family: var(--serif); font-size: 28px; letter-spacing: -0.02em; color: var(--ink-90); margin-bottom: 18px;">Où on vous envoie le bilan ?</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                                <div>
+                                    <div class="eyebrow" style="margin-bottom: 6px;">Prénom</div>
+                                    <input id="q6_nom" class="input-field" type="text" placeholder="Prénom" style="margin-bottom: 0;">
+                                </div>
+                                <div>
+                                    <div class="eyebrow" style="margin-bottom: 6px;">Nom</div>
+                                    <input id="q6_nom_last" class="input-field" type="text" placeholder="Nom" style="margin-bottom: 0;">
+                                </div>
+                            </div>
+                            <div class="eyebrow" style="margin-bottom: 6px;">Email</div>
+                            <input id="q6_email" class="input-field" type="email" placeholder="vous@email.com" style="margin-bottom: 6px;">
+                            <div style="font-size: 11.5px; color: var(--ink-50); margin-bottom: 18px; font-style: italic;">
+                                Pour vous envoyer le bilan. <span style="color: var(--copper-light);">Pas d'appel sans votre accord.</span>
+                            </div>
+                            <button class="btn btn-primary" onclick="nextQuestion()" style="padding: 14px 22px; font-size: 14px; width: 100%; margin-bottom: 12px;">
+                                Continuer →
+                            </button>
+                            <div style="margin-top: 12px; font-size: 11.5px; color: var(--ink-50); display: flex; gap: 8px; align-items: center;">
+                                🛡️ Données chiffrées · jamais revendues · suppression à la demande
+                            </div>
+                        </div>
+                        <div class="step-summary" style="color: var(--ink-70); font-size: 13.5px; margin-left: 38px; margin-top: 6px; display: none;">—</div>
+                    </div>
+
+                    <!-- Q7: OTP -->
+                    <div class="step-card future">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <span class="step-num">7</span>
+                            <span style="font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; color: var(--ink-50); text-transform: uppercase;">
+                                Étape 7 · Vérifiez votre numéro
+                            </span>
+                        </div>
+                        <div class="step-content" style="display: none; margin-top: 18px;">
+                            <div style="font-family: var(--serif); font-size: 28px; letter-spacing: -0.02em; color: var(--ink-90); margin-bottom: 8px;">
+                                Sécurisons l'envoi de votre bilan.
+                            </div>
+                            <div style="color: var(--ink-70); font-size: 13.5px; margin-bottom: 18px; line-height: 1.5; max-width: 520px;">
+                                On envoie un code SMS pour confirmer votre numéro. <span style="color: var(--copper-light);">Un seul appel ensuite</span> — pour fixer le rendez-vous visio. Aucune relance.
+                            </div>
+                            <div class="eyebrow" style="margin-bottom: 6px;">Téléphone</div>
+                            <input id="q7_phone" class="input-field" type="tel" placeholder="+33 6 12 34 56 78" style="margin-bottom: 20px;">
+                            <div style="display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap;">
+                                <div class="otp-slot" id="otp0">–</div>
+                                <div class="otp-slot" id="otp1">–</div>
+                                <div class="otp-slot" id="otp2">–</div>
+                                <div class="otp-slot" id="otp3">–</div>
+                                <div class="otp-slot" id="otp4">–</div>
+                                <div class="otp-slot" id="otp5">–</div>
+                            </div>
+                            <input id="otpInput" class="input-field" type="text" maxlength="6" placeholder="Entrez le code" style="margin-bottom: 20px; display: none;">
+                            <button class="btn btn-primary" onclick="submitForm()" style="padding: 14px 22px; font-size: 14px; width: 100%;">
+                                Recevoir mon bilan →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exclusion Loader (Hidden) -->
+                <div id="exclusionLoader" style="display: none; margin-top: 32px;">
+                    <div class="glass" style="padding: 56px 40px; border-radius: 24px; text-align: center; position: relative;">
+                        <div style="width: 64px; height: 64px; margin: 0 auto 22px; border-radius: 50%; border: 1px solid rgba(232,158,92,.4); position: relative; background: radial-gradient(circle, rgba(184,115,51,.18), transparent 70%);">
+                            <span style="position: absolute; inset: -1px; border-radius: 50%; border: 1px solid transparent; border-top-color: var(--copper-light); animation: nv-spin 1.4s linear infinite;"></span>
+                        </div>
+                        <div style="font-family: var(--serif); font-size: 34px; letter-spacing: -0.02em; color: var(--ink-90); margin-bottom: 10px;">
+                            <span class="serif-it">Analyse en cours</span>
+                        </div>
+                        <div style="font-size: 13px; color: var(--ink-50); line-height: 1.55; max-width: 340px; margin: 0 auto;">
+                            Vérification de l'éligibilité...<br/>
+                            Aucun message d'éviction. Aucune relance.
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <!-- Navigation -->
-            <div class="form-navigation">
-                <button class="nav-btn nav-btn-prev" id="prevBtn" style="display: none;">
-                    <span class="arrow">←</span> Retour
-                </button>
-                <button class="nav-btn nav-btn-next" id="nextBtn" style="display: none;">
-                    Suivant <span class="arrow">→</span>
-                </button>
-                <button class="nav-btn nav-btn-submit" id="submitBtn" style="display: none;">
-                    Envoyer
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- OTP Block (shown after Q8) -->
-    <div class="otp-block" id="otpBlock" style="display: none;">
-        <div class="otp-content">
-            <h3>Vérifiez votre numéro</h3>
-            <p>Nous avons envoyé un code à votre téléphone</p>
-
-            <div class="otp-input-group">
-                <input
-                    type="text"
-                    id="otpCode"
-                    class="otp-input"
-                    placeholder="000000"
-                    maxlength="6"
-                    autocomplete="one-time-code"
-                >
-                <div id="otpStatus" class="otp-status"></div>
-                <div id="otpTimer" class="otp-timer"></div>
-            </div>
-
-            <button class="btn btn-secondary" id="sendOtpBtn">Envoyer le code</button>
         </div>
     </div>
 
-    <!-- Thank You Page -->
-    <div class="thank-you-page" id="thankYouPage" style="display: none;">
-        <div class="thank-you-content">
-            <div class="thank-you-icon">✨</div>
-            <h2>Merci <span id="thankYouName"></span>!</h2>
-            <p>Votre demande de bilan patrimonial a été reçue.</p>
-            <p class="thank-you-subtitle">Un expert Novi Finance vous appellera très bientôt pour analyser votre situation.</p>
-            <div class="thank-you-features">
-                <div class="feature">
-                    <span class="feature-icon">📞</span>
-                    <span>Appel gratuit</span>
-                </div>
-                <div class="feature">
-                    <span class="feature-icon">🛡️</span>
-                    <span>Données sécurisées</span>
-                </div>
-                <div class="feature">
-                    <span class="feature-icon">⏱️</span>
-                    <span>20 minutes max</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Exclusion Page -->
-    <div class="exclusion-page" id="exclusionPage" style="display: none;">
-        <div class="exclusion-content">
-            <div class="exclusion-icon">⚠️</div>
-            <h2>Merci pour votre intérêt</h2>
-            <p>Malheureusement, votre profil ne correspond pas aux critères actuels de nos services.</p>
-            <p class="exclusion-subtitle">Nous vous recommandons de nous contacter directement pour discuter de vos options.</p>
-            <a href="https://novifinance.fr" class="btn btn-primary">Visiter notre site</a>
-        </div>
-    </div>
-
-    <!-- Loading Message -->
-    <div class="loading-message" id="loadingMessage" style="display: none;">
-        <div class="spinner"></div>
-        <p>Envoi de vos données...</p>
-    </div>
-
-    <form id="polarisFunnel" style="display: none;">
-        <!-- Hidden inputs for form data -->
-        <input type="hidden" name="q1_project" id="q1_project">
-        <input type="hidden" name="q2_profession" id="q2_profession">
-        <input type="hidden" name="q2b_patrimoine" id="q2b_patrimoine">
-        <input type="hidden" name="q3_family" id="q3_family">
-        <input type="hidden" name="q4_revenu" id="q4_revenu">
-        <input type="hidden" name="q4b_patrimoine" id="q4b_patrimoine">
-        <input type="hidden" name="q5_age" id="q5_age">
-        <input type="hidden" name="q6_prenom" id="q6_prenom">
-        <input type="hidden" name="q6b_nom" id="q6b_nom">
-        <input type="hidden" name="q7_email" id="q7_email">
-        <input type="hidden" name="q8_phone" id="q8_phone">
-    </form>
-
+    <!-- Scripts -->
     <script src="script.js"></script>
 </body>
 </html>

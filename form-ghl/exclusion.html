@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Novi Finance · Analyse · V8</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    html, body { margin:0; padding:0; background:#f0eee9; }
+    body { font-family: "Inter", system-ui, sans-serif; }
+  </style>
+</head>
+<body>
+  <div class="nv-stage nv-grain viewport-desktop">
+    <div class="nv-conic"></div>
+    <div class="nv-content" style="padding: 60px 22px; min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+      <div style="max-width: 520px; margin: 0 auto;">
+        <!-- Spinner/Analyse Card -->
+        <div class="glass" style="padding: 60px 40px; border-radius: 24px; text-align: center; position: relative; margin-bottom: 32px;">
+          <div style="
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 22px;
+            border-radius: 50%;
+            border: 1px solid rgba(232,158,92,.4);
+            position: relative;
+            background: radial-gradient(circle, rgba(184,115,51,.18), transparent 70%);
+          ">
+            <span style="
+              position: absolute;
+              inset: -1px;
+              border-radius: 50%;
+              border: 1px solid transparent;
+              border-top-color: var(--copper-light);
+              animation: nv-spin 1.4s linear infinite;
+            "></span>
+          </div>
+          <div style="font-family: var(--serif); font-size: 34px; letter-spacing: -0.02em; color: var(--ink-90); margin-bottom: 10px;">
+            <span style="font-style: italic;">Analyse en cours</span>
+          </div>
+          <div style="font-size: 13px; color: var(--ink-50); line-height: 1.55; max-width: 340px; margin: 0 auto;">
+            Vérification de votre eligibilité. Un instant, s'il vous plaît.
+          </div>
+          <style>
+            @keyframes nv-spin {
+              to { transform: rotate(360deg) }
+            }
+          </style>
+        </div>
+
+        <!-- Silent Exclusion Message -->
+        <div class="glass" style="padding: 40px; border-radius: 24px; text-align: center;">
+          <div style="
+            font-family: var(--serif);
+            font-size: 28px;
+            letter-spacing: -0.02em;
+            color: var(--ink-90);
+            margin-bottom: 16px;
+          ">
+            Merci d'avoir répondu
+          </div>
+          <div style="color: var(--ink-70); font-size: 14px; line-height: 1.6; margin-bottom: 24px;">
+            Votre profil a été analysé. Nous vous enverrons un email avec des informations adaptées à votre situation.
+          </div>
+
+          <!-- Optional: Show data privacy note -->
+          <div style="
+            border-top: 1px solid rgba(255,255,255,.06);
+            padding-top: 20px;
+            margin-top: 20px;
+          ">
+            <div style="display: flex; gap: 8px; align-items: flex-start; font-size: 12px; color: var(--ink-50);">
+              <svg style="width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; color: var(--copper-light);" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 1C6.48 1 2 5.48 2 11s4.48 10 10 10 10-4.48 10-10S17.52 1 12 1zm-2 15l-5-5 1.41-1.41L10 13.17l7.59-7.59L19 7l-9 9z"/>
+              </svg>
+              <div>Vos données sont chiffrées et jamais revendues. Vous pouvez demander leur suppression à tout moment.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Optional: Back to home or other actions -->
+        <div style="text-align: center; margin-top: 32px;">
+          <button class="btn btn-ghost" onclick="window.location.href='/?v=' + getVariant();" style="color: var(--ink-50);">
+            ← Retour
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Get variant from URL parameter
+    function getVariant() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('v') || 'default';
+    }
+
+    // Optional: Track exclusion event
+    function trackExclusion() {
+      try {
+        if (typeof fbq !== 'undefined') {
+          fbq('track', 'NonEligiblePageView', {
+            variant: getVariant()
+          });
+        }
+
+        // Log to console for debugging
+        console.log('Non-eligible user reached exclusion page. Variant:', getVariant());
+      } catch (e) {
+        console.error('Error tracking exclusion:', e);
+      }
+    }
+
+    // Track when page loads
+    document.addEventListener('DOMContentLoaded', trackExclusion);
+  </script>
+</body>
+</html>

@@ -26,7 +26,7 @@ module.exports = async function handler(req, res) {
 
   const { phoneNumber, otpCode, firstName, lastName, email } = req.body;
 
-  console.log('=== OTP Verification Request ===');
+  console.log('=== OTP Verification Request (v2 with payload separation) ===');
   console.log('Phone:', phoneNumber);
   console.log('OTP Code:', otpCode);
   console.log('First Name:', firstName);
@@ -147,29 +147,36 @@ async function createOrUpdateContactInGHL({ firstName, lastName, email, phone })
       }
     }
 
-    const payload = {
-      firstName,
-      lastName,
-      email,
-      phone,
-      locationId: ghlLocationId,
-      tags: ['lead-novi-finance', 'source-web-form'],
-    };
-
     let response;
     let method;
     let url;
+    let payload;
 
     if (existingContactId) {
-      // Update existing contact
+      // Update existing contact - NO locationId for PUT
       console.log('Updating existing contact:', existingContactId);
       method = 'PUT';
       url = `https://services.leadconnectorhq.com/contacts/${existingContactId}`;
+      payload = {
+        firstName,
+        lastName,
+        email,
+        phone,
+        tags: ['lead-novi-finance', 'source-web-form'],
+      };
     } else {
-      // Create new contact
+      // Create new contact - include locationId for POST
       console.log('Creating new contact');
       method = 'POST';
       url = 'https://services.leadconnectorhq.com/contacts/';
+      payload = {
+        firstName,
+        lastName,
+        email,
+        phone,
+        locationId: ghlLocationId,
+        tags: ['lead-novi-finance', 'source-web-form'],
+      };
     }
 
     console.log(`${method} request to:`, url);
@@ -245,6 +252,7 @@ async function createOrUpdateContactInGHL({ firstName, lastName, email, phone })
         if (contactIdToUpdate) {
           // Update the existing contact
           console.log('Updating existing contact:', contactIdToUpdate);
+          console.log('Payload does NOT include locationId - removing it from update');
           const updateResponse = await fetch(
             `https://services.leadconnectorhq.com/contacts/${contactIdToUpdate}`,
             {

@@ -1,0 +1,23 @@
+{
+  "rewrites": [
+    {
+      "source": "/form",
+      "destination": "/form-ghl/index.html"
+    },
+    {
+      "source": "/form/:query*",
+      "destination": "/form-ghl/index.html?:query*"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
+      ]
+    }
+  ]
+}
