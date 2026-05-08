@@ -259,7 +259,6 @@ async function createOrUpdateContactInGHL({ firstName, lastName, email, phone })
                 lastName,
                 email,
                 phone,
-                locationId: ghlLocationId,
                 tags: ['lead-novi-finance', 'source-web-form'],
               }),
             }
