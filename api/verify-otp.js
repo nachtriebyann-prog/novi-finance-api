@@ -191,14 +191,109 @@ async function createOrUpdateContactInGHL({ firstName, lastName, email, phone })
     const data = await response.json();
     console.log('GHL Response Data:', JSON.stringify(data, null, 2));
 
-    // Handle 400 error for duplicate contacts - this is OK, contact already exists
+    // Handle 400 error for duplicate contacts - contact already exists, try to update it
     if (response.status === 400 && data.message && data.message.includes('duplicated contacts')) {
-      console.log('Contact already exists (duplicate error) - this is OK');
-      return {
-        success: true,
-        contactId: null,
-        isDuplicate: true,
-      };
+      console.log('Contact creation failed - contact already exists, attempting to find and update it');
+
+      // Try to find the contact by searching again with more details
+      try {
+        // Search by phone as well since email search might have issues
+        const updateSearchResponse = await fetch(
+          `https://services.leadconnectorhq.com/contacts/?query=${encodeURIComponent(phone)}&locationId=${ghlLocationId}`,
+          {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${ghlApiKey}`,
+              'Content-Type': 'application/json',
+              'Version': '2021-07-28',
+            },
+          }
+        );
+
+        let contactIdToUpdate = null;
+        if (updateSearchResponse.ok) {
+          const searchData = await updateSearchResponse.json();
+          if (searchData.contacts && searchData.contacts.length > 0) {
+            contactIdToUpdate = searchData.contacts[0].id;
+            console.log('Found contact by phone for update:', contactIdToUpdate);
+          }
+        }
+
+        // If still no contact found, try email search one more time
+        if (!contactIdToUpdate) {
+          const emailSearchResponse = await fetch(
+            `https://services.leadconnectorhq.com/contacts/?query=${encodeURIComponent(email)}&locationId=${ghlLocationId}`,
+            {
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${ghlApiKey}`,
+                'Content-Type': 'application/json',
+                'Version': '2021-07-28',
+              },
+            }
+          );
+
+          if (emailSearchResponse.ok) {
+            const searchData = await emailSearchResponse.json();
+            if (searchData.contacts && searchData.contacts.length > 0) {
+              contactIdToUpdate = searchData.contacts[0].id;
+              console.log('Found contact by email for update:', contactIdToUpdate);
+            }
+          }
+        }
+
+        if (contactIdToUpdate) {
+          // Update the existing contact
+          console.log('Updating existing contact:', contactIdToUpdate);
+          const updateResponse = await fetch(
+            `https://services.leadconnectorhq.com/contacts/${contactIdToUpdate}`,
+            {
+              method: 'PUT',
+              headers: {
+                'Authorization': `Bearer ${ghlApiKey}`,
+                'Content-Type': 'application/json',
+                'Version': '2021-07-28',
+              },
+              body: JSON.stringify({
+                firstName,
+                lastName,
+                email,
+                phone,
+                locationId: ghlLocationId,
+                tags: ['lead-novi-finance', 'source-web-form'],
+              }),
+            }
+          );
+
+          const updateData = await updateResponse.json();
+          console.log('Update response status:', updateResponse.status);
+          console.log('Update response data:', JSON.stringify(updateData, null, 2));
+
+          if (updateResponse.ok) {
+            return {
+              success: true,
+              contactId: contactIdToUpdate,
+              isUpdate: true,
+              isDuplicate: true,
+            };
+          } else {
+            console.error('Update failed:', updateData);
+            throw new Error(`Failed to update contact: ${updateData.message || updateResponse.statusText}`);
+          }
+        } else {
+          console.warn('Contact exists (duplicate error) but could not be found for update');
+          // If we can't find it to update, still return success since GHL confirmed it exists
+          return {
+            success: true,
+            contactId: null,
+            isDuplicate: true,
+            couldNotUpdate: true,
+          };
+        }
+      } catch (updateError) {
+        console.error('Error handling duplicate contact:', updateError);
+        throw updateError;
+      }
     }
 
     if (!response.ok) {
