@@ -63,9 +63,9 @@ module.exports = async function handler(req, res) {
       return res.status(400).json({ error: 'Invalid OTP code' });
     }
 
-    // OTP valide - créer le contact dans GHL
-    console.log('OTP verified successfully, creating contact in GHL');
-    const ghlResponse = await createContactInGHL({
+    // OTP valide - créer ou mettre à jour le contact dans GHL
+    console.log('OTP verified successfully, creating or updating contact in GHL');
+    const ghlResponse = await createOrUpdateContactInGHL({
       firstName,
       lastName,
       email,
@@ -99,11 +99,11 @@ module.exports = async function handler(req, res) {
   }
 }
 
-async function createContactInGHL({ firstName, lastName, email, phone }) {
+async function createOrUpdateContactInGHL({ firstName, lastName, email, phone }) {
   const ghlApiKey = process.env.GHL_API_KEY;
   const ghlLocationId = process.env.GHL_LOCATION_ID;
 
-  console.log('=== GHL Contact Creation ===');
+  console.log('=== GHL Contact Creation/Update ===');
   console.log('API Key exists:', !!ghlApiKey);
   console.log('Location ID:', ghlLocationId);
 
@@ -112,6 +112,32 @@ async function createContactInGHL({ firstName, lastName, email, phone }) {
   }
 
   try {
+    // First, try to find existing contact by email
+    console.log('Searching for existing contact by email:', email);
+    const searchResponse = await fetch(
+      `https://services.leadconnectorhq.com/contacts/?query=${encodeURIComponent(email)}&locationId=${ghlLocationId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${ghlApiKey}`,
+          'Content-Type': 'application/json',
+          'Version': '2021-07-28',
+        },
+      }
+    );
+
+    let existingContactId = null;
+
+    if (searchResponse.ok) {
+      const searchData = await searchResponse.json();
+      console.log('Search response:', searchData);
+
+      if (searchData.contacts && searchData.contacts.length > 0) {
+        existingContactId = searchData.contacts[0].id;
+        console.log('Found existing contact:', existingContactId);
+      }
+    }
+
     const payload = {
       firstName,
       lastName,
@@ -121,10 +147,27 @@ async function createContactInGHL({ firstName, lastName, email, phone }) {
       tags: ['lead-novi-finance', 'source-web-form'],
     };
 
-    console.log('Sending to GHL:', JSON.stringify(payload, null, 2));
+    let response;
+    let method;
+    let url;
 
-    const response = await fetch('https://services.leadconnectorhq.com/contacts/', {
-      method: 'POST',
+    if (existingContactId) {
+      // Update existing contact
+      console.log('Updating existing contact:', existingContactId);
+      method = 'PUT';
+      url = `https://services.leadconnectorhq.com/contacts/${existingContactId}`;
+    } else {
+      // Create new contact
+      console.log('Creating new contact');
+      method = 'POST';
+      url = 'https://services.leadconnectorhq.com/contacts/';
+    }
+
+    console.log(`${method} request to:`, url);
+    console.log('Payload:', JSON.stringify(payload, null, 2));
+
+    response = await fetch(url, {
+      method: method,
       headers: {
         'Authorization': `Bearer ${ghlApiKey}`,
         'Content-Type': 'application/json',
@@ -144,9 +187,12 @@ async function createContactInGHL({ firstName, lastName, email, phone }) {
     const data = await response.json();
     console.log('GHL Response Data:', data);
 
+    const contactId = data.id || existingContactId;
+
     return {
       success: true,
-      contactId: data.id,
+      contactId: contactId,
+      isUpdate: !!existingContactId,
     };
   } catch (error) {
     console.error('GHL API error:', error);
