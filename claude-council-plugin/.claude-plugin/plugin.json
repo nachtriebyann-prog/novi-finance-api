@@ -1,0 +1,9 @@
+{
+  "name": "claude-council",
+  "version": "1.0.0",
+  "description": "Simule un conseil de 5 experts qui débattent une décision business et retournent un verdict clair, actionnable et décisif.",
+  "author": {
+    "name": "Claude Council"
+  },
+  "keywords": ["decision", "business", "conseil", "strategie", "verdict"]
+}

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Novi Finance</title>
+<meta name="description" content="Prenez contact avec Novi Finance. Bilan patrimonial gratuit, prise de rendez-vous, questions sur nos services.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C87A2A;--gold-dark:#9E5E1C;--gold-light:#E8A855;--gold-pale:#F0E6D3;--mint:#b2fbda;--mint-dark:#1a7a52;--mint-dim:rgba(178,251,218,0.12);--mint-glow:rgba(178,251,218,0.4);--dark:#0A0E1A;--dark-2:#141824;--text:#1A1A2E;--text-muted:#64748B;--bg:#FAFAF8;--bg-alt:#F5EFE6;--white:#FFFFFF;--border:#E2D5C3;--radius:12px;--radius-lg:20px;--transition:all .25s ease}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Montserrat',sans-serif;font-weight:700;line-height:1.2}
+a{color:var(--gold);text-decoration:none;transition:var(--transition)}
+.container{max-width:1180px;margin:0 auto;padding:0 24px}
+.section{padding:96px 0}
+.badge{display:inline-block;background:var(--gold-pale);color:var(--gold-dark);font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:6px 14px;border-radius:100px;margin-bottom:16px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:var(--radius);font-weight:600;font-size:.95rem;cursor:pointer;border:2px solid transparent;transition:var(--transition);text-decoration:none;width:100%;justify-content:center}
+.btn-primary{background:var(--gold);color:var(--white);border-color:var(--gold)}
+.btn-primary:hover{background:var(--gold-dark);color:var(--white);transform:translateY(-2px);box-shadow:0 8px 24px rgba(200,122,42,.35)}
+.btn-white{background:var(--white);color:var(--gold-dark);border-color:var(--white)}
+.btn-white:hover{background:var(--gold-pale)}
+.btn-lg{padding:18px 36px;font-size:1.05rem;border-radius:14px}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:999;background:var(--gold);border-bottom:2px solid var(--gold-dark)}
+.navbar-inner{display:flex;align-items:center;justify-content:space-between;height:72px}
+.navbar-logo{display:flex;align-items:center}
+.navbar-logo img{height:56px}
+.navbar-nav{display:flex;align-items:center;gap:4px}
+.navbar-nav a{color:rgba(255,255,255,.8);font-size:.9rem;font-weight:500;padding:8px 14px;border-radius:8px;transition:var(--transition)}
+.navbar-nav a:hover,.navbar-nav a.active{color:var(--mint);background:rgba(0,0,0,.15)}
+.navbar-cta{margin-left:12px}
+.navbar-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.navbar-toggle span{width:24px;height:2px;background:var(--white);border-radius:2px}
+.page-hero{background:var(--dark);padding:160px 0 100px;position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;top:-200px;right:-100px;width:600px;height:600px;background:radial-gradient(circle,rgba(200,122,42,.15) 0%,transparent 70%);pointer-events:none}
+.page-hero h1{color:var(--white);font-size:clamp(2rem,4vw,3rem);margin-bottom:16px}
+.page-hero p{color:rgba(255,255,255,.7);font-size:1.1rem;max-width:600px;line-height:1.75}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(200,122,42,.15);border:1px solid rgba(200,122,42,.3);color:var(--gold-light);font-size:.82rem;font-weight:600;padding:8px 16px;border-radius:100px;margin-bottom:24px}
+.hero-tag::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%}
+.contact-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:64px;align-items:start}
+.contact-info-card{background:var(--dark-2);border:1px solid rgba(200,122,42,.2);border-radius:var(--radius-lg);padding:36px;color:var(--white)}
+.contact-info-card h3{color:var(--gold-light);margin-bottom:24px;font-size:1.1rem}
+.contact-item{display:flex;gap:16px;align-items:flex-start;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.contact-item:last-child{border-bottom:none}
+.contact-icon{width:40px;height:56px;background:rgba(200,122,42,.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.contact-item h4{font-size:.88rem;color:rgba(255,255,255,.5);font-weight:500;margin-bottom:4px}
+.contact-item p{font-size:.95rem;color:var(--white)}
+.contact-item a{color:var(--gold-light);font-size:.95rem}
+.faq-section{margin-top:36px}
+.faq-section h3{font-size:1rem;color:var(--white);margin-bottom:16px}
+.faq-item{border-bottom:1px solid rgba(255,255,255,.07);padding:12px 0}
+.faq-q{font-size:.88rem;color:rgba(255,255,255,.75);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.faq-q::after{content:'+';color:var(--gold-light);font-size:1.2rem;flex-shrink:0}
+.faq-a{font-size:.84rem;color:rgba(255,255,255,.5);line-height:1.6;margin-top:8px;display:none}
+.faq-item.open .faq-q::after{content:'−'}
+.faq-item.open .faq-a{display:block}
+.contact-form{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.form-group{margin-bottom:0}
+.form-group.full{grid-column:1/-1}
+.form-group label{display:block;font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:8px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:.95rem;font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);transition:var(--transition)}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--gold);background:var(--white)}
+textarea{resize:vertical;min-height:120px}
+.submit-btn{width:100%;padding:18px;background:var(--gold);color:var(--white);border:none;border-radius:var(--radius);font-size:1rem;font-weight:700;font-family:'Montserrat',sans-serif;cursor:pointer;transition:var(--transition);margin-top:8px}
+.submit-btn:hover{background:var(--gold-dark);transform:translateY(-1px)}
+.success-msg{display:none;background:var(--gold-pale);border:1px solid var(--gold);border-radius:var(--radius);padding:20px;text-align:center;color:var(--gold-dark);font-weight:600;margin-top:16px}
+.cta-bilan{background:linear-gradient(135deg,var(--gold-dark),var(--gold));border-radius:var(--radius-lg);padding:36px;text-align:center;color:var(--white);margin-top:24px}
+.cta-bilan h3{color:var(--white);font-size:1.2rem;margin-bottom:12px}
+.cta-bilan p{font-size:.88rem;opacity:.85;margin-bottom:20px;line-height:1.6}
+.footer{background:var(--dark);color:rgba(255,255,255,.7);padding:72px 0 32px;border-top:1px solid rgba(200,122,42,.2)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:32px}
+.footer-logo{font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.4rem;color:var(--white);display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.footer-logo em{color:var(--gold);font-style:normal}
+.footer-tagline{font-size:.72rem;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;margin-bottom:16px}
+.footer-brand p{font-size:.88rem;line-height:1.7;max-width:280px}
+.footer-col h4{color:var(--white);font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px}
+.footer-col ul li{margin-bottom:10px}
+.footer-col ul li a{color:rgba(255,255,255,.6);font-size:.88rem}
+.footer-col ul li a:hover{color:var(--gold-light)}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;font-size:.8rem;color:rgba(255,255,255,.4)}
+.fc{background:rgba(200,122,42,.15);border:1px solid rgba(200,122,42,.3);color:var(--gold-light);font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:6px}
+@media(max-width:1024px){.contact-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}}
+@media(max-width:768px){.navbar-nav,.navbar-cta{display:none}.navbar-toggle{display:flex}.navbar-nav.open{display:flex;flex-direction:column;position:fixed;top:72px;left:0;right:0;background:var(--gold-dark);padding:24px;gap:8px;border-bottom:2px solid rgba(178,251,218,.2)}.form-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}.footer-bottom{flex-direction:column;gap:12px;text-align:center}}
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+      <a href="/" class="navbar-logo"><img src="https://assets.cdn.filesafe.space/a5lPZ2GZOmR8PaeTDi7B/media/69e57fa250b9a3263a31c808.png" alt="Novi Finance"></a>
+      <nav class="navbar-nav" id="navMenu">
+        <a href="/">Accueil</a><a href="/a-propos">À Propos</a><a href="/services">Services</a><a href="/calculateurs">Calculateurs</a><a href="/blog">Blog</a><a href="/contact" class="active">Contact</a>
+      </nav>
+      <a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959" class="btn btn-primary navbar-cta" style="background:#b2fbda;color:#0a1a12;border-color:#b2fbda;font-weight:700" style="width:auto">Bilan gratuit</a>
+      <button class="navbar-toggle" onclick="document.getElementById('navMenu').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="hero-tag">Contact</div>
+    <h1>Parlons de votre patrimoine</h1>
+    <p>Une question, un projet, une curiosité ? Notre équipe vous répond sous 24h. Et si vous préférez aller droit au but, obtenez votre bilan patrimonial gratuit dès maintenant.</p>
+  </div>
+</section>
+
+<section class="section" style="background:var(--bg)">
+  <div class="container">
+    <div class="contact-grid">
+      <div>
+        <div class="contact-info-card">
+          <h3>📬 Nos coordonnées</h3>
+          <div class="contact-item">
+            <div class="contact-icon">✉️</div>
+            <div><h4>Email</h4><a href="mailto:equipe@novifinance.fr">equipe@novifinance.fr</a></div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">⏱️</div>
+            <div><h4>Délai de réponse</h4><p>Sous 24h ouvrées</p></div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <div><h4>Zone d'intervention</h4><p>France entière (consultations en visioconférence)</p></div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">🕐</div>
+            <div><h4>Disponibilités</h4><p>Lundi – Vendredi, 9h – 18h</p></div>
+          </div>
+
+          <div class="faq-section">
+            <h3>Questions fréquentes</h3>
+            <div class="faq-item">
+              <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Le bilan patrimonial est-il vraiment gratuit ?</div>
+              <div class="faq-a">Oui, complètement. Aucune condition, aucun engagement. Vous recevez une analyse personnalisée sans contrepartie.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Comment se déroule le premier rendez-vous ?</div>
+              <div class="faq-a">En visioconférence ou par téléphone, environ 30 minutes. Nous analysons votre situation et identifions les principales opportunités pour votre patrimoine.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Êtes-vous vraiment indépendant ?</div>
+              <div class="faq-a">Oui. Nous ne sommes liés à aucun établissement bancaire, assureur ou promoteur immobilier. Nos conseils sont formulés uniquement dans votre intérêt.</div>
+            </div>
+            <div class="faq-item">
+              <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">Quels sont vos honoraires ?</div>
+              <div class="faq-a">Nos honoraires sont présentés de manière transparente lors du premier rendez-vous. Plusieurs formules d'accompagnement sont disponibles selon vos besoins.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="cta-bilan">
+          <h3>🎁 Bilan Patrimonial Offert</h3>
+          <p>La façon la plus rapide d'obtenir une analyse personnalisée de votre situation. 3 minutes de questionnaire, 30 minutes avec un expert.</p>
+          <a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959" class="btn btn-white" style="width:auto;display:inline-flex">Obtenir mon bilan gratuit →</a>
+        </div>
+
+        <div class="contact-form" style="margin-top:24px">
+          <h2 style="font-size:1.3rem;margin-bottom:8px">Envoyez-nous un message</h2>
+          <p style="color:var(--text-muted);font-size:.9rem;margin-bottom:28px">Pour toute question spécifique ou demande d'information.</p>
+          <div style="min-height:870px">
+            <iframe
+              src="https://api.leadconnectorhq.com/widget/form/tPpWsDlky7XrM7IfyVYG"
+              style="width:100%;height:870px;border:none;border-radius:8px"
+              id="inline-tPpWsDlky7XrM7IfyVYG"
+              data-layout="{'id':'INLINE'}"
+              data-trigger-type="alwaysShow"
+              data-trigger-value=""
+              data-activation-type="alwaysActivated"
+              data-activation-value=""
+              data-deactivation-type="neverDeactivate"
+              data-deactivation-value=""
+              data-form-name="Novi Finance - Site - Contact"
+              data-height="870"
+              data-layout-iframe-id="inline-tPpWsDlky7XrM7IfyVYG"
+              data-form-id="tPpWsDlky7XrM7IfyVYG"
+              title="Novi Finance - Site - Contact">
+            </iframe>
+            <script src="https://link.msgsndr.com/js/form_embed.js"></script>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><div class="footer-logo"><em>NOVI</em> FINANCE</div><div class="footer-tagline">Conseil en Gestion de Patrimoine</div><p>Conseiller indépendant certifié CIF, ORIAS, AMF.</p><div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap"><span class="fc">CIF</span><span class="fc">ORIAS</span><span class="fc">AMF</span></div></div>
+      <div class="footer-col"><h4>Services</h4><ul><li><a href="/services">Gestion de Patrimoine</a></li><li><a href="/services#immobilier">Investissement Immobilier</a></li><li><a href="/services#fiscal">Optimisation Fiscale</a></li><li><a href="/services#retraite">Retraite &amp; Prévoyance</a></li></ul></div>
+      <div class="footer-col"><h4>Outils</h4><ul><li><a href="/calculateurs">Tous les calculateurs</a></li><li><a href="/calculateurs#ifi">Calcul IFI</a></li><li><a href="/calculateurs#succession">Droits de succession</a></li></ul></div>
+      <div class="footer-col"><h4>Informations</h4><ul><li><a href="/">Accueil</a></li><li><a href="/a-propos">À Propos</a></li><li><a href="/blog">Blog</a></li><li><a href="/mentions-legales">Mentions légales</a></li><li><a href="/confidentialite">Confidentialité</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Novi Finance · Tous droits réservés</span><span>equipe@novifinance.fr</span></div>
+  </div>
+</footer>
+
+<script>
+function submitForm(e){
+  e.preventDefault();
+  document.getElementById('contactForm').style.display='none';
+  document.getElementById('successMsg').style.display='block';
+}
+</script>
+</body>
+</html>

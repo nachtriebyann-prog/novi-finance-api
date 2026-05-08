@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculateurs Patrimoniaux — Novi Finance</title>
+<meta name="description" content="Calculateurs gratuits : IFI, droits de succession, capacité d'emprunt, rendement locatif, plus-value immobilière, simulateur épargne et retraite.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C87A2A;--gold-dark:#9E5E1C;--gold-light:#E8A855;--gold-pale:#F0E6D3;--mint:#b2fbda;--mint-dark:#1a7a52;--mint-dim:rgba(178,251,218,0.12);--mint-glow:rgba(178,251,218,0.4);--dark:#0A0E1A;--dark-2:#141824;--dark-3:#1E2535;--text:#1A1A2E;--text-muted:#64748B;--bg:#FAFAF8;--bg-alt:#F5EFE6;--white:#FFFFFF;--border:#E2D5C3;--radius:12px;--radius-lg:20px;--transition:all .25s ease}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Montserrat',sans-serif;font-weight:700;line-height:1.2}
+a{color:var(--gold);text-decoration:none;transition:var(--transition)}
+.container{max-width:1180px;margin:0 auto;padding:0 24px}
+.section{padding:80px 0}
+.badge{display:inline-block;background:var(--gold-pale);color:var(--gold-dark);font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:6px 14px;border-radius:100px;margin-bottom:16px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:var(--radius);font-weight:600;font-size:.95rem;cursor:pointer;border:2px solid transparent;transition:var(--transition);text-decoration:none}
+.btn-primary{background:var(--gold);color:var(--white);border-color:var(--gold)}
+.btn-primary:hover{background:var(--gold-dark);color:var(--white);transform:translateY(-2px);box-shadow:0 8px 24px rgba(200,122,42,.35)}
+.btn-white{background:var(--white);color:var(--gold-dark);border-color:var(--white)}
+.btn-white:hover{background:var(--gold-pale)}
+.btn-lg{padding:18px 36px;font-size:1.05rem;border-radius:14px}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:999;background:var(--gold);border-bottom:2px solid var(--gold-dark)}
+.navbar-inner{display:flex;align-items:center;justify-content:space-between;height:72px}
+.navbar-logo{display:flex;align-items:center}
+.navbar-logo img{height:56px}
+.navbar-nav{display:flex;align-items:center;gap:4px}
+.navbar-nav a{color:rgba(255,255,255,.8);font-size:.9rem;font-weight:500;padding:8px 14px;border-radius:8px;transition:var(--transition)}
+.navbar-nav a:hover,.navbar-nav a.active{color:var(--mint);background:rgba(0,0,0,.15)}
+.navbar-cta{margin-left:12px}
+.navbar-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.navbar-toggle span{width:24px;height:2px;background:var(--white);border-radius:2px}
+.page-hero{background:var(--dark);padding:160px 0 100px;position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;top:-200px;right:-100px;width:600px;height:600px;background:radial-gradient(circle,rgba(200,122,42,.15) 0%,transparent 70%);pointer-events:none}
+.page-hero h1{color:var(--white);font-size:clamp(2rem,4vw,3rem);margin-bottom:16px}
+.page-hero p{color:rgba(255,255,255,.7);font-size:1.1rem;max-width:600px;line-height:1.75}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(200,122,42,.15);border:1px solid rgba(200,122,42,.3);color:var(--gold-light);font-size:.82rem;font-weight:600;padding:8px 16px;border-radius:100px;margin-bottom:24px}
+.hero-tag::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%}
+
+/* CALC TABS NAV */
+.calc-nav{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:72px;z-index:100;overflow-x:auto}
+.calc-nav-inner{display:flex;gap:0;min-width:max-content}
+.calc-nav a{padding:16px 20px;font-size:.88rem;font-weight:600;color:var(--text-muted);border-bottom:3px solid transparent;transition:var(--transition);white-space:nowrap;text-decoration:none}
+.calc-nav a:hover,.calc-nav a.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* CALCULATOR BLOCKS */
+.calc-block{padding:80px 0;scroll-margin-top:140px}
+.calc-block:nth-child(even){background:var(--bg-alt)}
+.calc-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+.calc-info h2{font-size:clamp(1.4rem,2.5vw,2rem);margin-bottom:12px}
+.calc-info p{color:var(--text-muted);line-height:1.75;margin-bottom:20px;font-size:.95rem}
+.calc-note{background:var(--gold-pale);border-left:4px solid var(--gold);padding:16px 20px;border-radius:0 var(--radius) var(--radius) 0;font-size:.85rem;color:var(--gold-dark);line-height:1.6}
+.calc-form{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:36px;box-shadow:0 4px 24px rgba(10,14,26,.06)}
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:8px}
+.form-group input,.form-group select{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:.95rem;font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);transition:var(--transition)}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--gold);background:var(--white)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.calc-btn{width:100%;padding:16px;background:var(--gold);color:var(--white);border:none;border-radius:var(--radius);font-size:1rem;font-weight:700;font-family:'Montserrat',sans-serif;cursor:pointer;transition:var(--transition);margin-top:8px}
+.calc-btn:hover{background:var(--gold-dark);transform:translateY(-1px)}
+.calc-result{margin-top:24px;padding:24px;background:var(--dark);border-radius:var(--radius-lg);display:none}
+.calc-result.show{display:block}
+.result-main{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:var(--gold-light);margin-bottom:8px}
+.result-label{font-size:.85rem;color:rgba(255,255,255,.6);margin-bottom:16px}
+.result-details{display:flex;flex-direction:column;gap:8px}
+.result-row{display:flex;justify-content:space-between;font-size:.85rem;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.result-row:last-child{border-bottom:none}
+.result-row span:first-child{color:rgba(255,255,255,.6)}
+.result-row span:last-child{color:var(--white);font-weight:600}
+.result-cta{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1);font-size:.82rem;color:rgba(255,255,255,.5);text-align:center}
+.result-cta a{color:var(--gold-light)}
+
+/* FOOTER */
+.footer{background:var(--dark);color:rgba(255,255,255,.7);padding:72px 0 32px;border-top:1px solid rgba(200,122,42,.2)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:32px}
+.footer-logo{font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.4rem;color:var(--white);display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.footer-logo em{color:var(--gold);font-style:normal}
+.footer-tagline{font-size:.72rem;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;margin-bottom:16px}
+.footer-brand p{font-size:.88rem;line-height:1.7;max-width:280px}
+.footer-col h4{color:var(--white);font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px}
+.footer-col ul li{margin-bottom:10px}
+.footer-col ul li a{color:rgba(255,255,255,.6);font-size:.88rem;transition:var(--transition)}
+.footer-col ul li a:hover{color:var(--gold-light)}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;font-size:.8rem;color:rgba(255,255,255,.4)}
+.fc{background:rgba(200,122,42,.15);border:1px solid rgba(200,122,42,.3);color:var(--gold-light);font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:6px}
+
+@media(max-width:1024px){.calc-wrapper{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}}
+@media(max-width:768px){.navbar-nav,.navbar-cta{display:none}.navbar-toggle{display:flex}.navbar-nav.open{display:flex;flex-direction:column;position:fixed;top:72px;left:0;right:0;background:var(--gold-dark);padding:24px;gap:8px;border-bottom:2px solid rgba(178,251,218,.2)}.form-row{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}.footer-bottom{flex-direction:column;gap:12px;text-align:center}}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+      <a href="/" class="navbar-logo"><img src="https://assets.cdn.filesafe.space/a5lPZ2GZOmR8PaeTDi7B/media/69e57fa250b9a3263a31c808.png" alt="Novi Finance"></a>
+      <nav class="navbar-nav" id="navMenu">
+        <a href="/">Accueil</a><a href="/a-propos">À Propos</a><a href="/services">Services</a><a href="/calculateurs" class="active">Calculateurs</a><a href="/blog">Blog</a><a href="/contact">Contact</a>
+      </nav>
+      <a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959" class="btn btn-primary navbar-cta" style="background:#b2fbda;color:#0a1a12;border-color:#b2fbda;font-weight:700">Bilan gratuit</a>
+      <button class="navbar-toggle" onclick="document.getElementById('navMenu').classList.toggle('open')" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="hero-tag">Outils Gratuits</div>
+    <h1>Calculateurs patrimoniaux</h1>
+    <p>7 outils interactifs pour estimer votre situation patrimoniale : IFI, succession, épargne, retraite, immobilier et plus encore. Résultats instantanés, basés sur la législation française 2025.</p>
+  </div>
+</section>
+
+<nav class="calc-nav">
+  <div class="calc-nav-inner">
+    <a href="#epargne">💰 Épargne</a>
+    <a href="#retraite">🎯 Retraite</a>
+    <a href="#emprunt">🏠 Emprunt</a>
+    <a href="#locatif">📈 Locatif</a>
+    <a href="#ifi">📊 IFI</a>
+    <a href="#succession">⚖️ Succession</a>
+    <a href="#plusvalue">🔢 Plus-value</a>
+  </div>
+</nav>
+
+<!-- 1. ÉPARGNE -->
+<section class="calc-block" id="epargne">
+  <div class="container">
+    <div class="calc-wrapper">
+      <div class="calc-info">
+        <span class="badge">Simulateur</span>
+        <h2>💰 Simulateur d'épargne</h2>
+        <p>Calculez le capital final de votre épargne selon vos versements initiaux, versements mensuels et taux de rendement annuel. Intérêts composés inclus.</p>
+        <div class="calc-note">⚠️ Les résultats sont fournis à titre indicatif. Les rendements passés ne garantissent pas les rendements futurs. Consultez un conseiller pour une stratégie personnalisée.</div>
+        <div style="margin-top:24px"><a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959" class="btn btn-primary">Optimiser mon épargne →</a></div>
+      </div>
+      <div class="calc-form">
+        <h3 style="margin-bottom:24px;font-size:1.1rem">Paramètres</h3>
+        <div class="form-group"><label>Capital initial (€)</label><input type="number" id="ep-initial" value="10000" min="0"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Versement mensuel (€)</label><input type="number" id="ep-mensuel" value="300" min="0"></div>
+          <div class="form-group"><label>Durée (années)</label><input type="number" id="ep-duree" value="20" min="1" max="50"></div>
+        </div>
+        <div class="form-group"><label>Taux annuel (%)</label><input type="number" id="ep-taux" value="4" min="0" max="20" step="0.1"></div>
+        <button class="calc-btn" onclick="calcEpargne()">Calculer mon capital final</button>
+        <div class="calc-result" id="ep-result">
+          <div class="result-main" id="ep-capital">—</div>
+          <div class="result-label">Capital final estimé</div>
+          <div class="result-details">
+            <div class="result-row"><span>Capital investi total</span><span id="ep-investi">—</span></div>
+            <div class="result-row"><span>Intérêts générés</span><span id="ep-interets">—</span></div>
+            <div class="result-row"><span>Rendement global</span><span id="ep-rdt">—</span></div>
+          </div>
+          <div class="result-cta">Vous souhaitez optimiser davantage ? <a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959">Bilan gratuit →</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. RETRAITE -->
+<section class="calc-block" id="retraite">
+  <div class="container">
+    <div class="calc-wrapper">
+      <div class="calc-info">
+        <span class="badge">Simulateur</span>
+        <h2>🎯 Simulateur retraite</h2>
+        <p>Estimez votre pension de retraite et identifiez le capital complémentaire nécessaire pour maintenir votre niveau de vie. Régime général + retraite complémentaire.</p>
+        <div class="calc-note">💡 Le système de retraite français est complexe. Cette simulation est une estimation basée sur des hypothèses générales. Un bilan retraite personnalisé est recommandé.</div>
+        <div style="margin-top:24px"><a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959" class="btn btn-primary">Préparer ma retraite →</a></div>
+      </div>
+      <div class="calc-form">
+        <h3 style="margin-bottom:24px;font-size:1.1rem">Votre situation</h3>
+        <div class="form-row">
+          <div class="form-group"><label>Âge actuel</label><input type="number" id="ret-age" value="45" min="18" max="64"></div>
+          <div class="form-group"><label>Âge de départ visé</label><input type="number" id="ret-depart" value="64" min="60" max="70"></div>
+        </div>
+        <div class="form-group"><label>Salaire mensuel net actuel (€)</label><input type="number" id="ret-salaire" value="3500" min="0"></div>
+        <div class="form-group"><label>Taux de remplacement souhaité (%)</label><input type="number" id="ret-taux" value="70" min="30" max="100"></div>
+        <div class="form-group"><label>Statut professionnel</label>
+          <select id="ret-statut">
+            <option value="salarie">Salarié du privé</option>
+            <option value="fonctionnaire">Fonctionnaire</option>
+            <option value="tns">Travailleur non salarié (TNS)</option>
+          </select>
+        </div>
+        <button class="calc-btn" onclick="calcRetraite()">Calculer ma retraite estimée</button>
+        <div class="calc-result" id="ret-result">
+          <div class="result-main" id="ret-pension">—</div>
+          <div class="result-label">Pension estimée / mois</div>
+          <div class="result-details">
+            <div class="result-row"><span>Revenu cible / mois</span><span id="ret-cible">—</span></div>
+            <div class="result-row"><span>Manque mensuel</span><span id="ret-manque">—</span></div>
+            <div class="result-row"><span>Capital à constituer</span><span id="ret-capital">—</span></div>
+            <div class="result-row"><span>Épargne mensuelle recommandée</span><span id="ret-effort">—</span></div>
+          </div>
+          <div class="result-cta">Optimisez votre retraite avec un PER. <a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959">Consultation gratuite →</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. EMPRUNT -->
+<section class="calc-block" id="emprunt">
+  <div class="container">
+    <div class="calc-wrapper">
+      <div class="calc-info">
+        <span class="badge">Calculateur</span>
+        <h2>🏠 Capacité d'emprunt</h2>
+        <p>Calculez votre capacité d'emprunt immobilier selon vos revenus et charges. Basé sur le taux d'endettement maximal de 35% fixé par le HCSF (Haut Conseil de Stabilité Financière).</p>
+        <div class="calc-note">🏦 Le taux d'endettement légal maximum en France est de 35% des revenus nets, assurance incluse. Certaines banques peuvent accorder des dérogations dans des cas spécifiques.</div>
+        <div style="margin-top:24px"><a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959" class="btn btn-primary">Optimiser mon financement →</a></div>
+      </div>
+      <div class="calc-form">
+        <h3 style="margin-bottom:24px;font-size:1.1rem">Vos revenus &amp; charges</h3>
+        <div class="form-group"><label>Revenus nets mensuels du foyer (€)</label><input type="number" id="emp-revenus" value="5000" min="0"></div>
+        <div class="form-group"><label>Charges mensuelles existantes (€) <span style="font-weight:400;color:var(--text-muted)">(crédits en cours)</span></label><input type="number" id="emp-charges" value="0" min="0"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Taux d'intérêt (%)</label><input type="number" id="emp-taux" value="3.5" min="0.5" max="10" step="0.1"></div>
+          <div class="form-group"><label>Durée (années)</label><input type="number" id="emp-duree" value="20" min="5" max="30"></div>
+        </div>
+        <div class="form-group"><label>Assurance emprunteur (%/an)</label><input type="number" id="emp-assurance" value="0.3" min="0" max="1" step="0.05"></div>
+        <button class="calc-btn" onclick="calcEmprunt()">Calculer ma capacité d'emprunt</button>
+        <div class="calc-result" id="emp-result">
+          <div class="result-main" id="emp-montant">—</div>
+          <div class="result-label">Montant empruntable maximum</div>
+          <div class="result-details">
+            <div class="result-row"><span>Mensualité maximale (35%)</span><span id="emp-mensualite">—</span></div>
+            <div class="result-row"><span>Coût total du crédit</span><span id="emp-cout">—</span></div>
+            <div class="result-row"><span>Taux d'endettement actuel</span><span id="emp-taux-end">—</span></div>
+          </div>
+          <div class="result-cta">Besoin d'optimiser votre financement ? <a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959">Bilan gratuit →</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. LOCATIF -->
+<section class="calc-block" id="locatif">
+  <div class="container">
+    <div class="calc-wrapper">
+      <div class="calc-info">
+        <span class="badge">Calculateur</span>
+        <h2>📈 Rendement locatif</h2>
+        <p>Calculez le rendement brut et net de votre investissement locatif en tenant compte des charges, taxes et frais de gestion.</p>
+        <div class="calc-note">💡 Un bon rendement locatif net se situe généralement entre 4% et 7%. En dessous de 3%, l'investissement perd de son intérêt face à d'autres placements.</div>
+        <div style="margin-top:24px"><a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959" class="btn btn-primary">Optimiser mon investissement →</a></div>
+      </div>
+      <div class="calc-form">
+        <h3 style="margin-bottom:24px;font-size:1.1rem">Votre bien</h3>
+        <div class="form-group"><label>Prix d'acquisition (€)</label><input type="number" id="loc-prix" value="200000" min="0"></div>
+        <div class="form-group"><label>Frais de notaire (€)</label><input type="number" id="loc-notaire" value="15000" min="0"></div>
+        <div class="form-group"><label>Travaux / rénovation (€)</label><input type="number" id="loc-travaux" value="0" min="0"></div>
+        <div class="form-group"><label>Loyer mensuel (€)</label><input type="number" id="loc-loyer" value="900" min="0"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Charges annuelles (€)</label><input type="number" id="loc-charges" value="1200" min="0"></div>
+          <div class="form-group"><label>Taxe foncière (€/an)</label><input type="number" id="loc-taxe" value="800" min="0"></div>
+        </div>
+        <div class="form-group"><label>Frais de gestion (%)</label><input type="number" id="loc-gestion" value="8" min="0" max="20" step="0.5"></div>
+        <button class="calc-btn" onclick="calcLocatif()">Calculer mon rendement</button>
+        <div class="calc-result" id="loc-result">
+          <div class="result-main" id="loc-net">—</div>
+          <div class="result-label">Rendement locatif net</div>
+          <div class="result-details">
+            <div class="result-row"><span>Rendement brut</span><span id="loc-brut">—</span></div>
+            <div class="result-row"><span>Investissement total</span><span id="loc-invest">—</span></div>
+            <div class="result-row"><span>Revenu locatif annuel brut</span><span id="loc-annuel">—</span></div>
+            <div class="result-row"><span>Charges totales annuelles</span><span id="loc-charges-total">—</span></div>
+            <div class="result-row"><span>Revenu net annuel</span><span id="loc-net-annuel">—</span></div>
+          </div>
+          <div class="result-cta">Optimisez la fiscalité de vos revenus locatifs. <a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959">Bilan gratuit →</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. IFI -->
+<section class="calc-block" id="ifi">
+  <div class="container">
+    <div class="calc-wrapper">
+      <div class="calc-info">
+        <span class="badge">Calculateur</span>
+        <h2>📊 Impôt sur la Fortune Immobilière (IFI)</h2>
+        <p>Estimez votre IFI selon la valeur nette de votre patrimoine immobilier taxable. Barème 2025 officiel. Seuil d'imposition : 1 300 000 €.</p>
+        <div class="calc-note">🏛️ L'IFI s'applique lorsque la valeur nette de votre patrimoine immobilier dépasse 1 300 000 €. Le calcul s'effectue à partir de 800 000 €. Les dettes immobilières sont déductibles.</div>
+        <div style="margin-top:24px"><a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959" class="btn btn-primary">Optimiser mon IFI →</a></div>
+      </div>
+      <div class="calc-form">
+        <h3 style="margin-bottom:24px;font-size:1.1rem">Votre patrimoine immobilier (valeur vénale)</h3>
+        <div class="form-group"><label>Résidence principale (€) <span style="font-weight:400;color:var(--text-muted)">Abattement 30% appliqué</span></label><input type="number" id="ifi-rp" value="400000" min="0"></div>
+        <div class="form-group"><label>Autres biens immobiliers (€)</label><input type="number" id="ifi-autres" value="600000" min="0"></div>
+        <div class="form-group"><label>Parts de SCPI / SCI (€)</label><input type="number" id="ifi-scpi" value="100000" min="0"></div>
+        <div class="form-group"><label>Dettes immobilières déductibles (€) <span style="font-weight:400;color:var(--text-muted)">(emprunts, travaux)</span></label><input type="number" id="ifi-dettes" value="200000" min="0"></div>
+        <button class="calc-btn" onclick="calcIFI()">Calculer mon IFI estimé</button>
+        <div class="calc-result" id="ifi-result">
+          <div class="result-main" id="ifi-montant">—</div>
+          <div class="result-label">IFI estimé à payer</div>
+          <div class="result-details">
+            <div class="result-row"><span>Patrimoine brut</span><span id="ifi-brut">—</span></div>
+            <div class="result-row"><span>Abattement résidence principale</span><span id="ifi-aba">—</span></div>
+            <div class="result-row"><span>Patrimoine net taxable</span><span id="ifi-net">—</span></div>
+            <div class="result-row"><span>Statut IFI</span><span id="ifi-statut">—</span></div>
+          </div>
+          <div class="result-cta">Des stratégies légales permettent de réduire l'IFI. <a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959">Consultation gratuite →</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. SUCCESSION -->
+<section class="calc-block" id="succession">
+  <div class="container">
+    <div class="calc-wrapper">
+      <div class="calc-info">
+        <span class="badge">Calculateur</span>
+        <h2>⚖️ Droits de succession</h2>
+        <p>Estimez les droits de succession selon le lien de parenté et la valeur de l'héritage. Abattements légaux 2025 appliqués automatiquement.</p>
+        <div class="calc-note">🎁 Le conjoint et partenaire PACS sont totalement exonérés de droits de succession. Les enfants bénéficient d'un abattement de 100 000 € chacun.</div>
+        <div style="margin-top:24px"><a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959" class="btn btn-primary">Préparer ma transmission →</a></div>
+      </div>
+      <div class="calc-form">
+        <h3 style="margin-bottom:24px;font-size:1.1rem">Simulation de succession</h3>
+        <div class="form-group"><label>Valeur de l'héritage (€)</label><input type="number" id="suc-heritage" value="300000" min="0"></div>
+        <div class="form-group"><label>Lien de parenté avec le défunt</label>
+          <select id="suc-lien">
+            <option value="conjoint">Conjoint / Partenaire PACS</option>
+            <option value="enfant" selected>Enfant</option>
+            <option value="petit-enfant">Petit-enfant</option>
+            <option value="frere-soeur">Frère / Sœur</option>
+            <option value="neveu-niece">Neveu / Nièce</option>
+            <option value="autre">Autre (non parent)</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Dons antérieurs reçus (- de 15 ans) (€)</label><input type="number" id="suc-dons" value="0" min="0"></div>
+        <button class="calc-btn" onclick="calcSuccession()">Calculer les droits estimés</button>
+        <div class="calc-result" id="suc-result">
+          <div class="result-main" id="suc-droits">—</div>
+          <div class="result-label">Droits de succession estimés</div>
+          <div class="result-details">
+            <div class="result-row"><span>Valeur brute transmise</span><span id="suc-brut">—</span></div>
+            <div class="result-row"><span>Abattement légal</span><span id="suc-aba">—</span></div>
+            <div class="result-row"><span>Base taxable nette</span><span id="suc-base">—</span></div>
+            <div class="result-row"><span>Taux effectif</span><span id="suc-taux">—</span></div>
+          </div>
+          <div class="result-cta">Une bonne stratégie de transmission peut réduire drastiquement ces droits. <a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959">Bilan gratuit →</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. PLUS-VALUE -->
+<section class="calc-block" id="plusvalue">
+  <div class="container">
+    <div class="calc-wrapper">
+      <div class="calc-info">
+        <span class="badge">Calculateur</span>
+        <h2>🔢 Plus-value immobilière</h2>
+        <p>Calculez l'impôt sur la plus-value immobilière lors de la vente d'un bien (hors résidence principale). Abattements pour durée de détention 2025.</p>
+        <div class="calc-note">🏠 La résidence principale est totalement exonérée de plus-value. Pour les autres biens, l'exonération totale est obtenue après 22 ans (IR) et 30 ans (prélèvements sociaux).</div>
+        <div style="margin-top:24px"><a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959" class="btn btn-primary">Optimiser ma cession →</a></div>
+      </div>
+      <div class="calc-form">
+        <h3 style="margin-bottom:24px;font-size:1.1rem">Votre cession</h3>
+        <div class="form-group"><label>Prix de vente (€)</label><input type="number" id="pv-vente" value="350000" min="0"></div>
+        <div class="form-group"><label>Prix d'acquisition (€)</label><input type="number" id="pv-achat" value="200000" min="0"></div>
+        <div class="form-group"><label>Frais d'acquisition (notaire, agence) (€)</label><input type="number" id="pv-frais" value="15000" min="0"></div>
+        <div class="form-group"><label>Travaux déductibles (€)</label><input type="number" id="pv-travaux" value="20000" min="0"></div>
+        <div class="form-group"><label>Durée de détention (années)</label><input type="number" id="pv-duree" value="8" min="0" max="40"></div>
+        <button class="calc-btn" onclick="calcPlusValue()">Calculer mon impôt sur la plus-value</button>
+        <div class="calc-result" id="pv-result">
+          <div class="result-main" id="pv-impot">—</div>
+          <div class="result-label">Impôt total estimé (IR + PS)</div>
+          <div class="result-details">
+            <div class="result-row"><span>Plus-value brute</span><span id="pv-brute">—</span></div>
+            <div class="result-row"><span>Abattement IR (<span id="pv-aba-ir-pct">—</span>)</span><span id="pv-aba-ir">—</span></div>
+            <div class="result-row"><span>Impôt sur le revenu (19%)</span><span id="pv-ir">—</span></div>
+            <div class="result-row"><span>Abattement PS (<span id="pv-aba-ps-pct">—</span>)</span><span id="pv-aba-ps">—</span></div>
+            <div class="result-row"><span>Prélèvements sociaux (17,2%)</span><span id="pv-ps">—</span></div>
+            <div class="result-row"><span>Net vendeur</span><span id="pv-net">—</span></div>
+          </div>
+          <div class="result-cta">Anticipez la fiscalité de votre cession. <a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959">Bilan gratuit →</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:linear-gradient(135deg,var(--gold-dark) 0%,var(--gold) 50%,var(--gold-light) 100%);padding:80px 0;text-align:center;color:var(--white)">
+  <div class="container">
+    <h2 style="color:var(--white);font-size:clamp(1.8rem,3vw,2.5rem);margin-bottom:16px">Ces simulations vous interpellent ?</h2>
+    <p style="font-size:1.05rem;opacity:.9;max-width:540px;margin:0 auto 32px;line-height:1.7">Obtenez une analyse complète et personnalisée de votre situation patrimoniale. Gratuit, sans engagement.</p>
+    <a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959" class="btn btn-white btn-lg">Obtenir mon bilan patrimonial offert →</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo"><em>NOVI</em> FINANCE</div>
+        <div class="footer-tagline">Conseil en Gestion de Patrimoine</div>
+        <p>Calculateurs à titre informatif uniquement. Consultez un professionnel pour des conseils personnalisés.</p>
+        <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap"><span class="fc">CIF</span><span class="fc">ORIAS</span><span class="fc">AMF</span></div>
+      </div>
+      <div class="footer-col"><h4>Calculateurs</h4><ul><li><a href="#epargne">Simulateur épargne</a></li><li><a href="#retraite">Simulateur retraite</a></li><li><a href="#ifi">Calcul IFI</a></li><li><a href="#succession">Droits de succession</a></li><li><a href="#emprunt">Capacité d'emprunt</a></li><li><a href="#locatif">Rendement locatif</a></li><li><a href="#plusvalue">Plus-value immo</a></li></ul></div>
+      <div class="footer-col"><h4>Services</h4><ul><li><a href="/services">Gestion de Patrimoine</a></li><li><a href="/services">Investissement Immobilier</a></li><li><a href="/services">Optimisation Fiscale</a></li><li><a href="/services">Retraite</a></li></ul></div>
+      <div class="footer-col"><h4>Informations</h4><ul><li><a href="/">Accueil</a></li><li><a href="/a-propos">À Propos</a></li><li><a href="/contact">Contact</a></li><li><a href="/mentions-legales">Mentions légales</a></li><li><a href="/confidentialite">Confidentialité</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Novi Finance · Tous droits réservés</span><span>yann@novifinance.fr</span></div>
+  </div>
+</footer>
+
+<script>
+const fmt = n => new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n);
+const pct = n => n.toFixed(1)+'%';
+
+function show(id){document.getElementById(id).classList.add('show')}
+
+// 1. ÉPARGNE
+function calcEpargne(){
+  const C=+document.getElementById('ep-initial').value;
+  const v=+document.getElementById('ep-mensuel').value;
+  const n=+document.getElementById('ep-duree').value;
+  const r=+document.getElementById('ep-taux').value/100;
+  const rm=r/12;
+  const nm=n*12;
+  const capital=C*Math.pow(1+rm,nm)+v*((Math.pow(1+rm,nm)-1)/rm);
+  const investi=C+v*nm;
+  const interets=capital-investi;
+  document.getElementById('ep-capital').textContent=fmt(capital);
+  document.getElementById('ep-investi').textContent=fmt(investi);
+  document.getElementById('ep-interets').textContent=fmt(interets);
+  document.getElementById('ep-rdt').textContent=pct((capital/investi-1)*100);
+  show('ep-result');
+}
+
+// 2. RETRAITE
+function calcRetraite(){
+  const age=+document.getElementById('ret-age').value;
+  const depart=+document.getElementById('ret-depart').value;
+  const salaire=+document.getElementById('ret-salaire').value;
+  const taux=+document.getElementById('ret-taux').value/100;
+  const statut=document.getElementById('ret-statut').value;
+  let tauxRemplacement=statut==='fonctionnaire'?0.75:statut==='tns'?0.45:0.50;
+  const pension=salaire*tauxRemplacement;
+  const cible=salaire*taux;
+  const manque=Math.max(0,cible-pension);
+  const annees=depart-age;
+  const espVie=25;
+  const capitalNeeded=manque*12*espVie;
+  const effort=annees>0?capitalNeeded/((Math.pow(1.04,annees)-1)/0.04*12):0;
+  document.getElementById('ret-pension').textContent=fmt(pension)+'/mois';
+  document.getElementById('ret-cible').textContent=fmt(cible);
+  document.getElementById('ret-manque').textContent=fmt(manque);
+  document.getElementById('ret-capital').textContent=fmt(capitalNeeded);
+  document.getElementById('ret-effort').textContent=fmt(Math.max(0,effort));
+  show('ret-result');
+}
+
+// 3. EMPRUNT
+function calcEmprunt(){
+  const revenus=+document.getElementById('emp-revenus').value;
+  const charges=+document.getElementById('emp-charges').value;
+  const taux=+document.getElementById('emp-taux').value/100/12;
+  const n=+document.getElementById('emp-duree').value*12;
+  const assurance=+document.getElementById('emp-assurance').value/100/12;
+  const mensMax=(revenus*0.35)-charges;
+  const tauxTotal=taux+assurance;
+  const montant=tauxTotal>0?mensMax*(1-Math.pow(1+tauxTotal,-n))/tauxTotal:mensMax*n;
+  const coutTotal=mensMax*n-montant;
+  const tauxEndettement=((charges/revenus)*100);
+  document.getElementById('emp-montant').textContent=fmt(Math.max(0,montant));
+  document.getElementById('emp-mensualite').textContent=fmt(Math.max(0,mensMax));
+  document.getElementById('emp-cout').textContent=fmt(Math.max(0,coutTotal));
+  document.getElementById('emp-taux-end').textContent=pct(tauxEndettement);
+  show('emp-result');
+}
+
+// 4. LOCATIF
+function calcLocatif(){
+  const prix=+document.getElementById('loc-prix').value;
+  const notaire=+document.getElementById('loc-notaire').value;
+  const travaux=+document.getElementById('loc-travaux').value;
+  const loyer=+document.getElementById('loc-loyer').value;
+  const charges=+document.getElementById('loc-charges').value;
+  const taxe=+document.getElementById('loc-taxe').value;
+  const gestion=+document.getElementById('loc-gestion').value/100;
+  const invest=prix+notaire+travaux;
+  const annuel=loyer*12;
+  const fraisGestion=annuel*gestion;
+  const chargesTotales=charges+taxe+fraisGestion;
+  const netAnnuel=annuel-chargesTotales;
+  const brut=(annuel/invest)*100;
+  const net=(netAnnuel/invest)*100;
+  document.getElementById('loc-net').textContent=pct(net);
+  document.getElementById('loc-brut').textContent=pct(brut);
+  document.getElementById('loc-invest').textContent=fmt(invest);
+  document.getElementById('loc-annuel').textContent=fmt(annuel);
+  document.getElementById('loc-charges-total').textContent=fmt(chargesTotales);
+  document.getElementById('loc-net-annuel').textContent=fmt(netAnnuel);
+  show('loc-result');
+}
+
+// 5. IFI (barème 2025)
+function calcIFI(){
+  const rp=+document.getElementById('ifi-rp').value*0.7; // abattement 30%
+  const autres=+document.getElementById('ifi-autres').value;
+  const scpi=+document.getElementById('ifi-scpi').value;
+  const dettes=+document.getElementById('ifi-dettes').value;
+  const brut=rp+autres+scpi;
+  const abaRP=+document.getElementById('ifi-rp').value*0.3;
+  const net=Math.max(0,brut-dettes);
+  let ifi=0;
+  if(net>=1300000){
+    const tranches=[[800000,0],[500000,0.005],[1270000,0.007],[2430000,0.010],[5000000,0.0125],[Infinity,0.015]];
+    let reste=net-800000;
+    for(const [seuil,taux] of tranches){
+      if(reste<=0)break;
+      const tranche=Math.min(reste,seuil);
+      ifi+=tranche*taux;
+      reste-=tranche;
+    }
+  }
+  const statut=net<1300000?'Non imposable (< 1 300 000 €)':'Imposable à l\'IFI';
+  document.getElementById('ifi-montant').textContent=fmt(ifi);
+  document.getElementById('ifi-brut').textContent=fmt(brut+abaRP);
+  document.getElementById('ifi-aba').textContent='-'+fmt(abaRP);
+  document.getElementById('ifi-net').textContent=fmt(net);
+  document.getElementById('ifi-statut').textContent=statut;
+  show('ifi-result');
+}
+
+// 6. SUCCESSION (barème 2025)
+function calcSuccession(){
+  const heritage=+document.getElementById('suc-heritage').value;
+  const lien=document.getElementById('suc-lien').value;
+  const dons=+document.getElementById('suc-dons').value;
+
+  const abattements={conjoint:Infinity,enfant:100000,'petit-enfant':31865,'frere-soeur':15932,'neveu-niece':7967,autre:1594};
+  const aba=Math.min(abattements[lien],heritage);
+  const base=Math.max(0,heritage+dons-abattements[lien]);
+
+  let droits=0;
+  if(lien==='conjoint'){
+    droits=0;
+  } else if(lien==='enfant'||lien==='petit-enfant'){
+    const tranches=[[8072,.05],[4037,.10],[3823,.15],[536392,.20],[350514,.30],[902839,.40],[Infinity,.45]];
+    let r=base;
+    for(const [s,t] of tranches){if(r<=0)break;const tr=Math.min(r,s);droits+=tr*t;r-=tr;}
+  } else if(lien==='frere-soeur'){
+    droits=base<=24430?base*0.35:24430*0.35+(base-24430)*0.45;
+  } else if(lien==='neveu-niece'){
+    droits=base*0.55;
+  } else {
+    droits=base*0.60;
+  }
+
+  const taux=base>0?(droits/heritage)*100:0;
+  document.getElementById('suc-droits').textContent=fmt(droits);
+  document.getElementById('suc-brut').textContent=fmt(heritage);
+  document.getElementById('suc-aba').textContent=lien==='conjoint'?'Exonération totale':'-'+fmt(aba);
+  document.getElementById('suc-base').textContent=fmt(base);
+  document.getElementById('suc-taux').textContent=pct(taux);
+  show('suc-result');
+}
+
+// 7. PLUS-VALUE (barème 2025)
+function calcPlusValue(){
+  const vente=+document.getElementById('pv-vente').value;
+  const achat=+document.getElementById('pv-achat').value;
+  const frais=+document.getElementById('pv-frais').value;
+  const travaux=+document.getElementById('pv-travaux').value;
+  const duree=+document.getElementById('pv-duree').value;
+
+  const prixRevient=achat+frais+travaux;
+  const pvBrute=Math.max(0,vente-prixRevient);
+
+  // Abattement IR : 6%/an de 6 à 21 ans, 4% an 22
+  let abaIRpct=0;
+  if(duree>=22)abaIRpct=100;
+  else if(duree>5)abaIRpct=Math.min(100,(duree-5)*6);
+
+  // Abattement PS : 1.65%/an de 6 à 21, 1.6% an 22, 9%/an de 23 à 30
+  let abaPSpct=0;
+  if(duree>=30)abaPSpct=100;
+  else if(duree>22)abaPSpct=Math.min(100,28.6+(duree-22)*9);
+  else if(duree==22)abaPSpct=28.6;
+  else if(duree>5)abaPSpct=Math.min(100,(duree-5)*1.65);
+
+  const baseIR=pvBrute*(1-abaIRpct/100);
+  const basePS=pvBrute*(1-abaPSpct/100);
+  const impotIR=baseIR*0.19;
+  const impotPS=basePS*0.172;
+  const total=impotIR+impotPS;
+  const net=vente-total;
+
+  document.getElementById('pv-impot').textContent=fmt(total);
+  document.getElementById('pv-brute').textContent=fmt(pvBrute);
+  document.getElementById('pv-aba-ir-pct').textContent=pct(abaIRpct);
+  document.getElementById('pv-aba-ir').textContent='-'+fmt(pvBrute*abaIRpct/100);
+  document.getElementById('pv-ir').textContent=fmt(impotIR);
+  document.getElementById('pv-aba-ps-pct').textContent=pct(abaPSpct);
+  document.getElementById('pv-aba-ps').textContent='-'+fmt(pvBrute*abaPSpct/100);
+  document.getElementById('pv-ps').textContent=fmt(impotPS);
+  document.getElementById('pv-net').textContent=fmt(net);
+  show('pv-result');
+}
+
+// Highlight active nav tab on scroll
+const sections=['epargne','retraite','emprunt','locatif','ifi','succession','plusvalue'];
+window.addEventListener('scroll',()=>{
+  const links=document.querySelectorAll('.calc-nav a');
+  let current='';
+  sections.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&el.getBoundingClientRect().top<200)current=id;
+  });
+  links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+current)});
+});
+
+// Auto-calculate on load
+calcEpargne();calcRetraite();calcEmprunt();calcLocatif();calcIFI();calcSuccession();calcPlusValue();
+</script>
+</body>
+</html>

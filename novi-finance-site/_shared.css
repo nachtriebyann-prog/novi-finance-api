@@ -1,0 +1,58 @@
+/* ============================================================
+   NOVI FINANCE — Shared CSS v2
+   Inclure dans le <style> de chaque page via @import ou copier-coller
+   ============================================================ */
+
+/* --- VARIABLES --- */
+:root {
+  --gold: #C87A2A;
+  --gold-dark: #9E5E1C;
+  --gold-light: #E8A855;
+  --gold-pale: #F0E6D3;
+  --mint: #b2fbda;
+  --mint-dark: #1a7a52;
+  --mint-dim: rgba(178,251,218,0.15);
+  --mint-glow: rgba(178,251,218,0.4);
+  --dark: #0A0E1A;
+  --dark-2: #141824;
+  --dark-3: #1E2535;
+  --text: #1A1A2E;
+  --text-muted: #64748B;
+  --bg: #FAFAF8;
+  --bg-alt: #F5EFE6;
+  --white: #FFFFFF;
+  --border: #E2D5C3;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --shadow: 0 4px 24px rgba(10,14,26,0.08);
+  --shadow-lg: 0 8px 48px rgba(10,14,26,0.14);
+  --transition: all 0.25s ease;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes pulse-mint {
+  0%   { box-shadow: 0 0 0 0   rgba(178,251,218,0.55); }
+  70%  { box-shadow: 0 0 0 14px rgba(178,251,218,0); }
+  100% { box-shadow: 0 0 0 0   rgba(178,251,218,0); }
+}
+@keyframes glow-mint {
+  0%,100% { text-shadow: 0 0 16px rgba(178,251,218,0.25); }
+  50%     { text-shadow: 0 0 36px rgba(178,251,218,0.6), 0 0 72px rgba(178,251,218,0.15); }
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-8px); }
+}
+@keyframes halo-ring {
+  0%   { opacity:1; transform:scale(1); }
+  100% { opacity:0; transform:scale(1.6); }
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(24px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.animate-fadeup { animation: fadeUp 0.7s ease both; }
+.halo-btn       { animation: pulse-mint 2.5s infinite; }
+.glow-num       { animation: glow-mint 3s infinite; }
+.float-card     { animation: float 4s ease-in-out infinite; }

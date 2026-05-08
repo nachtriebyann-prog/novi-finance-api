@@ -1,9 +1,10 @@
 {
-      "name": "novi-finance-form",
-      "version": "1.0.0",
-      "private": true,
-      "dependencies": {
-              "twilio": "^4.10.0",
-              "@vercel/kv": "^0.2.0"
-      }
+  "name": "novi-finance-form",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.3",
+    "@vercel/kv": "^0.2.0",
+    "twilio": "^4.10.0"
+  }
 }

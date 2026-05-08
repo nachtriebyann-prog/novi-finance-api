@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>À Propos — Novi Finance</title>
+<meta name="description" content="Découvrez Novi Finance, votre conseiller en gestion de patrimoine indépendant certifié CIF, ORIAS et AMF. Une approche humaine, transparente et engagée.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C87A2A;--gold-dark:#9E5E1C;--gold-light:#E8A855;--gold-pale:#F0E6D3;--mint:#b2fbda;--mint-dark:#1a7a52;--mint-dim:rgba(178,251,218,0.12);--mint-glow:rgba(178,251,218,0.4);--dark:#0A0E1A;--dark-2:#141824;--dark-3:#1E2535;--text:#1A1A2E;--text-muted:#64748B;--bg:#FAFAF8;--bg-alt:#F5EFE6;--white:#FFFFFF;--border:#E2D5C3;--radius:12px;--radius-lg:20px;--shadow:0 4px 24px rgba(10,14,26,.08);--shadow-lg:0 8px 48px rgba(10,14,26,.14);--transition:all .25s ease}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter','Segoe UI',sans-serif;color:var(--text);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:'Montserrat',sans-serif;font-weight:700;line-height:1.2}
+a{color:var(--gold);text-decoration:none;transition:var(--transition)}
+img{max-width:100%;height:auto;display:block}
+ul{list-style:none}
+.container{max-width:1180px;margin:0 auto;padding:0 24px}
+.section{padding:96px 0}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:var(--radius);font-weight:600;font-size:.95rem;cursor:pointer;border:2px solid transparent;transition:var(--transition);text-decoration:none}
+.btn-primary{background:var(--gold);color:var(--white);border-color:var(--gold)}
+.btn-primary:hover{background:var(--gold-dark);border-color:var(--gold-dark);color:var(--white);transform:translateY(-2px);box-shadow:0 8px 24px rgba(200,122,42,.35)}
+.btn-outline{background:transparent;color:var(--gold);border-color:var(--gold)}
+.btn-outline:hover{background:var(--gold);color:var(--white)}
+.btn-lg{padding:18px 36px;font-size:1.05rem;border-radius:14px}
+.badge{display:inline-block;background:var(--gold-pale);color:var(--gold-dark);font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:6px 14px;border-radius:100px;margin-bottom:16px}
+.navbar{position:fixed;top:0;left:0;right:0;z-index:999;background:var(--gold);border-bottom:2px solid var(--gold-dark)}
+.navbar-inner{display:flex;align-items:center;justify-content:space-between;height:72px}
+.navbar-logo{display:flex;align-items:center;gap:12px}
+.navbar-logo img{height:56px}
+.navbar-nav{display:flex;align-items:center;gap:4px}
+.navbar-nav a{color:rgba(255,255,255,.8);font-size:.9rem;font-weight:500;padding:8px 14px;border-radius:8px;transition:var(--transition)}
+.navbar-nav a:hover,.navbar-nav a.active{color:var(--mint);background:rgba(0,0,0,.15)}
+.navbar-cta{margin-left:12px}
+.navbar-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.navbar-toggle span{width:24px;height:2px;background:var(--white);border-radius:2px}
+.page-hero{background:var(--dark);padding:160px 0 100px;position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;top:-200px;right:-100px;width:600px;height:600px;background:radial-gradient(circle,rgba(200,122,42,.15) 0%,transparent 70%);pointer-events:none}
+.page-hero h1{color:var(--white);font-size:clamp(2rem,4vw,3rem);margin-bottom:16px}
+.page-hero p{color:rgba(255,255,255,.7);font-size:1.1rem;max-width:560px;line-height:1.75}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(200,122,42,.15);border:1px solid rgba(200,122,42,.3);color:var(--gold-light);font-size:.82rem;font-weight:600;padding:8px 16px;border-radius:100px;margin-bottom:24px}
+.hero-tag::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%}
+.certif-badge{background:rgba(200,122,42,.15);border:1px solid rgba(200,122,42,.3);color:var(--gold-light);font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:6px}
+.founder-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:80px;align-items:center}
+.founder-photo{background:var(--dark-2);border-radius:24px;padding:48px;text-align:center;position:relative;overflow:hidden;border:1px solid rgba(200,122,42,.2)}
+.founder-photo::before{content:'';position:absolute;top:-80px;right:-80px;width:250px;height:250px;background:radial-gradient(circle,rgba(200,122,42,.2) 0%,transparent 70%)}
+.founder-initials{width:140px;height:140px;background:linear-gradient(135deg,var(--gold-dark),var(--gold-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:800;font-size:3rem;color:var(--white);margin:0 auto 24px}
+.founder-name{color:var(--white);font-size:1.3rem;font-weight:700;margin-bottom:4px}
+.founder-title{color:var(--gold-light);font-size:.85rem;margin-bottom:24px}
+.founder-certifs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.founder-content h2{font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:20px}
+.founder-content p{color:var(--text-muted);line-height:1.8;margin-bottom:16px;font-size:.97rem}
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+.value-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;transition:var(--transition)}
+.value-card:hover{border-color:var(--gold);box-shadow:var(--shadow);transform:translateY(-3px)}
+.value-icon{font-size:2rem;margin-bottom:16px}
+.value-card h3{font-size:1rem;margin-bottom:10px}
+.value-card p{font-size:.88rem;color:var(--text-muted);line-height:1.7}
+.certifs-section{background:var(--dark);padding:80px 0;color:var(--white)}
+.certifs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px}
+.certif-card{background:var(--dark-2);border:1px solid rgba(200,122,42,.25);border-radius:var(--radius-lg);padding:36px;text-align:center}
+.certif-card h3{color:var(--gold-light);font-size:1.4rem;margin-bottom:12px}
+.certif-card p{color:rgba(255,255,255,.65);font-size:.9rem;line-height:1.7}
+.timeline{position:relative;padding-left:40px}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+.timeline-item{position:relative;margin-bottom:40px}
+.timeline-item::before{content:'';position:absolute;left:-36px;top:6px;width:14px;height:14px;background:var(--gold);border-radius:50%;border:3px solid var(--bg-alt)}
+.timeline-year{font-size:.8rem;color:var(--gold);font-weight:700;margin-bottom:6px;letter-spacing:.05em}
+.timeline-item h4{font-size:1rem;margin-bottom:6px}
+.timeline-item p{font-size:.88rem;color:var(--text-muted);line-height:1.6}
+.cta-section{background:linear-gradient(135deg,var(--gold-dark) 0%,var(--gold) 50%,var(--gold-light) 100%);padding:96px 0;text-align:center;color:var(--white)}
+.cta-section h2{font-size:clamp(1.8rem,3.5vw,2.8rem);color:var(--white);margin-bottom:20px}
+.cta-section p{font-size:1.1rem;opacity:.9;max-width:560px;margin:0 auto 40px;line-height:1.7}
+.footer{background:var(--dark);color:rgba(255,255,255,.7);padding:72px 0 32px;border-top:1px solid rgba(200,122,42,.2)}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:32px}
+.footer-logo{font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.4rem;color:var(--white);display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.footer-logo em{color:var(--gold);font-style:normal}
+.footer-tagline{font-size:.72rem;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;margin-bottom:16px}
+.footer-brand p{font-size:.88rem;line-height:1.7;max-width:280px}
+.footer-col h4{color:var(--white);font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px}
+.footer-col ul li{margin-bottom:10px}
+.footer-col ul li a{color:rgba(255,255,255,.6);font-size:.88rem;transition:var(--transition)}
+.footer-col ul li a:hover{color:var(--gold-light)}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;font-size:.8rem;color:rgba(255,255,255,.4)}
+.fc{background:rgba(200,122,42,.15);border:1px solid rgba(200,122,42,.3);color:var(--gold-light);font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:6px}
+@media(max-width:1024px){.founder-grid{grid-template-columns:1fr;gap:40px}.certifs-grid{grid-template-columns:1fr 1fr}.values-grid{grid-template-columns:1fr 1fr}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}}
+@media(max-width:768px){.section{padding:64px 0}.navbar-nav,.navbar-cta{display:none}.navbar-toggle{display:flex}.navbar-nav.open{display:flex;flex-direction:column;position:fixed;top:72px;left:0;right:0;background:var(--gold-dark);padding:24px;gap:8px;border-bottom:2px solid rgba(178,251,218,.2)}.certifs-grid{grid-template-columns:1fr}.values-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr}.footer-bottom{flex-direction:column;gap:12px;text-align:center}}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+      <a href="/" class="navbar-logo">
+        <img src="https://assets.cdn.filesafe.space/a5lPZ2GZOmR8PaeTDi7B/media/69e57fa250b9a3263a31c808.png" alt="Novi Finance">
+      </a>
+      <nav class="navbar-nav" id="navMenu">
+        <a href="/">Accueil</a>
+        <a href="/a-propos" class="active">À Propos</a>
+        <a href="/services">Services</a>
+        <a href="/calculateurs">Calculateurs</a>
+        <a href="/blog">Blog</a>
+        <a href="/contact">Contact</a>
+      </nav>
+      <a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959" class="btn btn-primary navbar-cta" style="background:#b2fbda;color:#0a1a12;border-color:#b2fbda;font-weight:700">Bilan gratuit</a>
+      <button class="navbar-toggle" onclick="document.getElementById('navMenu').classList.toggle('open')" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="hero-tag">À Propos</div>
+    <h1>Qui est Novi Finance ?</h1>
+    <p>Un conseiller indépendant engagé pour votre réussite patrimoniale, avec une approche humaine, transparente et certifiée.</p>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section class="section" style="background:var(--bg)">
+  <div class="container">
+    <div class="founder-grid">
+      <div class="founder-photo">
+        <div class="founder-initials">NF</div>
+        <div class="founder-name">Notre Fondateur</div>
+        <div class="founder-title">Conseiller en Gestion de Patrimoine Indépendant</div>
+        <div class="founder-certifs">
+          <span class="certif-badge">CIF</span>
+          <span class="certif-badge">ORIAS</span>
+          <span class="certif-badge">AMF</span>
+        </div>
+        <div style="margin-top:28px;padding-top:28px;border-top:1px solid rgba(255,255,255,.1)">
+          <div style="display:flex;justify-content:space-around">
+            <div style="text-align:center">
+              <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.8rem;color:var(--gold-light)">+200</div>
+              <div style="font-size:.78rem;color:rgba(255,255,255,.5)">Clients</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.8rem;color:var(--gold-light)">4.9★</div>
+              <div style="font-size:.78rem;color:rgba(255,255,255,.5)">Trustpilot</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.8rem;color:var(--gold-light)">3</div>
+              <div style="font-size:.78rem;color:rgba(255,255,255,.5)">Certifications</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="founder-content">
+        <span class="badge">Notre Histoire</span>
+        <h2>Né d'une conviction : le conseil patrimonial doit être accessible à tous</h2>
+        <p>Trop longtemps, la gestion de patrimoine a été réservée aux grandes fortunes ou aux clients captifs des banques. Novi Finance a été fondé avec une mission claire : démocratiser l'accès à un conseil patrimonial de qualité, indépendant et transparent.</p>
+        <p>Après plusieurs années dans le secteur financier, notre fondateur a constaté que la majorité des épargnants ne bénéficiaient pas d'un accompagnement adapté à leur situation réelle. Les conseils bancaires sont souvent orientés par des objectifs commerciaux, loin des intérêts du client.</p>
+        <p>Chez Novi Finance, chaque recommandation est formulée dans le seul intérêt du client. Notre rémunération est transparente, nos certifications réglementaires (CIF, ORIAS, AMF) vous garantissent un cadre légal protecteur.</p>
+        <a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959" class="btn btn-primary btn-lg" style="margin-top:8px">Prendre rendez-vous →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARCOURS -->
+<section class="section" style="background:var(--bg-alt)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px">
+      <div>
+        <span class="badge">Parcours</span>
+        <h2 style="font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:32px">Une expertise construite sur le terrain</h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-year">Fondation</div>
+            <h4>Création de Novi Finance</h4>
+            <p>Lancement de l'activité de conseil en gestion de patrimoine indépendant, avec une approche centrée sur le client et la transparence.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">Certifications</div>
+            <h4>Enregistrement CIF &amp; ORIAS</h4>
+            <p>Obtention du statut de Conseiller en Investissements Financiers et enregistrement à l'ORIAS, garantissant un cadre réglementaire protecteur pour les clients.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">Développement</div>
+            <h4>+200 clients accompagnés</h4>
+            <p>Développement d'une clientèle diversifiée : salariés, entrepreneurs, investisseurs immobiliers, préretraités — tous avec des stratégies patrimoniales personnalisées.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">Aujourd'hui</div>
+            <h4>Excellence reconnue</h4>
+            <p>Note 4.9/5 sur Trustpilot, Novi Finance s'impose comme une référence du conseil patrimonial indépendant en France.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span class="badge">Notre Approche</span>
+        <h2 style="font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:32px">4 principes qui guident chaque conseil</h2>
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;gap:16px;align-items:flex-start;background:var(--white);border-radius:var(--radius-lg);padding:24px;border:1px solid var(--border)">
+            <div style="width:40px;height:56px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--white);font-size:1.2rem;flex-shrink:0">🎯</div>
+            <div><h4 style="margin-bottom:6px">Indépendance</h4><p style="font-size:.88rem;color:var(--text-muted)">Aucun lien capitalistique avec un assureur ou une banque. Nos conseils ne sont jamais influencés par une commission de produit.</p></div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:flex-start;background:var(--white);border-radius:var(--radius-lg);padding:24px;border:1px solid var(--border)">
+            <div style="width:40px;height:56px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--white);font-size:1.2rem;flex-shrink:0">🔍</div>
+            <div><h4 style="margin-bottom:6px">Transparence</h4><p style="font-size:.88rem;color:var(--text-muted)">Nos honoraires sont clairs et expliqués dès le départ. Vous savez exactement ce que vous payez et pourquoi.</p></div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:flex-start;background:var(--white);border-radius:var(--radius-lg);padding:24px;border:1px solid var(--border)">
+            <div style="width:40px;height:56px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--white);font-size:1.2rem;flex-shrink:0">🤝</div>
+            <div><h4 style="margin-bottom:6px">Engagement</h4><p style="font-size:.88rem;color:var(--text-muted)">Nous nous engageons sur des résultats concrets et mesurables. Votre réussite est notre réussite.</p></div>
+          </div>
+          <div style="display:flex;gap:16px;align-items:flex-start;background:var(--white);border-radius:var(--radius-lg);padding:24px;border:1px solid var(--border)">
+            <div style="width:40px;height:56px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--white);font-size:1.2rem;flex-shrink:0">📚</div>
+            <div><h4 style="margin-bottom:6px">Pédagogie</h4><p style="font-size:.88rem;color:var(--text-muted)">Nous vous expliquons chaque recommandation dans un langage clair. Vous comprenez et décidez en connaissance de cause.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section class="certifs-section">
+  <div class="container">
+    <div style="text-align:center;max-width:640px;margin:0 auto">
+      <span class="badge" style="background:rgba(200,122,42,.15);color:var(--gold-light)">Réglementation</span>
+      <h2 style="color:var(--white);font-size:clamp(1.8rem,3.5vw,2.5rem);margin-bottom:16px">Vos garanties légales</h2>
+      <p style="color:rgba(255,255,255,.65);font-size:1.05rem;line-height:1.7">Nos certifications vous protègent et garantissent la qualité et l'éthique de nos conseils.</p>
+    </div>
+    <div class="certifs-grid">
+      <div class="certif-card">
+        <div style="font-size:2.5rem;margin-bottom:16px">⚖️</div>
+        <h3>CIF</h3>
+        <p style="margin-bottom:12px">Conseiller en Investissements Financiers agréé par l'AMF. Habilitation légale à fournir des conseils en matière d'investissements financiers.</p>
+        <span class="certif-badge">Statut protecteur</span>
+      </div>
+      <div class="certif-card">
+        <div style="font-size:2.5rem;margin-bottom:16px">📋</div>
+        <h3>ORIAS</h3>
+        <p style="margin-bottom:12px">Enregistré à l'ORIAS (Organisme pour le Registre des Intermédiaires en Assurance), garantissant notre légitimité à distribuer des produits d'assurance.</p>
+        <span class="certif-badge">Registre officiel</span>
+      </div>
+      <div class="certif-card">
+        <div style="font-size:2.5rem;margin-bottom:16px">🏛️</div>
+        <h3>AMF</h3>
+        <p style="margin-bottom:12px">Encadré par l'Autorité des Marchés Financiers, l'organisme de régulation français qui protège les investisseurs et garantit le bon fonctionnement des marchés.</p>
+        <span class="certif-badge">Régulateur AMF</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALEURS -->
+<section class="section" style="background:var(--bg)">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:48px">
+      <span class="badge">Nos Valeurs</span>
+      <h2 style="font-size:clamp(1.8rem,3.5vw,2.5rem)">Ce qui nous distingue</h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">💡</div>
+        <h3>Innovation</h3>
+        <p>Nous utilisons les meilleurs outils digitaux pour vous offrir une expérience client fluide et des analyses patrimoniales précises.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🛡️</div>
+        <h3>Sécurité</h3>
+        <p>Vos données personnelles sont traitées avec le plus grand soin, conformément au RGPD. Votre confidentialité est absolue.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🌱</div>
+        <h3>Durabilité</h3>
+        <p>Nous construisons des stratégies patrimoniales durables, pensées sur le long terme pour votre sécurité financière future.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🤝</div>
+        <h3>Proximité</h3>
+        <p>Une relation de confiance construite dans la durée. Votre conseiller vous connaît, suit votre situation et s'adapte à chaque étape de votre vie.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">📊</div>
+        <h3>Performance</h3>
+        <p>Des résultats concrets et mesurables. Nos clients voient en moyenne une amélioration significative de leur situation patrimoniale dès la première année.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🎓</div>
+        <h3>Expertise</h3>
+        <p>Une formation continue et une veille réglementaire permanente pour vous offrir les conseils les plus actuels et les plus pertinents.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <span class="badge" style="background:rgba(255,255,255,.2);color:var(--white)">Première étape</span>
+    <h2>Rencontrons-nous</h2>
+    <p>Bénéficiez d'un bilan patrimonial complet offert et sans engagement. 30 minutes pour transformer votre avenir financier.</p>
+    <a href="https://go.novifinance.fr/bilanpatrimonialoffert-879959" class="btn btn-white btn-lg">Obtenir mon bilan gratuit →</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo"><em>NOVI</em> FINANCE</div>
+        <div class="footer-tagline">Conseil en Gestion de Patrimoine</div>
+        <p>Votre conseiller en gestion de patrimoine indépendant. Certifié CIF, ORIAS, AMF.</p>
+        <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap"><span class="fc">CIF</span><span class="fc">ORIAS</span><span class="fc">AMF</span><span class="fc">RGPD</span></div>
+      </div>
+      <div class="footer-col"><h4>Services</h4><ul><li><a href="/services">Gestion de Patrimoine</a></li><li><a href="/services">Investissement Immobilier</a></li><li><a href="/services">Optimisation Fiscale</a></li><li><a href="/services">Retraite &amp; Prévoyance</a></li><li><a href="/services">Assurance Vie</a></li></ul></div>
+      <div class="footer-col"><h4>Outils</h4><ul><li><a href="/calculateurs#epargne">Simulateur épargne</a></li><li><a href="/calculateurs#ifi">Calcul IFI</a></li><li><a href="/calculateurs#succession">Droits de succession</a></li><li><a href="/calculateurs#emprunt">Capacité d'emprunt</a></li></ul></div>
+      <div class="footer-col"><h4>Informations</h4><ul><li><a href="/a-propos">À Propos</a></li><li><a href="/blog">Blog</a></li><li><a href="/contact">Contact</a></li><li><a href="/mentions-legales">Mentions légales</a></li><li><a href="/confidentialite">Confidentialité</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Novi Finance · Tous droits réservés</span><span>equipe@novifinance.fr</span></div>
+  </div>
+</footer>
+</body>
+</html>
