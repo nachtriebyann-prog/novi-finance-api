@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bilan Patrimonial Offert - Novi Finance</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">💰</span>
+                <span class="logo-text">Novi Finance</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Votre Bilan Patrimonial <span class="highlight">100% Gratuit</span></h1>
+                <p class="hero-subtitle">Découvrez comment optimiser votre patrimoine en 3 minutes seulement</p>
+                <div class="hero-badges">
+                    <span class="badge-pill">✓ Sans engagement</span>
+                    <span class="badge-pill">✓ Confidentiel</span>
+                    <span class="badge-pill">✓ Gratuit</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Form Section -->
+    <section class="form-section" id="formSection">
+        <div class="form-container">
+            <!-- Progress Bar -->
+            <div class="progress-bar-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text">
+                    <span class="step-counter"><span id="stepNumber">1</span>/<span id="totalSteps">6</span></span>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="question-card" id="questionCard">
+                <div class="question-wrapper">
+                    <h2 class="question-title" id="questionTitle"></h2>
+                    <p class="question-subtitle" id="questionSubtitle"></p>
+                </div>
+
+                <!-- Options Container -->
+                <div class="options-container" id="optionsContainer">
+                    <!-- Options will be inserted here by JS -->
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="form-navigation">
+                <button class="nav-btn nav-btn-prev" id="prevBtn" style="display: none;">
+                    <span class="arrow">←</span> Retour
+                </button>
+                <button class="nav-btn nav-btn-next" id="nextBtn" style="display: none;">
+                    Suivant <span class="arrow">→</span>
+                </button>
+                <button class="nav-btn nav-btn-submit" id="submitBtn" style="display: none;">
+                    Envoyer
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- OTP Block (shown after Q8) -->
+    <div class="otp-block" id="otpBlock" style="display: none;">
+        <div class="otp-content">
+            <h3>Vérifiez votre numéro</h3>
+            <p>Nous avons envoyé un code à votre téléphone</p>
+
+            <div class="otp-input-group">
+                <input
+                    type="text"
+                    id="otpCode"
+                    class="otp-input"
+                    placeholder="000000"
+                    maxlength="6"
+                    autocomplete="one-time-code"
+                >
+                <div id="otpStatus" class="otp-status"></div>
+                <div id="otpTimer" class="otp-timer"></div>
+            </div>
+
+            <button class="btn btn-secondary" id="sendOtpBtn">Envoyer le code</button>
+        </div>
+    </div>
+
+    <!-- Thank You Page -->
+    <div class="thank-you-page" id="thankYouPage" style="display: none;">
+        <div class="thank-you-content">
+            <div class="thank-you-icon">✨</div>
+            <h2>Merci <span id="thankYouName"></span>!</h2>
+            <p>Votre demande de bilan patrimonial a été reçue.</p>
+            <p class="thank-you-subtitle">Un expert Novi Finance vous appellera très bientôt pour analyser votre situation.</p>
+            <div class="thank-you-features">
+                <div class="feature">
+                    <span class="feature-icon">📞</span>
+                    <span>Appel gratuit</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">🛡️</span>
+                    <span>Données sécurisées</span>
+                </div>
+                <div class="feature">
+                    <span class="feature-icon">⏱️</span>
+                    <span>20 minutes max</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exclusion Page -->
+    <div class="exclusion-page" id="exclusionPage" style="display: none;">
+        <div class="exclusion-content">
+            <div class="exclusion-icon">⚠️</div>
+            <h2>Merci pour votre intérêt</h2>
+            <p>Malheureusement, votre profil ne correspond pas aux critères actuels de nos services.</p>
+            <p class="exclusion-subtitle">Nous vous recommandons de nous contacter directement pour discuter de vos options.</p>
+            <a href="https://novifinance.fr" class="btn btn-primary">Visiter notre site</a>
+        </div>
+    </div>
+
+    <!-- Loading Message -->
+    <div class="loading-message" id="loadingMessage" style="display: none;">
+        <div class="spinner"></div>
+        <p>Envoi de vos données...</p>
+    </div>
+
+    <form id="polarisFunnel" style="display: none;">
+        <!-- Hidden inputs for form data -->
+        <input type="hidden" name="q1_project" id="q1_project">
+        <input type="hidden" name="q2_profession" id="q2_profession">
+        <input type="hidden" name="q2b_patrimoine" id="q2b_patrimoine">
+        <input type="hidden" name="q3_family" id="q3_family">
+        <input type="hidden" name="q4_revenu" id="q4_revenu">
+        <input type="hidden" name="q4b_patrimoine" id="q4b_patrimoine">
+        <input type="hidden" name="q5_age" id="q5_age">
+        <input type="hidden" name="q6_prenom" id="q6_prenom">
+        <input type="hidden" name="q7_email" id="q7_email">
+        <input type="hidden" name="q8_phone" id="q8_phone">
+    </form>
+
+    <script src="script.js"></script>
+</body>
+</html>
