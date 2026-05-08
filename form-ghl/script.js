@@ -575,15 +575,15 @@ function updateFormInputs() {
 
 // ===== OTP HANDLING =====
 async function sendOTP() {
-    const phone = formData.q8_phone?.trim();
+    const phoneNumber = formData.q8_phone?.trim();
 
-    if (!phone) {
+    if (!phoneNumber) {
         otpStatus.textContent = '❌ Veuillez entrer votre numéro';
         otpStatus.classList.add('error');
         return;
     }
 
-    if (!/^\+?[0-9\s]{9,}$/.test(phone)) {
+    if (!/^\+?[0-9\s]{9,}$/.test(phoneNumber)) {
         otpStatus.textContent = '❌ Numéro de téléphone invalide';
         otpStatus.classList.add('error');
         return;
@@ -597,17 +597,12 @@ async function sendOTP() {
         const response = await fetch('/api/send-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone }),
+            body: JSON.stringify({ phoneNumber }),
         });
 
         if (!response.ok) throw new Error('Erreur lors de l\'envoi du code');
 
-        const data = await response.json();
-        otpCode = data.otpCode;
         otpExpiry = Date.now() + CONFIG.OTP_TIMEOUT;
-
-        window._DEV_OTP = otpCode;
-        console.log(`[DEV] Code OTP: ${otpCode}`);
 
         otpStatus.textContent = '✓ Code envoyé avec succès';
         otpStatus.classList.add('success');
@@ -648,22 +643,45 @@ function startOTPTimer() {
     }, 1000);
 }
 
-function verifyOTPRealtime() {
+async function verifyOTPRealtime() {
     const otpInput = document.getElementById('otpCode');
     const enteredCode = otpInput.value.trim();
 
     if (enteredCode.length === CONFIG.OTP_LENGTH) {
-        if (enteredCode === otpCode) {
-            otpVerified = true;
-            otpStatus.textContent = '✓ Numéro de téléphone vérifié';
-            otpStatus.classList.add('success');
-            otpStatus.classList.remove('error');
-            otpInput.disabled = true;
-            sendOtpBtn.disabled = true;
-        } else {
-            otpStatus.textContent = '❌ Code incorrect';
+        otpStatus.textContent = '⏳ Vérification...';
+        otpStatus.classList.remove('error', 'success');
+
+        try {
+            const response = await fetch('/api/verify-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    phoneNumber: formData.q8_phone,
+                    otpCode: enteredCode,
+                    firstName: formData.q6_prenom,
+                    lastName: formData.q6_prenom,
+                    email: formData.q7_email,
+                }),
+            });
+
+            if (response.ok) {
+                otpVerified = true;
+                otpStatus.textContent = '✓ Numéro de téléphone vérifié';
+                otpStatus.classList.add('success');
+                otpStatus.classList.remove('error');
+                otpInput.disabled = true;
+                sendOtpBtn.disabled = true;
+            } else {
+                const error = await response.json();
+                otpStatus.textContent = '❌ ' + (error.error || 'Code incorrect');
+                otpStatus.classList.add('error');
+                otpStatus.classList.remove('success');
+                otpVerified = false;
+            }
+        } catch (error) {
+            console.error('Erreur vérification OTP:', error);
+            otpStatus.textContent = '❌ Erreur lors de la vérification';
             otpStatus.classList.add('error');
-            otpStatus.classList.remove('success');
             otpVerified = false;
         }
     }
@@ -710,28 +728,8 @@ async function submitForm(e) {
         leadData.tags.push('Revenu faible — patrimoine existant');
     }
 
-    loadingMessage.style.display = 'flex';
     submitBtn.disabled = true;
-
-    try {
-        const ghlResponse = await fetch('/api/create-lead-ghl', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ leadData, apiKey: CONFIG.GHL_API_KEY }),
-        });
-
-        if (!ghlResponse.ok) {
-            const errorData = await ghlResponse.json();
-            throw new Error(errorData.message || 'Erreur lors de la création du lead');
-        }
-
-        showThankYouPage();
-    } catch (error) {
-        console.error('Erreur submission:', error);
-        alert('Une erreur s\'est produite. Veuillez réessayer: ' + error.message);
-        submitBtn.disabled = false;
-        loadingMessage.style.display = 'none';
-    }
+    showThankYouPage();
 }
 
 function showThankYouPage() {
