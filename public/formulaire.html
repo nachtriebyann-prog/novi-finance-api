@@ -2004,10 +2004,10 @@ function Step({ idx, step, status, active, value, onPick, onBack, onNext, deskto
             </div>
             <div style={{marginBottom:12}}>
               <div className="eyebrow" style={{marginBottom:6}}>Nom complet</div>
-              <input className="input-field" placeholder="Jean Dupont" value={fullName} onChange={(e) => setFullName(e.target.value)}/>
+              <input className="input-field" placeholder="Jean Dupont" value={fullName} onChange={(e) => { setFullName(e.target.value); window._noviFormData = {...(window._noviFormData||{}), fullName: e.target.value}; }}/>
             </div>
             <div className="eyebrow" style={{marginBottom:6}}>Email</div>
-            <input className="input-field" placeholder="vous@email.com" value={email} onChange={(e) => setEmail(e.target.value)} style={{marginBottom:6}}/>
+            <input className="input-field" placeholder="vous@email.com" value={email} onChange={(e) => { setEmail(e.target.value); window._noviFormData = {...(window._noviFormData||{}), email: e.target.value}; }} style={{marginBottom:6}}/>
             {email && !isValidEmail(email) && (
               <div style={{fontSize:11.5, color:"#E89E5C", marginBottom:12}}>
                 Veuillez entrer une adresse email valide
@@ -2097,7 +2097,7 @@ function Step({ idx, step, status, active, value, onPick, onBack, onNext, deskto
             {otpPhoneState === "phone" && (
               <>
                 <div className="eyebrow" style={{marginBottom:6}}>Téléphone</div>
-                <input className="input-field" placeholder="+33 6 12 34 56 78" value={otpPhone} onChange={(e)=> { setOtpPhone(e.target.value); setOtpError(""); }} style={{marginBottom:otpError ? 10 : 20}}/>
+                <input className="input-field" placeholder="+33 6 12 34 56 78" value={otpPhone} onChange={(e)=> { setOtpPhone(e.target.value); setOtpError(""); window._noviFormData = {...(window._noviFormData||{}), phone: e.target.value}; }} style={{marginBottom:otpError ? 10 : 20}}/>
                 {otpError && <div style={{color:"#e05252", fontSize:13, marginBottom:16, padding:"8px 12px", background:"rgba(224,82,82,.1)", borderRadius:8}}>{otpError}</div>}
                 <button className="btn btn-primary" disabled={!isPhoneValid(otpPhone) || otpSending} style={{padding:"14px 22px", fontSize:14, opacity: (!isPhoneValid(otpPhone) || otpSending) ? 0.5 : 1, cursor: (!isPhoneValid(otpPhone) || otpSending) ? "not-allowed" : "pointer"}} onClick={() => {
                   setOtpError("");
@@ -2511,6 +2511,7 @@ function FormScreen({ desktop=false, activeIdx=0 }){
   // Force start at step 0 (age) instead of step 5 (contact)
   const [active, setActive] = useFormState(0);
   const [picks, setPicks] = useFormState({});
+  useFormEffect(()=>{ window._noviFormData = {...(window._noviFormData||{}), picks}; }, [picks]);
   const [verifying, setVerifying] = useFormState(false);
   const [verificationPhase, setVerificationPhase] = useFormState("loading"); // "loading" | "congratulations"
   const [verificationComplete, setVerificationComplete] = useFormState(false);
@@ -3599,7 +3600,33 @@ function App(){
       if (!btn) return;
       const t = (btn.textContent||"").toLowerCase();
       if (t.includes("recevoir mon bilan")) {
-        e.preventDefault(); window.location.href = "thank-you.html";
+        e.preventDefault();
+        const fd = window._noviFormData || {};
+        const p = fd.picks || {};
+        const ageMap    = {"20-30":"20-30 ans","30-40":"30-40 ans","40-50":"40-50 ans","50+":"50 ans et +"};
+        const famMap    = {"celib":"Célibataire","couple":"En couple","famille":"En couple avec enfants"};
+        const taxMap    = {"<2k":"Moins de 2 000 € / an","2-5k":"Entre 2 000 € et 5 000 € / an","5-10k":"Entre 5 000 € et 10 000 € / an",">10k":"Plus de 10 000 € / an"};
+        const patriMap  = {"<20k":"Moins de 20 000 €","20-100k":"Entre 20 000 € et 100 000 €","100-300k":"Entre 100 000 € et 300 000 €",">300k":"Plus de 300 000 €"};
+        const objMap    = {"impots":"Réduire mes impôts","retraite":"Préparer ma retraite","transmission":"Transmettre à mes enfants","epargne":"Faire fructifier mon épargne"};
+        fetch("/api/create-ghl-contact", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            fullName:          fd.fullName || "",
+            email:             fd.email    || "",
+            phone:             fd.phone    || "",
+            age_range:         ageMap[p.age]         || p.age         || "",
+            family_status:     famMap[p.famille]     || p.famille     || "",
+            taxrange:          taxMap[p.impots]      || p.impots      || "",
+            patrimoine_range:  patriMap[p.patrimoine]|| p.patrimoine  || "",
+            objective_target:  objMap[p.objectif]    || p.objectif    || "",
+            rgpdConsent: true
+          })
+        }).then(r => r.json()).then(d => {
+          window.location.href = d.eligible === false ? "non-eligible.html" : "thank-you.html";
+        }).catch(() => {
+          window.location.href = "thank-you.html";
+        });
       }
     };
     document.addEventListener("click", onClick);
