@@ -2040,14 +2040,23 @@ function Step({ idx, step, status, active, value, onPick, onBack, onNext, deskto
   }
   if (step.id === "otp") {
     const [otpPhoneState, setOtpPhoneState] = useFormState("phone");
-    const [otpPhone, setOtpPhone] = useFormState("+33 6 12 34 56 78");
+    const [otpPhone, setOtpPhone] = useFormState("");
     const [otpCode, setOtpCode] = useFormState(["","","",""]);
     const [otpTimer, setOtpTimer] = useFormState(5);
+    const [otpError, setOtpError] = useFormState("");
+    const [otpSending, setOtpSending] = useFormState(false);
+    const [otpVerifying, setOtpVerifying] = useFormState(false);
 
-    // Validate phone number - must have at least 10 digits
     const isPhoneValid = (phone) => {
       const digitsOnly = phone.replace(/\D/g, "");
       return digitsOnly.length >= 10;
+    };
+
+    const maskPhone = (p) => {
+      if (!p) return "";
+      const clean = p.replace(/\s/g, "");
+      const showChars = clean.startsWith("+") ? 4 : 2;
+      return clean.slice(0, showChars) + " " + "•".repeat(Math.max(6, clean.length - showChars));
     };
 
     useFormEffect(() => {
@@ -2088,9 +2097,26 @@ function Step({ idx, step, status, active, value, onPick, onBack, onNext, deskto
             {otpPhoneState === "phone" && (
               <>
                 <div className="eyebrow" style={{marginBottom:6}}>Téléphone</div>
-                <input className="input-field" value={otpPhone} onChange={(e)=> setOtpPhone(e.target.value)} style={{marginBottom:20}}/>
-                <button className="btn btn-primary" disabled={!isPhoneValid(otpPhone)} style={{padding:"14px 22px", fontSize:14, opacity: !isPhoneValid(otpPhone) ? 0.5 : 1, cursor: !isPhoneValid(otpPhone) ? "not-allowed" : "pointer"}} onClick={() => setOtpPhoneState("verifying")}>
-                  Valider <Icon.arrow/>
+                <input className="input-field" placeholder="+33 6 12 34 56 78" value={otpPhone} onChange={(e)=> { setOtpPhone(e.target.value); setOtpError(""); }} style={{marginBottom:otpError ? 10 : 20}}/>
+                {otpError && <div style={{color:"#e05252", fontSize:13, marginBottom:16, padding:"8px 12px", background:"rgba(224,82,82,.1)", borderRadius:8}}>{otpError}</div>}
+                <button className="btn btn-primary" disabled={!isPhoneValid(otpPhone) || otpSending} style={{padding:"14px 22px", fontSize:14, opacity: (!isPhoneValid(otpPhone) || otpSending) ? 0.5 : 1, cursor: (!isPhoneValid(otpPhone) || otpSending) ? "not-allowed" : "pointer"}} onClick={() => {
+                  setOtpError("");
+                  setOtpSending(true);
+                  setOtpTimer(5);
+                  fetch("/api/send-otp", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({phone: otpPhone})
+                  }).then(r => r.json().then(d => ({ok: r.ok, d}))).then(({ok, d}) => {
+                    if (!ok) throw new Error(d.error || "Erreur lors de l'envoi du SMS");
+                    setOtpPhoneState("verifying");
+                  }).catch(e => {
+                    setOtpError(e.message);
+                  }).finally(() => {
+                    setOtpSending(false);
+                  });
+                }}>
+                  {otpSending ? "Envoi en cours..." : <><span>Valider</span> <Icon.arrow/></>}
                 </button>
               </>
             )}
@@ -2153,7 +2179,7 @@ function Step({ idx, step, status, active, value, onPick, onBack, onNext, deskto
                           Entrez votre code
                         </div>
                         <div style={{fontSize:14, color:"var(--ink-70)", marginBottom:32, lineHeight:1.5}}>
-                          Vérifiez le SMS envoyé au <span style={{color:"var(--copper-light)"}}>+33 6 ••••••••</span>
+                          Vérifiez le SMS envoyé au <span style={{color:"var(--copper-light)"}}>{maskPhone(otpPhone)}</span>
                         </div>
                         <div style={{display:"flex", gap:12, marginBottom:32, justifyContent:"center"}}>
                           {[0,1,2,3].map(i=>(
@@ -2169,12 +2195,23 @@ function Step({ idx, step, status, active, value, onPick, onBack, onNext, deskto
                                 if (newCode[i] && i < 3) {
                                   document.querySelector(`input[data-otp-index="${i+1}"]`)?.focus();
                                 } else if (newCode.every(digit => digit !== "")) {
-                                  // All 4 digits filled - validate and proceed
                                   const code = newCode.join("");
-                                  // Accept test codes or any valid 4-digit code for now
-                                  if (code === "1111" || code === "0000" || code.length === 4) {
+                                  setOtpVerifying(true);
+                                  setOtpError("");
+                                  fetch("/api/verify-otp", {
+                                    method: "POST",
+                                    headers: {"Content-Type": "application/json"},
+                                    body: JSON.stringify({phone: otpPhone, code})
+                                  }).then(r => r.json().then(d => ({ok: r.ok, d}))).then(({ok, d}) => {
+                                    if (!ok) throw new Error(d.error || "Code incorrect");
                                     setTimeout(() => onNext(), 300);
-                                  }
+                                  }).catch(e => {
+                                    setOtpError(e.message);
+                                    setOtpCode(["","","",""]);
+                                    setTimeout(() => document.querySelector('[data-otp-index="0"]')?.focus(), 100);
+                                  }).finally(() => {
+                                    setOtpVerifying(false);
+                                  });
                                 }
                               }}
                               data-otp-index={i}
@@ -2193,10 +2230,13 @@ function Step({ idx, step, status, active, value, onPick, onBack, onNext, deskto
                             />
                           ))}
                         </div>
+                        {otpError && <div style={{color:"#e05252", fontSize:13, marginBottom:16, padding:"8px 12px", background:"rgba(224,82,82,.1)", borderRadius:8}}>{otpError}</div>}
+                        {otpVerifying && <div style={{fontSize:13, color:"var(--ink-50)", marginBottom:16}}>Vérification en cours...</div>}
                         <button
                           onClick={() => {
                             setOtpPhoneState("phone");
                             setOtpCode(["","","",""]);
+                            setOtpError("");
                           }}
                           style={{
                             background:"none",

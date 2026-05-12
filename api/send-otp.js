@@ -23,7 +23,7 @@ export default async function handler(req, res) {
 
                     try {
                         // Generate OTP
-                            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+                            const otp = Math.floor(1000 + Math.random() * 9000).toString();
 
                                 // Store OTP in SuperBase with TTL (10 minutes)
                                     const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
