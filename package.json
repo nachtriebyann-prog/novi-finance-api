@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "Vercel serverless functions for Novi Finance GHL integration",
     "main": "api/index.js",
+    "type": "module",
     "dependencies": {
           "twilio": "^4.10.0",
           "@supabase/supabase-js": "^2.38.0",
