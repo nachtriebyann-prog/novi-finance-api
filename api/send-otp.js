@@ -18,8 +18,9 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Configuration Twilio manquante sur le serveur' });
   }
   if (!SUPABASE_URL || !SUPABASE_KEY) {
-    console.error('Missing Supabase env vars');
-    return res.status(500).json({ error: 'Configuration Supabase manquante sur le serveur' });
+    const missing = [!SUPABASE_URL && 'SUPABASE_URL', !SUPABASE_KEY && 'SUPABASE_KEY'].filter(Boolean);
+    console.error('Missing Supabase env vars:', missing);
+    return res.status(500).json({ error: `Vars manquantes: ${missing.join(', ')}` });
   }
 
   try {
