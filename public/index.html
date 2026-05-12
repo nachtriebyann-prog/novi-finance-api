@@ -1,0 +1,3574 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Novi Finance — Votre bilan patrimonial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+/* Novi Finance — Velvet × Liquid Glass design tokens */
+
+:root {
+  --velvet: #0A0908;
+  --velvet-warm: #1a1410;
+  --velvet-2: #14100D;
+  --copper: #B87333;
+  --copper-light: #E89E5C;
+  --copper-deep: #8a541f;
+  --ink-90: rgba(255, 255, 255, 0.92);
+  --ink-70: rgba(255, 255, 255, 0.66);
+  --ink-50: rgba(255, 255, 255, 0.46);
+  --ink-30: rgba(255, 255, 255, 0.28);
+  --ink-15: rgba(255, 255, 255, 0.15);
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-bg-2: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-strong: rgba(255, 255, 255, 0.14);
+  --glow-copper: 0 30px 60px -20px rgba(184, 115, 51, 0.42);
+  --shadow-deep: 0 24px 60px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255,255,255,.04);
+  --shadow-card: 0 18px 40px -12px rgba(0, 0, 0, 0.6);
+  --serif: "Instrument Serif", "Cormorant Garamond", Georgia, serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* ───────── Velvet stage ───────── */
+.nv-stage {
+  position: relative;
+  background: var(--velvet);
+  color: var(--ink-90);
+  font-family: var(--sans);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  isolation: isolate;
+}
+.nv-stage * { box-sizing: border-box; }
+
+.nv-stage::before {
+  /* radial center glow */
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 18%, rgba(184,115,51,.20), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(232,158,92,.08), transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 0%, #1a1410, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+.nv-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 75% at 50% 30%, #000 30%, transparent 78%);
+  mask-image: radial-gradient(ellipse 80% 75% at 50% 30%, #000 30%, transparent 78%);
+  pointer-events: none;
+  z-index: 0;
+  opacity: .9;
+}
+.nv-conic {
+  position: absolute;
+  width: 130%; aspect-ratio: 1;
+  left: 50%; top: -30%;
+  transform: translateX(-50%);
+  background: conic-gradient(from 220deg at 50% 50%,
+    transparent 0deg,
+    rgba(184,115,51,.18) 60deg,
+    rgba(232,158,92,.10) 120deg,
+    transparent 200deg,
+    rgba(184,115,51,.10) 280deg,
+    transparent 360deg);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: .9;
+}
+.nv-content { position: relative; z-index: 1; }
+
+/* film grain via SVG */
+.nv-grain::after{
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:2;
+  opacity:.35; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .35 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+/* ───────── Glass cards ───────── */
+.glass {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(30px) saturate(160%);
+  -webkit-backdrop-filter: blur(30px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: var(--shadow-card),
+    inset 0 1px 0 rgba(255,255,255,.06);
+}
+.glass-strong {
+  background: var(--glass-bg-2);
+  border-color: var(--glass-border-strong);
+}
+.glass-glow {
+  box-shadow: var(--glow-copper), var(--shadow-deep),
+    inset 0 1px 0 rgba(255,255,255,.08);
+}
+.glass-glow::before {
+  content:""; position:absolute; inset:-1px; border-radius:inherit;
+  background: linear-gradient(135deg, rgba(232,158,92,.35), transparent 30%, transparent 70%, rgba(184,115,51,.25));
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  padding: 1px;
+  pointer-events: none;
+  opacity: .9;
+}
+
+/* ───────── Buttons ───────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 10px;
+  padding: 16px 28px;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 16px; font-weight: 500; letter-spacing: -0.01em;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  text-decoration: none;
+}
+.btn-primary {
+  color: #1a0e04;
+  background: linear-gradient(135deg, #E89E5C 0%, #B87333 100%);
+  box-shadow: 0 8px 24px rgba(184,115,51,.4),
+    inset 0 1px 0 rgba(255,255,255,.4),
+    inset 0 -1px 0 rgba(0,0,0,.18);
+  font-weight: 600;
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 32px rgba(184,115,51,.55), inset 0 1px 0 rgba(255,255,255,.4); }
+.btn-secondary {
+  color: var(--ink-90);
+  background: rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.1);
+  backdrop-filter: blur(20px);
+}
+.btn-secondary:hover { background: rgba(255,255,255,.08); }
+.btn-ghost {
+  color: var(--ink-70);
+  background: transparent;
+  padding: 12px 18px;
+  font-size: 14px;
+}
+.btn-ghost:hover { color: var(--ink-90); }
+
+/* ───────── Pills / chips ───────── */
+.tag-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px 8px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  backdrop-filter: blur(20px);
+  font-size: 12.5px; letter-spacing: .01em;
+  color: var(--ink-70);
+}
+.tag-pill .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #5cd97c;
+  box-shadow: 0 0 0 3px rgba(92,217,124,.18);
+}
+.tag-pill .dot.copper { background: var(--copper-light); box-shadow: 0 0 0 3px rgba(232,158,92,.18); }
+
+.profile-chip {
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.07);
+  font-size: 12.5px;
+  color: var(--ink-50);
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+  font-family: var(--sans);
+}
+.profile-chip:hover { background: rgba(255,255,255,.06); color: var(--ink-70); }
+.profile-chip.active {
+  background: linear-gradient(135deg, rgba(232,158,92,.18), rgba(184,115,51,.10));
+  border-color: rgba(232,158,92,.45);
+  color: var(--ink-90);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 8px 24px -8px rgba(184,115,51,.4);
+}
+
+/* ───────── Type ───────── */
+.serif { font-family: var(--serif); font-weight: 400; letter-spacing: -0.02em; line-height: 1; }
+.serif-it { font-family: var(--serif); font-style: italic; }
+.eyebrow {
+  font-family: var(--sans);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-50);
+}
+.copper-text { color: var(--copper-light); }
+.mono { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; }
+
+/* numeric counter */
+.counter-num {
+  font-family: var(--serif);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  background: linear-gradient(180deg, #fff 0%, #f0d4b3 60%, #B87333 100%);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+}
+
+/* ───────── Form steps ───────── */
+.step-card {
+  padding: 18px 22px;
+  background: rgba(36, 28, 21, .92);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  transition: all .25s ease;
+  box-shadow: 0 8px 24px -12px rgba(0,0,0,.5);
+  position: relative;
+  z-index: 1;
+}
+.step-card.completed {
+  border-color: rgba(184,115,51,.32);
+  background: linear-gradient(180deg, rgba(48,32,20,.95), rgba(36,28,21,.95));
+}
+.step-card.active {
+  background: linear-gradient(180deg, rgba(54,38,24,.97), rgba(40,30,22,.97));
+  border-color: rgba(232,158,92,.42);
+  box-shadow: 0 30px 70px -25px rgba(184,115,51,.45),
+    inset 0 1px 0 rgba(255,255,255,.10);
+}
+.step-card.future {
+  opacity: 1;
+  background: rgba(36, 28, 21, .92);
+  border-color: rgba(255,255,255,.1);
+}
+.step-card.future .step-num {
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.2);
+  color: var(--ink-90);
+}
+.step-card.future span[style*="--ink-50"] { color: var(--ink-70) !important; }
+
+.step-num {
+  width: 24px; height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  font-size: 12px;
+  border: 1px solid rgba(255,255,255,.1);
+  color: var(--ink-50);
+  flex-shrink: 0;
+}
+.step-card.active .step-num {
+  background: linear-gradient(135deg, #E89E5C, #B87333);
+  color: #1a0e04;
+  border-color: transparent;
+  font-weight: 600;
+}
+.step-card.completed .step-num {
+  background: rgba(184,115,51,.15);
+  border-color: rgba(184,115,51,.4);
+  color: var(--copper-light);
+}
+
+.option-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  background: rgba(255,255,255,.025);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all .15s;
+  font-size: 14.5px;
+  color: var(--ink-70);
+}
+.option-row:hover { background: rgba(255,255,255,.05); color: var(--ink-90); }
+.option-row.selected {
+  background: linear-gradient(135deg, rgba(232,158,92,.16), rgba(184,115,51,.06));
+  border-color: rgba(232,158,92,.45);
+  color: var(--ink-90);
+}
+.option-row .check {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.12);
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.option-row.selected .check {
+  background: var(--copper-light);
+  border-color: var(--copper-light);
+  color: #1a0e04;
+}
+
+.input-field {
+  width: 100%;
+  padding: 14px 18px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 12px;
+  color: var(--ink-90);
+  font-family: var(--sans);
+  font-size: 15px;
+  transition: all .15s;
+}
+.input-field:focus {
+  outline: none;
+  background: rgba(255,255,255,.05);
+  border-color: rgba(232,158,92,.45);
+  box-shadow: 0 0 0 4px rgba(232,158,92,.08);
+}
+.input-field::placeholder { color: var(--ink-30); }
+
+.otp-slot {
+  width: 46px; height: 56px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius: 12px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.08);
+  font-family: var(--serif);
+  font-size: 28px;
+  color: var(--ink-90);
+  transition: all .2s;
+}
+.otp-slot.filled {
+  background: linear-gradient(135deg, rgba(232,158,92,.16), rgba(184,115,51,.06));
+  border-color: rgba(232,158,92,.5);
+}
+.otp-slot.cursor {
+  border-color: rgba(232,158,92,.7);
+  box-shadow: 0 0 0 4px rgba(232,158,92,.1);
+}
+
+/* progress bar */
+.progress {
+  height: 2px; width: 100%;
+  background: rgba(255,255,255,.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress > i {
+  display: block; height: 100%;
+  background: linear-gradient(90deg, #B87333, #E89E5C);
+  box-shadow: 0 0 12px rgba(232,158,92,.6);
+  border-radius: inherit;
+}
+
+/* ───────── FAQ ───────── */
+.faq-row {
+  padding: 18px 22px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  cursor: pointer;
+}
+.faq-row:last-child { border-bottom: none; }
+.faq-row .q { display:flex; justify-content:space-between; align-items:center; gap:16px; }
+
+/* ───────── Legal pages (mentions, RGPD, CGU, réclamations) ───────── */
+.legal-back {
+  display:inline-flex; align-items:center; gap:8px;
+  font-family: var(--mono); font-size: 11px; letter-spacing:.12em;
+  text-transform: uppercase; color: var(--ink-50);
+  background: transparent; border: none; cursor: pointer; padding: 0;
+  margin-bottom: 32px;
+  transition: color .15s;
+}
+.legal-back:hover { color: var(--copper-light); }
+.legal-prose { color: var(--ink-70); font-size: 15px; line-height: 1.65; }
+.legal-prose h2 {
+  font-family: var(--serif); font-weight: 400; letter-spacing: -0.02em;
+  font-size: 26px; line-height: 1.2; color: var(--ink-90);
+  margin: 48px 0 16px; display: flex; align-items: baseline; gap: 14px;
+}
+.legal-prose h2 .legal-num {
+  font-family: var(--serif); font-style: italic; font-size: 32px;
+  color: var(--copper-light); letter-spacing: -.03em; line-height: 1;
+  flex-shrink: 0; min-width: 28px;
+}
+.legal-prose h3 {
+  font-family: var(--sans); font-weight: 500; font-size: 14px;
+  color: var(--ink-90); letter-spacing: .01em;
+  margin: 28px 0 10px; text-transform: none;
+}
+.legal-prose p { margin: 0 0 14px; }
+.legal-prose ul { margin: 0 0 16px; padding-left: 0; list-style: none; }
+.legal-prose ul li {
+  position: relative; padding-left: 22px; margin-bottom: 10px;
+}
+.legal-prose ul li::before {
+  content: ""; position: absolute; left: 0; top: 11px;
+  width: 8px; height: 1px; background: var(--copper-light);
+}
+.legal-prose strong { color: var(--ink-90); font-weight: 500; }
+.legal-prose a { color: var(--copper-light); text-decoration: none; border-bottom: 1px solid rgba(232,158,92,.3); }
+.legal-prose a:hover { border-bottom-color: var(--copper-light); }
+.legal-table {
+  display: grid; grid-template-columns: 1fr; gap: 0;
+  border: 1px solid rgba(255,255,255,.07); border-radius: 14px;
+  overflow: hidden; margin: 16px 0 24px;
+  background: rgba(255,255,255,.015);
+}
+.legal-table .row {
+  display: grid; grid-template-columns: 200px 1fr;
+  gap: 20px; padding: 14px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  font-size: 14px;
+}
+.legal-table .row:last-child { border-bottom: none; }
+.legal-table .row .k {
+  color: var(--ink-50); font-family: var(--mono);
+  font-size: 11px; letter-spacing: .08em;
+  text-transform: uppercase; padding-top: 3px;
+}
+.legal-table .row .v { color: var(--ink-90); }
+@media (max-width: 700px) {
+  .legal-table .row { grid-template-columns: 1fr; gap: 4px; padding: 14px 16px; }
+}
+.legal-data-table {
+  border: 1px solid rgba(255,255,255,.07); border-radius: 14px;
+  overflow: hidden; margin: 14px 0 24px;
+  background: rgba(255,255,255,.015);
+}
+.legal-data-table .head, .legal-data-table .r {
+  display: grid; grid-template-columns: 1.2fr 1.6fr 1fr;
+  padding: 12px 18px; gap: 16px; font-size: 13px;
+}
+.legal-data-table .head {
+  background: rgba(255,255,255,.03);
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-50);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.legal-data-table .r {
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  color: var(--ink-90);
+}
+.legal-data-table .r:last-child { border-bottom: none; }
+.legal-data-table .r .base { color: var(--ink-50); font-size: 12.5px; }
+@media (max-width: 700px) {
+  .legal-data-table .head { display:none; }
+  .legal-data-table .r {
+    grid-template-columns: 1fr; gap: 4px; padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,.05);
+  }
+  .legal-data-table .r .base { font-size: 12px; }
+}
+.legal-callout {
+  margin: 20px 0;
+  padding: 18px 22px;
+  border-left: 2px solid var(--copper-light);
+  background: linear-gradient(90deg, rgba(232,158,92,.06), transparent 80%);
+  border-radius: 0 12px 12px 0;
+  font-size: 14px; color: var(--ink-90);
+}
+.legal-toc {
+  margin: 28px 0 48px;
+  padding: 22px 26px;
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+  background: rgba(255,255,255,.015);
+}
+.legal-toc .eyebrow { margin-bottom: 14px; }
+.legal-toc ol {
+  margin: 0; padding: 0; list-style: none;
+  display: grid; gap: 8px;
+  counter-reset: toc;
+}
+.legal-toc ol li {
+  counter-increment: toc;
+  display: flex; align-items: baseline; gap: 12px;
+  font-size: 14px;
+}
+.legal-toc ol li::before {
+  content: counter(toc, decimal-leading-zero);
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em;
+  color: var(--copper-light); min-width: 22px;
+}
+.legal-toc a { color: var(--ink-70); text-decoration: none; transition: color .15s; }
+.legal-toc a:hover { color: var(--ink-90); }
+.legal-foot-contact {
+  margin-top: 64px; padding: 28px 30px;
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 14px;
+  background: rgba(255,255,255,.015);
+  display: flex; gap: 22px; align-items: center;
+  flex-wrap: wrap;
+}
+.legal-foot-contact .lab {
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink-50);
+}
+.legal-warn-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 9px; border-radius: 999px;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em;
+  background: rgba(232,158,92,.10); color: var(--copper-light);
+  border: 1px solid rgba(232,158,92,.25);
+}
+
+/* ───────── Misc ───────── */
+.divider-dot {
+  display: inline-block; width: 3px; height: 3px; border-radius: 50%;
+  background: var(--ink-30); margin: 0 8px; vertical-align: middle;
+}
+.copper-line {
+  height: 1px; width: 40px;
+  background: linear-gradient(90deg, transparent, var(--copper-light), transparent);
+}
+.kbd {
+  display:inline-flex; align-items:center;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  color: var(--ink-70);
+}
+
+/* artboard fixed widths */
+.viewport-mobile { width: 390px; }
+.viewport-desktop { width: 1280px; }
+
+.viewport-mobile, .viewport-desktop {
+  position: relative;
+  background: var(--velvet);
+  overflow: hidden;
+}
+
+/* Responsive desktop in real-page contexts (live HTML pages, not artboards
+   which have a hard width). When .nv-stage is full-width (no .viewport-*
+   wrapper), keep things contained. */
+.nv-stage.responsive { width: 100%; max-width: 100%; }
+/* In live page context (.nf-page), stretch the stage to viewport width.
+   Artboards (DCArtboard with explicit width) are not affected. */
+/* Live page context: stretch the stage full-viewport (artboards keep fixed width via .nf-artboard wrapper). */
+#root > .viewport-desktop,
+#root > .viewport-mobile,
+#root > .nv-stage { width: 100%; max-width: 100%; min-height: 100vh; }
+.nv-stage.responsive, .nv-stage.responsive * { box-sizing: border-box; }
+html, body { overflow-x: hidden; }
+
+/* For the Hero variant artboards (smaller framing) */
+.hero-art {
+  background: var(--velvet);
+  position: relative;
+  overflow: hidden;
+}
+
+html, body { margin:0; padding:0; background: var(--velvet); color: var(--ink-90); }
+body { font-family: "Inter", system-ui, sans-serif; }
+/* nf-page removed */
+/* switcher removed */
+  </style>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <div id="otp-modal-portal"></div>
+  <script type="text/babel">/* global React */
+const { useState, useEffect, useRef, useMemo } = React;
+
+// ───────── SVG icons ─────────
+const Icon = {
+  check: (p={}) => (
+    <svg viewBox="0 0 16 16" width="12" height="12" fill="none" {...p}>
+      <path d="M3 8.2 6.4 11.5 13 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  arrow: (p={}) => (
+    <svg viewBox="0 0 20 20" width="16" height="16" fill="none" {...p}>
+      <path d="M4 10h12m0 0-4-4m4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  star: (p={}) => (
+    <svg viewBox="0 0 16 16" width="11" height="11" {...p}>
+      <path d="M8 1.5 9.9 5.7l4.6.5-3.4 3.1.9 4.5L8 11.6 4 13.8l.9-4.5-3.4-3.1 4.6-.5z" fill="currentColor"/>
+    </svg>
+  ),
+  shield: (p={}) => (
+    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" {...p}>
+      <path d="M8 2 3 4v4.5C3 11 5 13 8 14c3-1 5-3 5-5.5V4z" stroke="currentColor" strokeWidth="1.3"/>
+    </svg>
+  ),
+  plus: (p={}) => (
+    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" {...p}>
+      <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  ),
+  chev: (p={}) => (
+    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" {...p}>
+      <path d="M4 6 8 10 12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+};
+
+// ───────── Logo ─────────
+function NoviLogo({ size=20 }) {
+  return (
+    <span style={{display:"inline-flex", alignItems:"baseline", gap:1, fontFamily:"var(--serif)", fontSize:size, letterSpacing:"-0.02em", color:"var(--ink-90)"}}>
+      <span>Novi</span>
+      <span style={{color:"var(--copper-light)"}}>.</span>
+    </span>
+  );
+}
+
+// ───────── Institutional badge (AMF / ORIAS / CIF) ─────────
+function InstitutionBadge({ kind="AMF", desktop=false }){
+  // Stylized monogram badge — institutional feel without copying real marks.
+  const cfg = {
+    AMF:   { mono:"AMF",   sub:"CERTIFIÉ",      ring:"#E89E5C" },
+    ORIAS: { mono:"ORIAS", sub:"INSCRIT",       ring:"#B87333" },
+    CIF:   { mono:"CIF",   sub:"ENREGISTRÉ",    ring:"#E89E5C" },
+    RGPD:  { mono:"RGPD",  sub:"CONFORME",      ring:"#B87333" },
+  }[kind] || { mono:kind, sub:"CERTIFIÉ", ring:"#E89E5C" };
+  return (
+    <span style={{
+      display:"inline-flex", alignItems:"center", gap:8,
+      padding:"6px 12px 6px 6px",
+      border:"1px solid rgba(255,255,255,.1)",
+      background:"rgba(255,255,255,.03)",
+      borderRadius:999
+    }}>
+      <span style={{
+        width: desktop?28:24, height: desktop?28:24,
+        borderRadius:"50%",
+        background:`radial-gradient(circle at 30% 30%, rgba(232,158,92,.35), rgba(184,115,51,.05) 70%)`,
+        border:`1px solid ${cfg.ring}66`,
+        display:"flex", alignItems:"center", justifyContent:"center",
+        flexShrink:0,
+        position:"relative"
+      }}>
+        {/* concentric guilloché ring */}
+        <span style={{
+          position:"absolute", inset:2, borderRadius:"50%",
+          border:`1px dashed ${cfg.ring}55`
+        }}/>
+        <span style={{
+          fontFamily:"var(--serif)", fontSize: desktop?9.5:8.5,
+          color: cfg.ring, letterSpacing:".02em",
+          fontStyle:"italic", lineHeight:1, fontWeight:500,
+          position:"relative"
+        }}>
+          {cfg.mono === "ORIAS" ? "Or" : cfg.mono.slice(0,2)}
+        </span>
+      </span>
+      <span style={{display:"inline-flex", flexDirection:"column", gap:1, lineHeight:1}}>
+        <span style={{fontFamily:"var(--mono)", fontSize:8.5, letterSpacing:".15em", color:"var(--ink-50)"}}>{cfg.sub}</span>
+        <span style={{fontFamily:"var(--sans)", fontSize: desktop?12:11, fontWeight:600, color:"var(--ink-90)", letterSpacing:".06em"}}>{cfg.mono}</span>
+      </span>
+    </span>
+  );
+}
+
+// ───────── Trust badges row ─────────
+function TrustLine({ compact=false }) {
+  const badge = (logo, label) => (
+    <span style={{
+      padding: compact ? "10px 14px" : "14px 18px",
+      background:"rgba(255,255,255,.05)",
+      border:"1px solid rgba(255,255,255,.10)",
+      borderRadius:12,
+      display:"inline-flex",
+      alignItems:"center",
+      gap:8,
+      minWidth: compact ? "120px" : "140px"
+    }}>
+      <span style={{
+        width: compact?32:40, height: compact?28:32, borderRadius:8,
+        background:"#fff",
+        display:"flex", alignItems:"center", justifyContent:"center",
+        padding:4, flexShrink:0
+      }}>
+        <img src={logo} alt={label} style={{maxWidth:"100%", maxHeight:"100%", objectFit:"contain"}}/>
+      </span>
+      <span style={{display:"flex", flexDirection:"column", lineHeight:1.2}}>
+        <span style={{fontFamily:"var(--mono)", fontSize: compact?8.5:9, letterSpacing:".14em", color:"var(--ink-50)", textTransform:"uppercase"}}>Certifié</span>
+        <span style={{fontFamily:"var(--mono)", fontSize: compact?11:12, letterSpacing:".1em", color:"var(--ink-90)", textTransform:"uppercase", fontWeight:600}}>{label}</span>
+      </span>
+    </span>
+  );
+  return (
+    <div style={{display:"flex", flexDirection:"column", gap: compact?16:20, alignItems:"center"}}>
+      <div style={{display:"flex", flexWrap:"wrap", gap:compact?12:16, alignItems:"center", justifyContent:"center"}}>
+        {badge("assets/orias.png", "ORIAS")}
+        {badge("assets/amf.png", "AMF")}
+      </div>
+      <div style={{display:"flex", flexWrap:"wrap", gap:compact?12:16, alignItems:"center", justifyContent:"center"}}>
+        <span style={{display:"inline-flex", alignItems:"center", gap:6, padding: compact?"10px 13px":"12px 16px", background:"rgba(255,255,255,.05)", border:"1px solid rgba(255,255,255,.10)", borderRadius:999}}>
+          {[1,2,3,4].map(i=> <Icon.star key={i} style={{color:"var(--copper-light)", width:compact?14:16, height:compact?14:16}}/>)}
+          <Icon.star style={{color:"rgba(255,255,255,.18)", width:compact?14:16, height:compact?14:16}}/>
+          <span style={{marginLeft:8, fontFamily:"var(--mono)", fontSize: compact?11:12, letterSpacing:".05em"}}>4.7 · Trustpilot</span>
+        </span>
+      </div>
+      <div style={{display:"flex", flexWrap:"wrap", gap:compact?12:16, alignItems:"center", justifyContent:"center", borderTop:"2px solid rgba(232,158,92,.28)", paddingTop: compact?12:16, width:"100%"}}>
+        <span style={{display:"inline-flex", alignItems:"center", gap:8, fontFamily:"var(--mono)", fontSize: compact?10.5:11, letterSpacing:".08em", color:"var(--copper-light)", textTransform:"uppercase", fontWeight:600}}>
+          <span>Ni courtier</span>
+          <span style={{width:3, height:3, borderRadius:"50%", background:"rgba(232,158,92,.6)"}}/>
+          <span>Ni vendeur</span>
+          <span style={{width:3, height:3, borderRadius:"50%", background:"rgba(232,158,92,.6)"}}/>
+          <span>Conseil indépendant</span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function EngagementsBand({ desktop=false }){
+  const items = ["Aucun Pinel", "Aucun produit maison", "Architecture ouverte", "Aucun démarchage"];
+  return (
+    <div style={{display:"flex", flexDirection:"column", gap: desktop?16:12, alignItems:"center"}}>
+      <div style={{fontFamily:"var(--mono)", fontSize: desktop?11:10.5, letterSpacing:".08em", color:"var(--copper-light)", textTransform:"uppercase", fontWeight:600}}>
+        Nos engagements envers vous
+      </div>
+      <div style={{display:"flex", flexWrap:"wrap", gap: desktop?14:12, justifyContent:"center", alignItems:"center"}}>
+        {items.map((it,i)=> (
+          <span key={i} style={{
+            display:"inline-flex", alignItems:"center", gap:8,
+            padding: desktop?"12px 16px":"10px 13px",
+            border:"1px solid rgba(232,158,92,.28)",
+            background:"rgba(232,158,92,.06)",
+            borderRadius:999, fontSize: desktop?12.5:11.5,
+            color:"var(--ink-90)", letterSpacing:"-0.005em"
+          }}>
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="none" style={{color:"var(--copper-light)", flexShrink:0}}>
+              <path d="M3 8.2 6.4 11.5 13 5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            {it}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ConseillerCard({ desktop=false }){
+  return (
+    <div className="glass" style={{
+      padding: desktop?"32px 36px":"24px 22px", borderRadius:22,
+      display:"flex", flexDirection: desktop?"row":"column",
+      gap: desktop?28:18, alignItems: desktop?"center":"flex-start"
+    }}>
+      <div style={{
+        width: desktop?112:88, height: desktop?112:88, borderRadius:"50%", flexShrink:0,
+        background:"linear-gradient(135deg, rgba(232,158,92,.22), rgba(184,115,51,.06) 60%, rgba(255,255,255,.04))",
+        border:"1px solid rgba(255,255,255,.08)",
+        display:"flex", alignItems:"center", justifyContent:"center", position:"relative"
+      }}>
+        <span style={{position:"absolute", inset:6, borderRadius:"50%", border:"1px dashed rgba(232,158,92,.25)"}}/>
+        <svg viewBox="0 0 24 24" width={desktop?40:32} height={desktop?40:32} fill="none" stroke="currentColor" strokeWidth="1.3" style={{color:"var(--copper-light)"}}>
+          <circle cx="12" cy="9" r="3.2"/>
+          <path d="M5 19.5c1.6-3.4 4.3-5 7-5s5.4 1.6 7 5" strokeLinecap="round"/>
+        </svg>
+      </div>
+      <div style={{flex:1}}>
+        <div className="eyebrow" style={{marginBottom:8}}>— Qui réalisera votre bilan</div>
+        <div style={{fontFamily:"var(--serif)", fontSize: desktop?32:24, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:6}}>Un conseiller dédié</div>
+        <div style={{fontSize: desktop?14:13, color:"var(--ink-70)", lineHeight:1.5, marginBottom:12, maxWidth:520}}>
+          Une seule personne examine votre dossier, à voix nue. Pas de call-center, pas de script commercial — la personne qui rédige votre bilan est celle qui vous reçoit.
+        </div>
+        <div style={{display:"flex", flexWrap:"wrap", gap:8}}>
+          <span style={{
+            display:"inline-flex", alignItems:"center", gap:10,
+            padding:"6px 14px 6px 6px",
+            background:"rgba(255,255,255,.06)",
+            border:"1px solid rgba(255,255,255,.12)",
+            borderRadius:14
+          }}>
+            <span style={{
+              width:42, height:30, borderRadius:8,
+              background:"#fff",
+              display:"inline-flex", alignItems:"center", justifyContent:"center",
+              padding:4, flexShrink:0
+            }}>
+              <img src="assets/orias.png" alt="ORIAS" style={{maxWidth:"100%", maxHeight:"100%", objectFit:"contain"}}/>
+            </span>
+            <span style={{display:"inline-flex", flexDirection:"column", lineHeight:1.15}}>
+              <span style={{fontFamily:"var(--mono)", fontSize:9, letterSpacing:".14em", color:"var(--ink-50)", textTransform:"uppercase"}}>Certifié</span>
+              <span style={{fontFamily:"var(--mono)", fontSize:11.5, letterSpacing:".12em", color:"var(--ink-90)", textTransform:"uppercase", fontWeight:600}}>ORIAS</span>
+            </span>
+          </span>
+          <span style={{
+            display:"inline-flex", alignItems:"center", gap:10,
+            padding:"6px 14px 6px 6px",
+            background:"rgba(255,255,255,.06)",
+            border:"1px solid rgba(255,255,255,.12)",
+            borderRadius:14
+          }}>
+            <span style={{
+              width:42, height:30, borderRadius:8,
+              background:"#fff",
+              display:"inline-flex", alignItems:"center", justifyContent:"center",
+              padding:4, flexShrink:0
+            }}>
+              <img src="assets/amf.png" alt="AMF" style={{maxWidth:"100%", maxHeight:"100%", objectFit:"contain"}}/>
+            </span>
+            <span style={{display:"inline-flex", flexDirection:"column", lineHeight:1.15}}>
+              <span style={{fontFamily:"var(--mono)", fontSize:9, letterSpacing:".14em", color:"var(--ink-50)", textTransform:"uppercase"}}>Certifié</span>
+              <span style={{fontFamily:"var(--mono)", fontSize:11.5, letterSpacing:".12em", color:"var(--ink-90)", textTransform:"uppercase", fontWeight:600}}>AMF</span>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ───────── 10-year curve SVG ─────────
+function ProjectionCurve({ width=560, height=180, withLabels=true, compact=false }){
+  const W=width, H=height, P={l:40, r:30, t:18, b:28};
+  const xs = Array.from({length:11}, (_,i)=> P.l + (W - P.l - P.r) * (i/10));
+  // "Aujourd'hui" — slight up-drift but cumulative drag (climbing then flattening)
+  const today = [0, 4, 9, 13, 18, 21, 23, 24, 24.5, 25, 25.2];
+  // "Avec Novi" — accelerating compounding
+  const novi  = [0, 5, 12, 20, 30, 42, 56, 72, 90, 110, 132];
+  const yMax = 140;
+  const ys = (v)=> P.t + (H - P.t - P.b) * (1 - v/yMax);
+
+  const pathFor = (arr) => arr.map((v,i)=> `${i===0?'M':'L'} ${xs[i].toFixed(1)} ${ys(v).toFixed(1)}`).join(' ');
+  const todayD = pathFor(today);
+  const noviD = pathFor(novi);
+
+  // Area fill under novi
+  const noviArea = `${noviD} L ${xs[10]} ${ys(0)} L ${xs[0]} ${ys(0)} Z`;
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{display:"block"}}>
+      <defs>
+        <linearGradient id="noviFill" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor="rgba(255,255,255,.18)"/>
+          <stop offset="100%" stopColor="rgba(255,255,255,0)"/>
+        </linearGradient>
+        <linearGradient id="copperLine" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0%" stopColor="#8a541f" stopOpacity=".6"/>
+          <stop offset="100%" stopColor="#E89E5C"/>
+        </linearGradient>
+      </defs>
+
+      {/* baseline grid */}
+      {[0, 0.33, 0.66, 1].map(t=>(
+        <line key={t} x1={P.l} x2={W-P.r}
+          y1={P.t + (H-P.t-P.b)*t} y2={P.t + (H-P.t-P.b)*t}
+          stroke="rgba(255,255,255,.05)" strokeDasharray="2 4"/>
+      ))}
+
+      {/* novi area */}
+      <path d={noviArea} fill="url(#noviFill)"/>
+
+      {/* today path - copper dashed */}
+      <path d={todayD} fill="none" stroke="url(#copperLine)" strokeWidth="1.6" strokeDasharray="4 5" strokeLinecap="round"/>
+
+      {/* novi path - white solid */}
+      <path d={noviD} fill="none" stroke="rgba(255,255,255,.92)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+
+      {/* end markers */}
+      <circle cx={xs[10]} cy={ys(today[10])} r="3" fill="#E89E5C"/>
+      <circle cx={xs[10]} cy={ys(novi[10])} r="3.5" fill="#fff"/>
+
+      {/* axis labels */}
+      {withLabels && (
+        <g fontFamily="var(--mono)" fontSize="10" fill="rgba(255,255,255,.4)">
+          <text x={xs[0]} y={H-8}>2025</text>
+          <text x={xs[5]} y={H-8} textAnchor="middle">2030</text>
+          <text x={xs[10]} y={H-8} textAnchor="end">2035</text>
+        </g>
+      )}
+
+      {/* inline labels */}
+      {!compact && (
+        <g fontFamily="var(--sans)" fontSize="10">
+          {/* avec Novi — placed in upper-left of chart, away from the curve */}
+          <text x={xs[1]} y={P.t+12} fill="#fff" fontWeight="500">avec Novi</text>
+          {/* aujourd'hui — placed at the right end of the flat dashed line */}
+          <text x={xs[10]-2} y={ys(today[10])+14} textAnchor="end" fill="#E89E5C">aujourd'hui</text>
+        </g>
+      )}
+    </svg>
+  );
+}
+
+// ───────── Donut variant ─────────
+function ProjectionDonut({ size=180 }){
+  const r=72, c=2*Math.PI*r;
+  const lossPct = 0.18; // % of patrimoine perdu
+  return (
+    <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size}>
+      <defs>
+        <linearGradient id="dgrad" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0%" stopColor="#E89E5C"/>
+          <stop offset="100%" stopColor="#B87333"/>
+        </linearGradient>
+      </defs>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,.08)" strokeWidth="14"/>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="url(#dgrad)" strokeWidth="14"
+        strokeDasharray={`${c*lossPct} ${c}`} strokeDashoffset={c*0.25} strokeLinecap="round"
+        transform={`rotate(-90 ${size/2} ${size/2})`}/>
+      <text x={size/2} y={size/2-2} textAnchor="middle" fontFamily="var(--serif)" fontSize="28" fill="#fff" letterSpacing="-1">−18 %</text>
+      <text x={size/2} y={size/2+18} textAnchor="middle" fontFamily="var(--sans)" fontSize="10" fill="rgba(255,255,255,.5)" letterSpacing="1">FUITE / 10 ANS</text>
+    </svg>
+  );
+}
+
+// ───────── Bars variant ─────────
+function ProjectionBars({ width=520, height=160 }){
+  const data = Array.from({length:10}, (_,i)=> ({today: 8+i*1.2, novi: 4 + i*3.2}));
+  const W=width, H=height, P={l:30, r:20, t:14, b:26};
+  const groupW = (W - P.l - P.r) / 10;
+  const yMax = 38;
+  const yToPx = (v)=> P.t + (H-P.t-P.b)*(1 - v/yMax);
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{display:"block"}}>
+      <defs>
+        <linearGradient id="bnov" x1="0" x2="0" y1="0" y2="1"><stop stopColor="#fff" stopOpacity=".95"/><stop offset="1" stopColor="#fff" stopOpacity=".4"/></linearGradient>
+        <linearGradient id="btoday" x1="0" x2="0" y1="0" y2="1"><stop stopColor="#E89E5C"/><stop offset="1" stopColor="#8a541f" stopOpacity=".5"/></linearGradient>
+      </defs>
+      {data.map((d,i)=>{
+        const x = P.l + i*groupW + 4;
+        return (
+          <g key={i}>
+            <rect x={x} y={yToPx(d.today)} width={groupW*0.4} height={H-P.b - yToPx(d.today)} fill="url(#btoday)" rx="2"/>
+            <rect x={x+groupW*0.45} y={yToPx(d.novi)} width={groupW*0.4} height={H-P.b - yToPx(d.novi)} fill="url(#bnov)" rx="2"/>
+          </g>
+        );
+      })}
+      <g fontFamily="var(--mono)" fontSize="9" fill="rgba(255,255,255,.4)">
+        <text x={P.l} y={H-8}>2026</text>
+        <text x={W-P.r} y={H-8} textAnchor="end">2035</text>
+      </g>
+    </svg>
+  );
+}
+
+Object.assign(window, { Icon, NoviLogo, TrustLine, InstitutionBadge, ProjectionCurve, ProjectionDonut, ProjectionBars, EngagementsBand, ConseillerCard });
+</script>
+  <script type="text/babel">/* global React, Icon, NoviLogo, TrustLine, ProjectionCurve, ProjectionDonut, ProjectionBars */
+const { useState: useStateLanding } = React;
+
+function NavBar({ desktop=false }){
+  return (
+    <div style={{
+      display:"flex", alignItems:"center", justifyContent:"space-between",
+      padding: desktop ? "22px 56px" : "16px 22px",
+      borderBottom: "1px solid rgba(255,255,255,.04)"
+    }}>
+      <NoviLogo size={desktop?22:18}/>
+      <div className="tag-pill" style={{fontSize: desktop?12:10.5}}>
+        <span className="dot copper"/>
+        <span>Bilan · 0 €</span>
+      </div>
+    </div>
+  );
+}
+
+function HeroProfileChips({ active=1, onChange, desktop=false, mobile=false }){
+  const profiles = [
+    "20-30 ans · célibataire",
+    "30-40 ans · couple · 2 enfants",
+    "40-50 ans · cadre · patrimoine 100k+"
+  ];
+  return (
+    <div style={{
+      display:"flex", flexWrap: mobile?"wrap":"nowrap", gap:8, justifyContent:"center"
+    }}>
+      {profiles.map((p,i)=> (
+        <button key={i}
+          className={"profile-chip " + (i===active?"active":"")}
+          onClick={()=> onChange?.(i)}
+          style={{fontSize: desktop?13:11.5}}
+        >
+          {p}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function CounterCard({ desktop=false, variant="curve" }){
+  const cardPad = desktop ? "36px 40px" : "24px 22px";
+  return (
+    <div className="glass glass-glow" style={{padding: cardPad, borderRadius: desktop?28:22}}>
+      <div style={{
+        display:"flex",
+        flexDirection: desktop ? "row" : "column",
+        alignItems: desktop?"stretch":"flex-start",
+        justifyContent:"space-between",
+        gap: desktop?40:18,
+        marginBottom: desktop?28:18
+      }}>
+        <div>
+          <div className="eyebrow" style={{marginBottom: desktop?12:8, fontSize: desktop?11:10}}>
+            Manque à gagner annuel
+          </div>
+          <div className="counter-num" style={{fontSize: desktop?"clamp(64px, 7vw, 96px)":60, lineHeight:1}}>
+            <AnimatedEuro target={2380} suffix=" €"/>
+          </div>
+          <div style={{marginTop:10}}>
+            <LiveLossTicker perYear={2380} desktop={desktop}/>
+          </div>
+          <div style={{color:"var(--ink-50)", fontSize: desktop?13:11.5, marginTop:6, fontFamily:"var(--mono)", letterSpacing:".04em"}}>
+            ESTIMATION · COUPLE · 2 ENFANTS · 7K€ IMPÔTS
+          </div>
+        </div>
+        {desktop && variant==="curve" && (
+          <div style={{textAlign:"right", flexShrink:0}}>
+            <div className="eyebrow" style={{marginBottom:12}}>Sur 10 ans</div>
+            <div style={{fontFamily:"var(--serif)", fontSize:64, lineHeight:1, letterSpacing:"-0.04em", color:"var(--copper-light)"}}>
+              <AnimatedEuro target={28600} suffix=" €" duration={2200} delay={400}/>
+            </div>
+            <div style={{color:"var(--ink-50)", fontSize:11, marginTop:4, fontFamily:"var(--mono)"}}>
+              CUMUL · INFLATION 2 % INCLUSE
+            </div>
+          </div>
+        )}
+      </div>
+
+      {!desktop && variant==="curve" && (
+        <div style={{
+          display:"flex", justifyContent:"space-between", alignItems:"baseline",
+          padding:"14px 0", borderTop:"1px dashed rgba(255,255,255,.08)", marginBottom:8
+        }}>
+          <span className="eyebrow" style={{fontSize:10}}>Sur 10 ans</span>
+          <span style={{fontFamily:"var(--serif)", fontSize:32, color:"var(--copper-light)", letterSpacing:"-.03em"}}>−28 600 €</span>
+        </div>
+      )}
+
+      {variant==="curve" && <ProjectionCurve width={desktop?720:340} height={desktop?200:140} compact={!desktop}/>}
+      {variant==="donut" && (
+        <div style={{display:"flex", gap: desktop?40:20, alignItems:"center", justifyContent:"center", padding:"12px 0"}}>
+          <ProjectionDonut size={desktop?180:140}/>
+          <div style={{flex:1, maxWidth:340}}>
+            <div style={{color:"var(--ink-70)", fontSize: desktop?14:12.5, lineHeight:1.5}}>
+              Votre patrimoine perd <span style={{color:"var(--copper-light)"}}>18&nbsp;%</span> de sa valeur réelle sur dix ans, fiscalité et inflation cumulées.
+            </div>
+            <div style={{height:1, background:"rgba(255,255,255,.06)", margin:"14px 0"}}/>
+            <div style={{display:"flex", justifyContent:"space-between", fontFamily:"var(--mono)", fontSize:10.5, color:"var(--ink-50)", letterSpacing:".06em"}}>
+              <span>FUITE FISCALE</span><span>−9 %</span>
+            </div>
+            <div style={{display:"flex", justifyContent:"space-between", fontFamily:"var(--mono)", fontSize:10.5, color:"var(--ink-50)", letterSpacing:".06em", marginTop:6}}>
+              <span>INFLATION RÉELLE</span><span>−6 %</span>
+            </div>
+            <div style={{display:"flex", justifyContent:"space-between", fontFamily:"var(--mono)", fontSize:10.5, color:"var(--ink-50)", letterSpacing:".06em", marginTop:6}}>
+              <span>FRAIS DORMANTS</span><span>−3 %</span>
+            </div>
+          </div>
+        </div>
+      )}
+      {variant==="bars" && <ProjectionBars width={desktop?720:340} height={desktop?180:130}/>}
+    </div>
+  );
+}
+
+function HeroBlock({ desktop=false, variant="curve", profile=1, onProfile }){
+  const titlePad = desktop
+    ? { fontSize: "clamp(64px, 9.5vw, 116px)", letterSpacing:"-0.045em", lineHeight:0.95 }
+    : { fontSize: 52, letterSpacing:"-0.035em", lineHeight: 1 };
+  const inner = desktop ? "min(1100px, 100%)" : "100%";
+  return (
+    <div style={{
+      padding: desktop ? "72px 56px 96px" : "36px 22px 48px",
+      maxWidth: inner, margin: "0 auto"
+    }}>
+      <div style={{textAlign:"center", marginBottom: desktop?28:22}}>
+        <div className="tag-pill" style={{fontSize: desktop?12.5:11}}>
+          <span className="dot"/>
+          <span>Bilan patrimonial · 0 € · sans engagement</span>
+        </div>
+      </div>
+      <h1 className="serif" style={{
+        textAlign:"center",
+        margin: "0 auto",
+        marginBottom: desktop?22:18,
+        color:"var(--ink-90)",
+        textWrap:"balance",
+        ...titlePad
+      }}>
+        Combien votre patrimoine<br/>
+        <span className="serif-it" style={{color:"var(--copper-light)"}}>vous coûte</span> chaque année&nbsp;?
+      </h1>
+
+      <div style={{marginBottom: desktop?32:24}}>
+        <CounterCard desktop={desktop} variant={variant}/>
+      </div>
+
+      <div style={{
+        display:"flex", flexDirection: desktop?"row":"column",
+        gap: 12, justifyContent:"center", alignItems:"center",
+        marginBottom: desktop?32:22
+      }}>
+        <button className="btn btn-primary" style={{
+          width: desktop ? "auto" : "100%",
+          padding: desktop ? "18px 32px" : "16px 24px",
+          fontSize: desktop?16:15
+        }}>
+          Mon estimation personnalisée <Icon.arrow/>
+        </button>
+        <button className="btn btn-secondary" style={{
+          width: desktop ? "auto" : "100%",
+          padding: desktop ? "18px 28px" : "16px 24px",
+          fontSize: desktop?15:14
+        }}>
+          5 questions · 90 sec
+        </button>
+      </div>
+
+      <div style={{display:"flex", justifyContent:"center", marginBottom: desktop?28:22}}>
+        <TrustLine compact={!desktop}/>
+      </div>
+
+      <div style={{display:"flex", justifyContent:"center"}}>
+        <EngagementsBand desktop={desktop}/>
+      </div>
+    </div>
+  );
+}
+
+// ───────── How it works ─────────
+function HowItWorks({ desktop=false }){
+  const steps = [
+    { n:"01", title:"5 questions · 90 sec", body:"Âge, foyer, fiscalité, patrimoine, objectif. Aucun document à chercher." },
+    { n:"02", title:"Un seul appel", body:"Votre conseiller vous appelle une seule fois pour fixer un rendez-vous visio de 30 min. Pas d'autre." },
+    { n:"03", title:"Plan écrit · vous décidez", body:"Vous repartez avec un document PDF chiffré. Libre à vous d'agir. Aucune relance commerciale." }
+  ];
+  return (
+    <div style={{
+      padding: desktop ? "96px 56px" : "56px 22px",
+      maxWidth: desktop?"1200px":"100%", margin:"0 auto"
+    }}>
+      <div style={{textAlign:"center", marginBottom: desktop?56:36}}>
+        <div className="eyebrow" style={{marginBottom:14}}>— Comment ça marche</div>
+        <h2 className="serif" style={{fontSize: desktop?68:38, letterSpacing:"-0.03em", lineHeight:1, color:"var(--ink-90)"}}>
+          Trois étapes,<br/><span className="serif-it copper-text">pas une de plus.</span>
+        </h2>
+      </div>
+      <div style={{
+        display:"grid",
+        gridTemplateColumns: desktop ? "repeat(3, 1fr)" : "1fr",
+        gap: desktop?20:14
+      }}>
+        {steps.map(s=> (
+          <div key={s.n} className="glass" style={{padding: desktop?"36px 32px":"28px 24px", borderRadius:22}}>
+            <div className="serif-it" style={{fontSize: desktop?64:48, color:"var(--copper-light)", letterSpacing:"-0.04em", lineHeight:1, marginBottom: desktop?20:14}}>
+              {s.n}
+            </div>
+            <div style={{fontSize: desktop?22:18, fontWeight:500, marginBottom:10, color:"var(--ink-90)", letterSpacing:"-0.01em"}}>{s.title}</div>
+            <div style={{fontSize: desktop?14.5:13.5, color:"var(--ink-70)", lineHeight:1.55}}>{s.body}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ───────── Testimonials ─────────
+function Testimonials({ desktop=false }){
+  const items = [
+    { gain:"+2 800 €/an", who:"Marc, 41 — cadre près de Lyon, 2 enfants", quote:"30 K€ qui dormaient sur le compte courant, un PER mal calibré. Le bilan a fléché trois actions concrètes — sans Pinel, sans produit poussé." },
+    { gain:"+3 800 €/an", who:"Claire, 41 — médecin libérale", quote:"Le rapport était écrit comme un avis, pas comme une vente. C'est exactement ce que je cherchais." },
+    { gain:"+1 600 €/an", who:"Romain, 34 — couple, 2 enfants", quote:"Personne ne m'a rappelé pour me forcer la main. J'ai mis en place ce qui me parlait, à mon rythme." }
+  ];
+  return (
+    <div style={{
+      padding: desktop ? "32px 56px 96px" : "16px 22px 56px",
+      maxWidth: desktop?"1200px":"100%", margin:"0 auto"
+    }}>
+      <div style={{textAlign:"center", marginBottom: desktop?48:32}}>
+        <div className="eyebrow" style={{marginBottom:14}}>— Bilans réalisés</div>
+        <h2 className="serif" style={{fontSize: desktop?56:32, letterSpacing:"-0.03em", lineHeight:1, color:"var(--ink-90)"}}>
+          Trois clients, <span className="serif-it copper-text">trois plans.</span>
+        </h2>
+      </div>
+      <div style={{
+        display:"grid",
+        gridTemplateColumns: desktop ? "repeat(3, 1fr)" : "1fr",
+        gap: desktop?20:14
+      }}>
+        {items.map((t,i)=>(
+          <div key={i} className="glass" style={{padding: desktop?"32px 30px":"24px 22px", borderRadius:22}}>
+            <div className="counter-num" style={{fontSize: desktop?44:34, letterSpacing:"-0.03em", marginBottom:12}}>{t.gain}</div>
+            <div className="copper-line" style={{marginBottom:18}}/>
+            <div style={{fontSize: desktop?15:13.5, color:"var(--ink-70)", lineHeight:1.5, marginBottom:18, fontStyle:"italic"}}>
+              «&nbsp;{t.quote}&nbsp;»
+            </div>
+            <div style={{fontSize: 11.5, color:"var(--ink-50)", fontFamily:"var(--mono)", letterSpacing:".05em", textTransform:"uppercase"}}>
+              — {t.who}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ───────── FAQ ─────────
+function FAQ({ desktop=false }){
+  const items = [
+    { q:"Pourquoi c'est gratuit — vraiment ?", a:"Le bilan ne vous coûte rien, ni au départ ni à la fin. Si vous décidez de mettre en place certaines préconisations via nos partenaires, c'est eux qui nous rémunèrent. Vous, vous ne payez jamais. Une option en honoraires fixes existe si vous préférez — on vous l'explique en transparence." },
+    { q:"Le bilan est-il vraiment sans engagement ?", a:"Oui. Aucune carte de paiement demandée. Si nous ne pouvons pas vous aider, nous vous le disons. Architecture ouverte : aucun produit maison, aucun Pinel poussé." },
+    { q:"Que faites-vous de mes données ?", a:"Stockage chiffré en France, accès limité au conseiller en charge. Suppression sur simple demande. RGPD." },
+    { q:"Suis-je obligé de souscrire un produit ?", a:"Non. Le rapport est écrit. Vous le lisez. Vous décidez. Aucune action commerciale n'est lancée à votre insu." },
+    { q:"Comment calculez-vous le manque à gagner ?", a:"À partir des informations que vous renseignez et de moyennes de marché. Le chiffre est une estimation, pas une promesse." },
+    { q:"Vais-je être appelé tous les jours ?", a:"Non. Un email avec votre rapport. Si vous voulez un échange, vous prenez rendez-vous. Sinon, plus de contact." }
+  ];
+  const [open, setOpen] = useStateLanding(0);
+  return (
+    <div style={{
+      padding: desktop ? "32px 56px 96px" : "16px 22px 56px",
+      maxWidth: desktop?"880px":"100%", margin:"0 auto"
+    }}>
+      <div style={{textAlign:"center", marginBottom: desktop?48:32}}>
+        <div className="eyebrow" style={{marginBottom:14}}>— Questions</div>
+        <h2 className="serif" style={{fontSize: desktop?56:32, letterSpacing:"-0.03em", lineHeight:1, color:"var(--ink-90)"}}>
+          Avant de commencer.
+        </h2>
+      </div>
+      <div className="glass" style={{borderRadius:24, overflow:"hidden"}}>
+        {items.map((it,i)=>(
+          <div key={i} className="faq-row" onClick={()=> setOpen(open===i?-1:i)}>
+            <div className="q">
+              <span style={{fontSize: desktop?17:15, color:"var(--ink-90)", letterSpacing:"-0.005em"}}>{it.q}</span>
+              <span style={{
+                width:30, height:30, borderRadius:"50%",
+                display:"flex", alignItems:"center", justifyContent:"center",
+                border:"1px solid rgba(255,255,255,.08)",
+                color: open===i ? "var(--copper-light)" : "var(--ink-50)",
+                transform: open===i ? "rotate(45deg)" : "rotate(0)",
+                transition:"transform .25s"
+              }}>
+                <Icon.plus/>
+              </span>
+            </div>
+            {open===i && (
+              <div style={{
+                fontSize: desktop?14.5:13.5, color:"var(--ink-70)", lineHeight:1.6,
+                marginTop:14, maxWidth:680
+              }}>
+                {it.a}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ───────── Final CTA ─────────
+function FinalCTA({ desktop=false }){
+  return (
+    <div style={{padding: desktop ? "32px 56px 96px" : "16px 22px 56px"}}>
+      <div className="glass glass-glow" style={{
+        padding: desktop ? "72px 64px" : "44px 26px",
+        borderRadius: desktop?32:24,
+        maxWidth:"1100px", margin:"0 auto",
+        textAlign:"center",
+        position:"relative",
+        overflow:"hidden"
+      }}>
+        <div style={{
+          position:"absolute", inset:0,
+          background:"radial-gradient(ellipse 60% 80% at 50% 100%, rgba(184,115,51,.32), transparent 70%)",
+          pointerEvents:"none"
+        }}/>
+        <div style={{position:"relative"}}>
+          <div className="eyebrow" style={{marginBottom:18, color:"var(--copper-light)"}}>— Le moment</div>
+          <h2 className="serif" style={{
+            fontSize: desktop?80:42, letterSpacing:"-0.04em", lineHeight:1,
+            color:"var(--ink-90)", marginBottom:24
+          }}>
+            90 secondes.<br/><span className="serif-it copper-text">Pas une seconde de plus.</span>
+          </h2>
+          <p style={{fontSize: desktop?17:14.5, color:"var(--ink-70)", maxWidth:560, margin:"0 auto 32px", lineHeight:1.5}}>
+            Cinq questions, un rapport écrit, aucun rappel commercial. Vous repartez avec un avis honnête — ou rien.
+          </p>
+          <button className="btn btn-primary" style={{padding: desktop?"18px 32px":"16px 26px"}}>
+            Démarrer mon bilan <Icon.arrow/>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ───────── Legal pages (Mentions / RGPD / CGU / Réclamations) ─────────
+const LEGAL_UPDATED = "Mai 2026";
+const LEGAL_IDENTITY = {
+  name: "Yann Nachtrieb",
+  statut: "Entrepreneur Individuel (EI)",
+  marque: "Novi Finance — une marque de Maison Polaris",
+  siren: "104 462 213",
+  adresse: "10 rue Paul Eluard, 87570 Rilhac-Rancon, France",
+  email: "equipe@novifinance.fr",
+  site: "novifinance.fr",
+  orias: "En cours d'immatriculation",
+  hebergeur: {
+    nom: "HighLevel Inc. (GoHighLevel)",
+    adresse: "400 North Saint Mary's Street, San Antonio, TX 78205, États-Unis",
+    site: "www.gohighlevel.com",
+  },
+};
+
+function LegalLayout({ slug, title, eyebrow="L É G A L", toc, children, onBack }){
+  const back = () => { if (onBack) onBack(); else window.location.href="landing.html"; };
+  return (
+    <div className="nv-stage responsive" style={{minHeight:"100vh", background:"var(--velvet)", color:"var(--ink-90)"}}>
+      <div style={{maxWidth: 760, margin: "0 auto", padding: "clamp(36px, 6vw, 80px) clamp(22px, 4vw, 56px) 72px"}}>
+        <button className="legal-back" onClick={back}>
+          <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M10 3L5 8l5 5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          Retour au site
+        </button>
+        <div className="eyebrow" style={{marginBottom:18, letterSpacing:".22em"}}>{eyebrow}</div>
+        <h1 className="serif" style={{fontSize:"clamp(38px, 6vw, 56px)", letterSpacing:"-0.025em", lineHeight:1.05, marginBottom:14}}>
+          {title}
+        </h1>
+        <div style={{fontFamily:"var(--mono)", fontSize:11.5, letterSpacing:".1em", color:"var(--ink-50)", textTransform:"uppercase", marginBottom:8}}>
+          Dernière mise à jour · {LEGAL_UPDATED}
+        </div>
+        <div style={{display:"flex", alignItems:"center", gap:14, marginBottom:30}}>
+          <div className="copper-line" style={{width:60}}/>
+          <div style={{fontFamily:"var(--mono)", fontSize:10.5, letterSpacing:".14em", color:"var(--ink-50)", textTransform:"uppercase"}}>{slug}</div>
+        </div>
+
+        {toc && toc.length > 0 && (
+          <div className="legal-toc">
+            <div className="eyebrow">— Sommaire</div>
+            <ol>
+              {toc.map((t,i)=> (
+                <li key={i}>
+                  <a href={"#sec-"+(i+1)} onClick={(e)=>{e.preventDefault(); const el=document.getElementById("sec-"+(i+1)); if(el) el.scrollIntoView({behavior:"smooth", block:"start"});}}>{t}</a>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+
+        <div className="legal-prose">{children}</div>
+
+        <div className="legal-foot-contact">
+          <div>
+            <div className="lab" style={{marginBottom:6}}>Contact</div>
+            <a href={"mailto:"+LEGAL_IDENTITY.email} style={{color:"var(--ink-90)", fontSize:15, fontFamily:"var(--mono)", letterSpacing:".02em", borderBottom:"1px solid rgba(232,158,92,.4)", textDecoration:"none"}}>
+              {LEGAL_IDENTITY.email}
+            </a>
+          </div>
+          <div style={{flex:1, display:"flex", justifyContent:"flex-end", gap:14, flexWrap:"wrap"}}>
+            <a href="#mentions" className="lab" onClick={(e)=>{e.preventDefault(); window.location.href="mentions.html";}} style={{color:"var(--ink-50)", textDecoration:"none", cursor:"pointer"}}>Mentions légales</a>
+            <a href="#rgpd" className="lab" onClick={(e)=>{e.preventDefault(); window.location.href="rgpd.html";}} style={{color:"var(--ink-50)", textDecoration:"none", cursor:"pointer"}}>RGPD</a>
+            <a href="#cgu" className="lab" onClick={(e)=>{e.preventDefault(); window.location.href="cgu.html";}} style={{color:"var(--ink-50)", textDecoration:"none", cursor:"pointer"}}>CGU</a>
+            <a href="#reclamations" className="lab" onClick={(e)=>{e.preventDefault(); window.location.href="reclamations.html";}} style={{color:"var(--ink-50)", textDecoration:"none", cursor:"pointer"}}>Réclamations</a>
+          </div>
+        </div>
+
+        <div style={{marginTop:36, paddingTop:24, borderTop:"1px solid rgba(255,255,255,.05)", display:"flex", justifyContent:"space-between", fontSize:11.5, color:"var(--ink-50)", flexWrap:"wrap", gap:10}}>
+          <span>© 2026 {LEGAL_IDENTITY.marque} — Tous droits réservés.</span>
+          <span style={{fontFamily:"var(--mono)", letterSpacing:".05em"}}>SIREN {LEGAL_IDENTITY.siren}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LegalSection({ n, title, children }){
+  return (
+    <section id={"sec-"+n} style={{scrollMarginTop:24}}>
+      <h2><span className="legal-num">{String(n).padStart(2,"0")}</span><span>{title}</span></h2>
+      {children}
+    </section>
+  );
+}
+
+// ───── Mentions légales ─────
+function MentionsScreen(){
+  const I = LEGAL_IDENTITY;
+  return (
+    <LegalLayout slug="MENTIONS-LEG-2026-05" title="Mentions légales"
+      toc={["Éditeur du site", "Directeur de la publication", "Hébergeur", "Propriété intellectuelle", "Limitation de responsabilité", "Droit applicable"]}>
+      <p style={{fontSize:14, color:"var(--ink-50)"}}>Conformément à la loi française n° 2004-575 du 21 juin 2004 (LCEN), les informations suivantes sont portées à la connaissance des utilisateurs du site <strong>{I.site}</strong>.</p>
+
+      <LegalSection n={1} title="Éditeur du site">
+        <div className="legal-table">
+          <div className="row"><span className="k">Nom</span><span className="v">{I.name}</span></div>
+          <div className="row"><span className="k">Statut</span><span className="v">{I.statut}</span></div>
+          <div className="row"><span className="k">Marque commerciale</span><span className="v">{I.marque}</span></div>
+          <div className="row"><span className="k">SIREN</span><span className="v" style={{fontFamily:"var(--mono)", letterSpacing:".05em"}}>{I.siren}</span></div>
+          <div className="row"><span className="k">Adresse</span><span className="v">{I.adresse}</span></div>
+          <div className="row"><span className="k">Email</span><span className="v">{I.email}</span></div>
+          <div className="row"><span className="k">Site web</span><span className="v">{I.site}</span></div>
+          <div className="row"><span className="k">N° ORIAS</span><span className="v"><span className="legal-warn-pill">⚠ {I.orias}</span></span></div>
+        </div>
+      </LegalSection>
+
+      <LegalSection n={2} title="Directeur de la publication">
+        <p>{I.name} — <a href={"mailto:"+I.email}>{I.email}</a></p>
+      </LegalSection>
+
+      <LegalSection n={3} title="Hébergeur">
+        <div className="legal-table">
+          <div className="row"><span className="k">Société</span><span className="v">{I.hebergeur.nom}</span></div>
+          <div className="row"><span className="k">Adresse</span><span className="v">{I.hebergeur.adresse}</span></div>
+          <div className="row"><span className="k">Site web</span><span className="v">{I.hebergeur.site}</span></div>
+        </div>
+      </LegalSection>
+
+      <LegalSection n={4} title="Propriété intellectuelle">
+        <p>L'ensemble des contenus présentés sur <strong>{I.site}</strong> — textes, visuels, logo, marque <em>Novi Finance</em> — sont la propriété exclusive de {I.name} / Maison Polaris et sont protégés par les lois applicables en matière de propriété intellectuelle.</p>
+        <p>Toute reproduction, représentation, adaptation ou utilisation, partielle ou totale, sans autorisation expresse, est interdite et constitue une contrefaçon sanctionnée par les articles L.335-2 et suivants du Code de la propriété intellectuelle.</p>
+      </LegalSection>
+
+      <LegalSection n={5} title="Limitation de responsabilité">
+        <p>Novi Finance s'efforce de maintenir les informations publiées sur ce site à jour et exactes. Cependant, l'exhaustivité ou l'exactitude des informations présentées ne peut être garantie ; elles ont un caractère informatif et non contractuel.</p>
+        <div className="legal-callout">
+          <strong>Information importante.</strong> Les informations présentées sur ce site ne constituent <strong>pas un conseil financier, fiscal ou juridique personnalisé</strong>. Pour tout conseil adapté à votre situation, le bilan patrimonial gratuit est réalisé par un conseiller en gestion de patrimoine immatriculé à l'ORIAS.
+        </div>
+      </LegalSection>
+
+      <LegalSection n={6} title="Droit applicable">
+        <p>Les présentes mentions légales sont régies par le droit français. En cas de litige, et à défaut de résolution amiable, les tribunaux français seront seuls compétents.</p>
+      </LegalSection>
+    </LegalLayout>
+  );
+}
+
+// ───── Politique RGPD ─────
+function RgpdScreen(){
+  const I = LEGAL_IDENTITY;
+  const data = [
+    { d:"Prénom et nom", f:"Identification du prospect", b:"Consentement (art. 6.1.a RGPD)" },
+    { d:"Adresse email", f:"Contact et confirmation de demande", b:"Consentement (art. 6.1.a RGPD)" },
+    { d:"Numéro de téléphone", f:"Mise en relation avec un expert CGP partenaire", b:"Consentement (art. 6.1.a RGPD)" },
+    { d:"Objectif patrimonial", f:"Qualification de la demande, orientation vers le bon expert", b:"Consentement (art. 6.1.a RGPD)" },
+    { d:"Situation professionnelle", f:"Qualification de la demande", b:"Consentement (art. 6.1.a RGPD)" },
+    { d:"Situation familiale", f:"Qualification de la demande", b:"Consentement (art. 6.1.a RGPD)" },
+    { d:"Tranche de revenus", f:"Qualification de la demande", b:"Consentement (art. 6.1.a RGPD)" },
+    { d:"Tranche d'âge", f:"Qualification de la demande", b:"Consentement (art. 6.1.a RGPD)" },
+  ];
+  return (
+    <LegalLayout slug="RGPD-2026-05" title="Politique de confidentialité"
+      toc={["Responsable de traitement", "Données collectées et finalités", "Transmission à des tiers", "Durée de conservation", "Vos droits", "Cookies et traceurs", "Hébergement et transfert hors UE", "Modifications"]}>
+      <p style={{fontSize:14, color:"var(--ink-50)"}}>La protection de vos données personnelles est au cœur de notre démarche. Cette politique détaille les traitements opérés sur le site <strong>{I.site}</strong> conformément au Règlement Général sur la Protection des Données (UE 2016/679) et à la loi Informatique et Libertés.</p>
+
+      <LegalSection n={1} title="Identité du responsable de traitement">
+        <p>Les données personnelles collectées sur <strong>{I.site}</strong> sont traitées par :</p>
+        <div className="legal-table">
+          <div className="row"><span className="k">Responsable</span><span className="v">{I.name}, {I.statut}</span></div>
+          <div className="row"><span className="k">Marque</span><span className="v">{I.marque}</span></div>
+          <div className="row"><span className="k">SIREN</span><span className="v" style={{fontFamily:"var(--mono)", letterSpacing:".05em"}}>{I.siren}</span></div>
+          <div className="row"><span className="k">Adresse</span><span className="v">{I.adresse}</span></div>
+          <div className="row"><span className="k">Contact</span><span className="v"><a href={"mailto:"+I.email}>{I.email}</a></span></div>
+          <div className="row"><span className="k">N° ORIAS</span><span className="v"><span className="legal-warn-pill">⚠ {I.orias}</span></span></div>
+          <div className="row"><span className="k">Hébergeur</span><span className="v">{I.hebergeur.nom} — {I.hebergeur.adresse}</span></div>
+        </div>
+      </LegalSection>
+
+      <LegalSection n={2} title="Données collectées et finalités">
+        <p>Nous collectons les données personnelles suivantes via notre formulaire de demande de bilan patrimonial :</p>
+        <div className="legal-data-table">
+          <div className="head"><span>Donnée</span><span>Finalité</span><span>Base légale</span></div>
+          {data.map((r,i)=> (
+            <div className="r" key={i}>
+              <span><strong>{r.d}</strong></span>
+              <span>{r.f}</span>
+              <span className="base">{r.b}</span>
+            </div>
+          ))}
+        </div>
+      </LegalSection>
+
+      <LegalSection n={3} title="Transmission des données à des tiers">
+        <p>Les données collectées via notre formulaire sont transmises à des <strong>conseillers en gestion de patrimoine (CGP) indépendants partenaires</strong> de Novi Finance, dans le seul but de réaliser le bilan patrimonial que vous avez demandé.</p>
+        <p>Cette transmission constitue la finalité principale du service. Elle est effectuée avec votre consentement explicite, recueilli via la case à cocher du formulaire.</p>
+        <p>Les partenaires CGP qui reçoivent vos données sont des professionnels réglementés, immatriculés à l'ORIAS, soumis aux mêmes obligations de confidentialité que Novi Finance. Ils s'engagent contractuellement à n'utiliser vos données que dans le cadre du bilan patrimonial demandé.</p>
+        <div className="legal-callout">
+          <strong>Engagement.</strong> Vos données ne sont jamais vendues à des fins de marketing, de cession commerciale, ou pour toute autre finalité non mentionnée dans la présente politique.
+        </div>
+      </LegalSection>
+
+      <LegalSection n={4} title="Durée de conservation">
+        <ul>
+          <li><strong>Prospects qualifiés transmis à un CGP</strong> — conservées 3 ans à compter de la date de soumission.</li>
+          <li><strong>Prospects disqualifiés</strong> — supprimées sous 30 jours.</li>
+          <li><strong>Prospects sans réponse au CGP dans les 30 jours</strong> — archivées puis supprimées à 12 mois.</li>
+          <li><strong>Sur demande explicite de suppression</strong> — suppression sous 30 jours ouvrables.</li>
+        </ul>
+      </LegalSection>
+
+      <LegalSection n={5} title="Vos droits">
+        <p>Conformément au RGPD (Règlement UE 2016/679), vous disposez des droits suivants sur vos données personnelles :</p>
+        <ul>
+          <li><strong>Droit d'accès</strong> — obtenir une copie des données vous concernant.</li>
+          <li><strong>Droit de rectification</strong> — corriger des données inexactes ou incomplètes.</li>
+          <li><strong>Droit à l'effacement</strong> — demander la suppression de vos données.</li>
+          <li><strong>Droit à la limitation</strong> — restreindre temporairement l'utilisation de vos données.</li>
+          <li><strong>Droit d'opposition</strong> — vous opposer au traitement de vos données.</li>
+          <li><strong>Droit au retrait du consentement</strong> — à tout moment, sans affecter la licéité du traitement antérieur.</li>
+          <li><strong>Droit à la portabilité</strong> — recevoir vos données dans un format structuré et lisible.</li>
+        </ul>
+        <p>Pour exercer ces droits, contactez-nous par email à <a href={"mailto:"+I.email}>{I.email}</a>. Nous nous engageons à répondre dans un délai maximum d'un mois.</p>
+        <p>Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de la <strong>CNIL</strong> — <a href="https://www.cnil.fr" target="_blank" rel="noreferrer">www.cnil.fr</a>.</p>
+      </LegalSection>
+
+      <LegalSection n={6} title="Cookies et traceurs">
+        <p>Notre site utilise les traceurs suivants :</p>
+        <ul>
+          <li><strong>Pixel Meta (Facebook / Instagram)</strong> — suivi des conversions publicitaires. Nécessite votre consentement.</li>
+          <li><strong>GoHighLevel</strong> — fonctionnement du formulaire et du site. Cookie technique nécessaire, ne nécessite pas de consentement.</li>
+        </ul>
+        <p>Un bandeau de consentement aux cookies est affiché lors de votre première visite. Vous pouvez modifier vos préférences à tout moment en bas de page.</p>
+      </LegalSection>
+
+      <LegalSection n={7} title="Hébergement et transfert hors UE">
+        <p>Notre site est hébergé par <strong>{I.hebergeur.nom}</strong> ({I.hebergeur.adresse}). Ce transfert hors UE est encadré par les <strong>clauses contractuelles types</strong> approuvées par la Commission européenne, garantissant un niveau de protection adéquat de vos données.</p>
+      </LegalSection>
+
+      <LegalSection n={8} title="Modifications de la politique">
+        <p>Nous nous réservons le droit de modifier la présente politique de confidentialité à tout moment. La date de dernière mise à jour est indiquée en haut de la page. En cas de modification substantielle, nous vous en informerons par email si vous avez soumis votre adresse électronique.</p>
+      </LegalSection>
+    </LegalLayout>
+  );
+}
+
+// ───── CGU ─────
+function CguScreen(){
+  const I = LEGAL_IDENTITY;
+  return (
+    <LegalLayout slug="CGU-2026-05" title="Conditions d'utilisation"
+      toc={["Objet", "Description du service", "Gratuité", "Engagements de l'utilisateur", "Engagements de Novi Finance", "Propriété intellectuelle", "Responsabilité", "Médiation", "Modifications", "Droit applicable"]}>
+      <p style={{fontSize:14, color:"var(--ink-50)"}}>Les présentes conditions générales d'utilisation (« CGU ») encadrent l'utilisation du site <strong>{I.site}</strong>. En utilisant le site et le formulaire de bilan patrimonial, vous acceptez ces conditions sans réserve.</p>
+
+      <LegalSection n={1} title="Objet">
+        <p>Les présentes CGU ont pour objet de définir les modalités selon lesquelles {I.name}, agissant sous la marque <strong>Novi Finance</strong>, met à disposition des utilisateurs le site <strong>{I.site}</strong> et le service de mise en relation avec un conseiller en gestion de patrimoine partenaire.</p>
+      </LegalSection>
+
+      <LegalSection n={2} title="Description du service">
+        <p>Novi Finance propose un service de <strong>qualification de prospects et de mise en relation</strong> avec des conseillers en gestion de patrimoine (CGP) indépendants, immatriculés à l'ORIAS. Le service comprend :</p>
+        <ul>
+          <li>Un questionnaire en ligne de qualification patrimoniale.</li>
+          <li>L'analyse de votre éligibilité à un bilan patrimonial gratuit.</li>
+          <li>Le cas échéant, la mise en relation avec un CGP partenaire pour la réalisation dudit bilan.</li>
+        </ul>
+        <div className="legal-callout">
+          <strong>Précision importante.</strong> Novi Finance n'est <strong>ni un courtier, ni une plateforme commerciale d'agrégation</strong>. Le bilan patrimonial est réalisé exclusivement par un CGP partenaire, dans le cadre de sa propre relation contractuelle avec vous.
+        </div>
+      </LegalSection>
+
+      <LegalSection n={3} title="Gratuité du service">
+        <p>L'utilisation du site et la réalisation du bilan patrimonial sont entièrement gratuites pour l'utilisateur. Aucune carte de paiement, aucun engagement financier ne sont demandés à aucune étape du parcours.</p>
+        <p>Le modèle économique de Novi Finance repose sur la mise en relation : si vous décidez de mettre en place certaines préconisations via un CGP partenaire, celui-ci peut être rémunéré par les établissements financiers concernés (commissions de courtage), conformément à la réglementation en vigueur.</p>
+      </LegalSection>
+
+      <LegalSection n={4} title="Engagements de l'utilisateur">
+        <p>En utilisant le site, vous vous engagez à :</p>
+        <ul>
+          <li>Fournir des informations exactes, complètes et à jour.</li>
+          <li>Ne pas usurper l'identité d'un tiers.</li>
+          <li>Ne pas utiliser le site à des fins frauduleuses, illégales ou contraires aux bonnes mœurs.</li>
+          <li>Ne pas tenter de porter atteinte au fonctionnement du site (intrusion, scraping massif, déni de service, etc.).</li>
+        </ul>
+      </LegalSection>
+
+      <LegalSection n={5} title="Engagements de Novi Finance">
+        <p>Novi Finance s'engage à :</p>
+        <ul>
+          <li>Traiter vos données dans le strict respect de la <a href="#rgpd" onClick={(e)=>{e.preventDefault(); window.location.href="rgpd.html";}}>politique de confidentialité</a>.</li>
+          <li>Ne transmettre vos données qu'à des CGP immatriculés à l'ORIAS, dans le seul but de réaliser le bilan demandé.</li>
+          <li>Vous informer en toute transparence en cas de non-éligibilité à un bilan.</li>
+          <li><strong>Ne jamais vendre vos données</strong> à des fins de marketing ou de cession commerciale.</li>
+          <li>Ne pas pratiquer de démarchage téléphonique non sollicité.</li>
+        </ul>
+      </LegalSection>
+
+      <LegalSection n={6} title="Propriété intellectuelle">
+        <p>L'ensemble des contenus du site (textes, visuels, logo, marque, code source, design) sont la propriété exclusive de {I.name} / Maison Polaris. Toute reproduction sans autorisation expresse est interdite.</p>
+      </LegalSection>
+
+      <LegalSection n={7} title="Responsabilité">
+        <p>Novi Finance met tout en œuvre pour assurer la disponibilité et l'exactitude du site. Cependant, sa responsabilité ne saurait être engagée en cas de :</p>
+        <ul>
+          <li>Indisponibilité temporaire du site (maintenance, panne d'hébergement).</li>
+          <li>Inexactitude d'informations à caractère général publiées sur le site.</li>
+          <li>Conséquences directes ou indirectes des conseils émis par un CGP partenaire dans le cadre de sa propre relation contractuelle avec l'utilisateur.</li>
+        </ul>
+        <p>Le bilan patrimonial réalisé par un CGP partenaire engage uniquement ce dernier, dans le cadre de sa propre couverture en responsabilité civile professionnelle.</p>
+      </LegalSection>
+
+      <LegalSection n={8} title="Médiation de la consommation">
+        <p>Conformément à l'article L.612-1 du Code de la consommation, en cas de litige non résolu à l'amiable, vous pouvez recourir gratuitement à un médiateur de la consommation. Pour les litiges relatifs au service de mise en relation, le médiateur compétent peut être saisi à l'adresse <a href={"mailto:"+I.email}>{I.email}</a> et figurera bientôt explicitement dans cette section.</p>
+      </LegalSection>
+
+      <LegalSection n={9} title="Modifications">
+        <p>Novi Finance se réserve le droit de modifier les présentes CGU à tout moment. La version applicable est celle en vigueur au moment de votre utilisation du site.</p>
+      </LegalSection>
+
+      <LegalSection n={10} title="Droit applicable">
+        <p>Les présentes CGU sont régies par le droit français. En cas de litige, et à défaut de résolution amiable ou de médiation, les tribunaux français seront seuls compétents.</p>
+      </LegalSection>
+    </LegalLayout>
+  );
+}
+
+// ───── Réclamations ─────
+function ReclamationsScreen(){
+  const I = LEGAL_IDENTITY;
+  return (
+    <LegalLayout slug="RECLAM-2026-05" title="Réclamations"
+      toc={["Comment nous joindre", "Délais de traitement", "Médiation de la consommation", "AMF — autorité de tutelle", "CNIL — protection des données"]}>
+      <p style={{fontSize:14, color:"var(--ink-50)"}}>Vous avez une remarque, une insatisfaction ou un litige concernant le site <strong>{I.site}</strong> ou le service de mise en relation Novi Finance ? Cette page vous indique la marche à suivre, étape par étape.</p>
+
+      <div className="legal-callout" style={{marginTop:24}}>
+        <strong>Notre engagement.</strong> Toute réclamation reçoit un accusé de réception sous <strong>10 jours ouvrés</strong> et une réponse motivée sous <strong>2 mois</strong> maximum à compter de sa réception.
+      </div>
+
+      <LegalSection n={1} title="Comment nous joindre">
+        <p>Pour toute réclamation, vous pouvez nous écrire :</p>
+        <div className="legal-table">
+          <div className="row"><span className="k">Par email</span><span className="v"><a href={"mailto:"+I.email}>{I.email}</a></span></div>
+          <div className="row"><span className="k">Par courrier</span><span className="v">{I.name} — Novi Finance<br/>{I.adresse}</span></div>
+        </div>
+        <p>Pour traiter votre demande dans les meilleurs délais, merci d'indiquer dans votre message :</p>
+        <ul>
+          <li>Vos nom, prénom et coordonnées.</li>
+          <li>La date approximative à laquelle vous avez utilisé le site.</li>
+          <li>Une description claire de votre réclamation et, si possible, les éléments justificatifs.</li>
+        </ul>
+      </LegalSection>
+
+      <LegalSection n={2} title="Délais de traitement">
+        <ul>
+          <li><strong>Accusé de réception</strong> — sous 10 jours ouvrés.</li>
+          <li><strong>Réponse motivée</strong> — sous 2 mois maximum.</li>
+          <li><strong>Demandes RGPD</strong> (accès, rectification, suppression) — sous 1 mois maximum, conformément à la <a href="#rgpd" onClick={(e)=>{e.preventDefault(); window.location.href="rgpd.html";}}>politique de confidentialité</a>.</li>
+        </ul>
+      </LegalSection>
+
+      <LegalSection n={3} title="Médiation de la consommation">
+        <p>Si la réponse apportée à votre réclamation ne vous satisfait pas, vous pouvez saisir gratuitement un <strong>médiateur de la consommation</strong>, conformément à l'article L.612-1 du Code de la consommation.</p>
+        <p>Le recours à la médiation est gratuit. Vous disposez d'un délai d'un an à compter de votre réclamation écrite pour saisir le médiateur. Les coordonnées du médiateur compétent vous seront communiquées sur simple demande à <a href={"mailto:"+I.email}>{I.email}</a>.</p>
+      </LegalSection>
+
+      <LegalSection n={4} title="AMF — autorité de tutelle">
+        <p>Si votre réclamation porte sur le bilan patrimonial réalisé par un CGP partenaire, ou sur un conseil financier prodigué dans ce cadre, vous pouvez également saisir <strong>l'Autorité des Marchés Financiers (AMF)</strong> :</p>
+        <div className="legal-table">
+          <div className="row"><span className="k">Site web</span><span className="v"><a href="https://www.amf-france.org" target="_blank" rel="noreferrer">www.amf-france.org</a></span></div>
+          <div className="row"><span className="k">Médiateur AMF</span><span className="v"><a href="https://www.amf-france.org/fr/le-mediateur-de-lamf" target="_blank" rel="noreferrer">amf-france.org/fr/le-mediateur-de-lamf</a></span></div>
+          <div className="row"><span className="k">Adresse</span><span className="v">17 place de la Bourse, 75082 Paris Cedex 02</span></div>
+        </div>
+      </LegalSection>
+
+      <LegalSection n={5} title="CNIL — protection des données">
+        <p>Pour toute réclamation concernant le traitement de vos <strong>données personnelles</strong>, vous pouvez saisir directement la <strong>Commission Nationale de l'Informatique et des Libertés (CNIL)</strong> :</p>
+        <div className="legal-table">
+          <div className="row"><span className="k">Site web</span><span className="v"><a href="https://www.cnil.fr" target="_blank" rel="noreferrer">www.cnil.fr</a></span></div>
+          <div className="row"><span className="k">Adresse</span><span className="v">3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07</span></div>
+          <div className="row"><span className="k">Téléphone</span><span className="v">01 53 73 22 22</span></div>
+        </div>
+      </LegalSection>
+    </LegalLayout>
+  );
+}
+
+// ───────── Footer ─────────
+function Footer({ desktop=false }){
+  return (
+    <div style={{
+      padding: desktop ? "48px 56px 36px" : "36px 22px 24px",
+      borderTop:"1px solid rgba(255,255,255,.05)"
+    }}>
+      <div style={{
+        display:"grid",
+        gridTemplateColumns: desktop ? "1.6fr 1fr 1fr" : "1fr",
+        gap: desktop?40:28, marginBottom:32
+      }}>
+        <div>
+          <NoviLogo size={desktop?22:18}/>
+          <div style={{color:"var(--ink-50)", fontSize:12.5, marginTop:14, lineHeight:1.6, maxWidth:320}}>
+            Cabinet de conseil en gestion de patrimoine indépendant. Paris, France.
+          </div>
+        </div>
+        <div>
+          <div className="eyebrow" style={{marginBottom:14}}>Légal</div>
+          <div style={{display:"grid", gap:10, fontSize:13}}>
+            <a href="#mentions" onClick={(e)=>{e.preventDefault(); window.location.href="mentions.html";}} style={{color:"var(--ink-70)", textDecoration:"none", cursor:"pointer"}}>Mentions légales</a>
+            <a href="#rgpd" onClick={(e)=>{e.preventDefault(); window.location.href="rgpd.html";}} style={{color:"var(--ink-70)", textDecoration:"none", cursor:"pointer"}}>Politique RGPD</a>
+            <a href="#cgu" onClick={(e)=>{e.preventDefault(); window.location.href="cgu.html";}} style={{color:"var(--ink-70)", textDecoration:"none", cursor:"pointer"}}>Conditions d'utilisation</a>
+            <a href="#reclamations" onClick={(e)=>{e.preventDefault(); window.location.href="reclamations.html";}} style={{color:"var(--ink-70)", textDecoration:"none", cursor:"pointer"}}>Réclamations</a>
+          </div>
+        </div>
+        <div>
+          <div className="eyebrow" style={{marginBottom:14}}>Agréments</div>
+          <div style={{display:"grid", gap:10}}>
+            <InstitutionBadge kind="AMF" desktop={desktop}/>
+            <InstitutionBadge kind="ORIAS" desktop={desktop}/>
+            <InstitutionBadge kind="RGPD" desktop={desktop}/>
+          </div>
+        </div>
+      </div>
+      <div style={{
+        display:"flex", justifyContent:"space-between",
+        paddingTop:24, borderTop:"1px solid rgba(255,255,255,.05)",
+        fontSize:11.5, color:"var(--ink-50)",
+        flexDirection: desktop?"row":"column", gap:10
+      }}>
+        <span>© 2026 Novi Finance — Tous droits réservés.</span>
+        <span style={{fontFamily:"var(--mono)", letterSpacing:".05em"}}>go.novifinance.fr</span>
+      </div>
+    </div>
+  );
+}
+
+// ───────── Sticky floating CTA (appears after scrolling past hero) ─────────
+function StickyCTA({ desktop=false, onClick }){
+  const [visible, setVisible] = React.useState(false);
+  React.useEffect(()=>{
+    const onScroll = ()=> {
+      const trigger = desktop ? 720 : 520;
+      const nearBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 240;
+      setVisible(window.scrollY > trigger && !nearBottom);
+    };
+    window.addEventListener("scroll", onScroll, { passive:true });
+    onScroll();
+    return ()=> window.removeEventListener("scroll", onScroll);
+  }, [desktop]);
+  return (
+    <div style={{
+      position:"fixed",
+      bottom: desktop?28:18,
+      left:"50%",
+      transform:`translateX(-50%) translateY(${visible?0:24}px)`,
+      opacity: visible?1:0,
+      pointerEvents: visible?"auto":"none",
+      transition:"opacity .35s ease, transform .35s ease",
+      zIndex: 50,
+      width: desktop?"auto":"calc(100% - 36px)"
+    }}>
+      <button onClick={onClick} className="btn btn-primary cta-hero" style={{
+        padding: desktop ? "20px 38px" : "18px 24px",
+        fontSize: desktop?17:15.5,
+        boxShadow:"0 18px 56px rgba(184,115,51,.32), 0 4px 14px rgba(0,0,0,.4)",
+        width: desktop?"auto":"100%",
+        justifyContent:"center"
+      }}>
+        Mon estimation personnalisée <Icon.arrow/>
+      </button>
+    </div>
+  );
+}
+
+// ───────── Full landing composition ─────────
+function LandingScreen({ desktop=false, variant="curve", profile=1, sticky=true, onCTA }){
+  const [p, setP] = React.useState(profile);
+  return (
+    <div className={"nv-stage nv-grain " + (desktop?"viewport-desktop":"viewport-mobile")}>
+      <div className="nv-conic"/>
+      <div className="nv-grid"/>
+      <div className="nv-content">
+        <NavBar desktop={desktop}/>
+        <HeroBlock desktop={desktop} variant={variant} profile={p} onProfile={setP}/>
+        <HowItWorks desktop={desktop}/>
+        <Testimonials desktop={desktop}/>
+        <FAQ desktop={desktop}/>
+        <div style={{padding: desktop ? "32px 56px 56px" : "16px 22px 32px", maxWidth: desktop?"1100px":"100%", margin:"0 auto"}}>
+          <ConseillerCard desktop={desktop}/>
+        </div>
+        <FinalCTA desktop={desktop}/>
+        <Footer desktop={desktop}/>
+      </div>
+      {sticky && <StickyCTA desktop={desktop} onClick={onCTA}/>}
+    </div>
+  );
+}
+
+// hero-only artboard (for variants on canvas)
+function HeroOnly({ desktop=false, variant="curve", profile=1, label="" }){
+  const [p, setP] = React.useState(profile);
+  return (
+    <div className={"nv-stage nv-grain " + (desktop?"viewport-desktop":"viewport-mobile")}>
+      <div className="nv-conic"/>
+      <div className="nv-grid"/>
+      <div className="nv-content">
+        <NavBar desktop={desktop}/>
+        <HeroBlock desktop={desktop} variant={variant} profile={p} onProfile={setP}/>
+        {label && <div style={{
+          padding: desktop?"24px 56px 32px":"18px 22px 24px",
+          fontFamily:"var(--mono)", fontSize:10.5, letterSpacing:".1em",
+          color:"var(--ink-50)", textTransform:"uppercase", borderTop:"1px solid rgba(255,255,255,.04)"
+        }}>— Variante&nbsp;: {label}</div>}
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { LandingScreen, HeroOnly, HeroBlock, NavBar });
+</script>
+  <script type="text/babel">/* global React, Icon, NoviLogo */
+const { useState: useFormState, useEffect: useFormEffect } = React;
+
+const STEPS = [
+  { id:"age", title:"Tranche d'âge", short:"Âge",
+    options:[
+      {v:"20-30", l:"20–30 ans"},
+      {v:"30-40", l:"30–40 ans", default:true},
+      {v:"40-50", l:"40–50 ans"},
+      {v:"50+",   l:"50 ans et +"},
+    ]},
+  { id:"famille", title:"Situation familiale", short:"Foyer",
+    options:[
+      {v:"celib", l:"Célibataire"},
+      {v:"couple", l:"En couple", default:true},
+      {v:"famille", l:"En couple avec enfants"},
+    ]},
+  { id:"impots", title:"Montant d'impôts annuel", short:"Impôts",
+    options:[
+      {v:"<2k",  l:"Moins de 2 000 € / an"},
+      {v:"2-5k", l:"Entre 2 000 € et 5 000 € / an"},
+      {v:"5-10k",l:"Entre 5 000 € et 10 000 € / an", default:true},
+      {v:">10k", l:"Plus de 10 000 € / an"},
+    ]},
+  { id:"patrimoine", title:"Patrimoine financier", short:"Patrimoine",
+    options:[
+      {v:"<20k",  l:"Moins de 20 000 €"},
+      {v:"20-100k",l:"Entre 20 000 € et 100 000 €"},
+      {v:"100-300k",l:"Entre 100 000 € et 300 000 €", default:true},
+      {v:">300k", l:"Plus de 300 000 €"},
+    ]},
+  { id:"objectif", title:"Objectif principal", short:"Objectif",
+    options:[
+      {v:"impots",   l:"Réduire mes impôts"},
+      {v:"retraite", l:"Préparer ma retraite", default:true},
+      {v:"transmission", l:"Transmettre à mes enfants"},
+      {v:"epargne", l:"Faire fructifier mon épargne"},
+    ]},
+  { id:"contact", title:"Vos coordonnées", short:"Coordonnées" },
+  { id:"otp",   title:"Vérifiez votre numéro", short:"OTP" },
+  { id:"rgpd",  title:"Consentement RGPD", short:"Consentement" },
+];
+
+function FormCounter({ desktop=false }){
+  return (
+    <div className="glass" style={{
+      display:"flex", alignItems:"center", justifyContent:"space-between",
+      padding: desktop ? "14px 22px" : "12px 16px",
+      borderRadius: 16, gap: 14
+    }}>
+      <div style={{display:"flex", alignItems:"center", gap:10}}>
+        <span style={{color:"var(--copper-light)", fontFamily:"var(--mono)", fontSize:10.5, letterSpacing:".12em"}}>
+          ← COMPTEUR ESTIMÉ
+        </span>
+      </div>
+      <div style={{display:"flex", alignItems:"baseline", gap:8}}>
+        <span style={{fontFamily:"var(--serif)", fontSize: desktop?22:18, color:"var(--ink-90)", letterSpacing:"-0.02em"}}>
+          −2 380 €
+        </span>
+        <span style={{fontFamily:"var(--mono)", fontSize:10, color:"var(--ink-50)", letterSpacing:".05em"}}>/AN</span>
+      </div>
+    </div>
+  );
+}
+
+function ProgressTop({ pct }){
+  return (
+    <div style={{
+      position:"sticky", top:0, zIndex:5,
+      padding:"14px 0 10px", background:"linear-gradient(180deg, rgba(10,9,8,.95), rgba(10,9,8,.7))",
+      backdropFilter:"blur(20px)"
+    }}>
+      <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8, fontFamily:"var(--mono)", fontSize:10, color:"var(--ink-50)", letterSpacing:".1em"}}>
+        <span>— FORMULAIRE</span>
+        <span>{pct}%</span>
+      </div>
+      <div className="progress"><i style={{width:`${pct}%`}}/></div>
+    </div>
+  );
+}
+
+function ConsentCheckbox({ children, required=true }){
+  const [checked, setChecked] = useFormState(false);
+  return (
+    <label style={{
+      display:"grid", gridTemplateColumns:"22px 1fr", gap:14, alignItems:"start",
+      padding:"14px 0", cursor:"pointer", lineHeight:1.5
+    }}>
+      <span style={{
+        width:22, height:22, borderRadius:6, marginTop:1,
+        border: checked ? "1.5px solid var(--copper-light)" : "1.5px solid rgba(255,255,255,.18)",
+        background: checked ? "linear-gradient(135deg, rgba(232,158,92,.95), rgba(184,115,51,.85))" : "transparent",
+        boxShadow: checked ? "0 0 0 4px rgba(232,158,92,.10), inset 0 1px 0 rgba(255,255,255,.25)" : "none",
+        display:"inline-flex", alignItems:"center", justifyContent:"center",
+        transition:"all .18s",
+        flexShrink:0
+      }}>
+        {checked && (
+          <svg viewBox="0 0 16 16" width="13" height="13" fill="none">
+            <path d="M3 8.2 6.4 11.5 13 5" stroke="#1a0e04" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        )}
+      </span>
+      <span style={{fontSize:13.5, color:"var(--ink-70)"}}>
+        <input type="checkbox" checked={checked} onChange={(e)=> setChecked(e.target.checked)} style={{position:"absolute", opacity:0, pointerEvents:"none"}}/>
+        {children}
+        {required && <span style={{color:"var(--copper-light)", marginLeft:4}}>*</span>}
+      </span>
+    </label>
+  );
+}
+
+function StepHeader({ n, title, status, desktop=false }){
+  return (
+    <div style={{display:"flex", alignItems:"center", gap:14}}>
+      <span className="step-num">{status==="completed" ? <Icon.check/> : (n+1)}</span>
+      <span style={{
+        fontFamily:"var(--mono)", fontSize: desktop?11:10.5, letterSpacing:".1em",
+        color: status==="active" ? "var(--copper-light)" : "var(--ink-50)",
+        textTransform:"uppercase"
+      }}>
+        Étape {n+1} · {title}
+      </span>
+      {status==="active" && (
+        <span style={{
+          marginLeft:"auto", fontFamily:"var(--mono)", fontSize:10, color:"var(--copper-light)",
+          letterSpacing:".1em"
+        }}>EN COURS</span>
+      )}
+    </div>
+  );
+}
+
+function OptionList({ options, value, onChange }){
+  return (
+    <div style={{display:"grid", gap:10}}>
+      {options.map(o=>(
+        <div key={o.v} className={"option-row " + (value===o.v ? "selected":"")}
+          onClick={()=> onChange(o.v)}>
+          <span>{o.l}</span>
+          <span className="check">
+            {value===o.v && <Icon.check/>}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function CompletedSummary({ value, options }){
+  const sel = options.find(o=> o.v===value);
+  return (
+    <div style={{color:"var(--ink-70)", fontSize:13.5, marginLeft:38, marginTop:6}}>
+      {sel?.l || "—"}
+    </div>
+  );
+}
+
+function Step({ idx, step, status, active, value, onPick, onBack, onNext, desktop=false, verifying=false, verificationPhase="loading", verificationComplete=false, animationDelay=0 }){
+  // status: future | active | completed
+
+  // For étapes 6, 7, 8 (indices 5, 6, 7): show them when verification is complete, with animation
+  const isPostVerification = [5,6,7].includes(idx);
+  const shouldShow = !isPostVerification || (verifying && verificationPhase === "congratulations") || verificationComplete;
+  const animationStyle = isPostVerification && (verifying && verificationPhase === "congratulations" || verificationComplete) ? {
+    animation: `nv-step-slide-up 0.6s ease-out ${animationDelay}s both`,
+  } : {};
+
+  const cardProps = {
+    className: "step-card " + status,
+    onClick: status==="completed" ? ()=> onBack?.(idx) : undefined,
+    style: {
+      ...(status==="completed" ? {cursor:"pointer"} : {}),
+      ...(shouldShow ? animationStyle : {display: "none"})
+    }
+  };
+  if (step.id === "contact") {
+    const [fullName, setFullName] = useFormState("");
+    const [email, setEmail] = useFormState("");
+
+    // Validation email strict
+    const isValidEmail = (email) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+      return emailRegex.test(email);
+    };
+
+    const isFormValid = fullName.trim().length > 0 && isValidEmail(email);
+
+    return (
+      <div {...cardProps}>
+        <StepHeader n={idx} title={step.short} status={status} desktop={desktop}/>
+        {status === "active" && (
+          <div style={{marginTop:18}}>
+            <div style={{fontFamily:"var(--serif)", fontSize: desktop?32:24, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:18}}>
+              Où on vous envoie le bilan ?
+            </div>
+            <div style={{marginBottom:12}}>
+              <div className="eyebrow" style={{marginBottom:6}}>Nom complet</div>
+              <input className="input-field" placeholder="Jean Dupont" value={fullName} onChange={(e) => setFullName(e.target.value)}/>
+            </div>
+            <div className="eyebrow" style={{marginBottom:6}}>Email</div>
+            <input className="input-field" placeholder="vous@email.com" value={email} onChange={(e) => setEmail(e.target.value)} style={{marginBottom:6}}/>
+            {email && !isValidEmail(email) && (
+              <div style={{fontSize:11.5, color:"#E89E5C", marginBottom:12}}>
+                Veuillez entrer une adresse email valide
+              </div>
+            )}
+            <div style={{fontSize:11.5, color:"var(--ink-50)", marginBottom:18, fontStyle:"italic"}}>
+              Pour vous envoyer le bilan. <span style={{color:"var(--copper-light)"}}>Pas d'appel sans votre accord.</span>
+            </div>
+            <button
+              className="btn btn-primary"
+              style={{padding:"14px 22px", fontSize:14, opacity: isFormValid ? 1 : 0.5, cursor: isFormValid ? "pointer" : "not-allowed"}}
+              onClick={() => isFormValid && onNext()}
+              disabled={!isFormValid}
+            >
+              Continuer <Icon.arrow/>
+            </button>
+            <div style={{marginTop:12, fontSize:11.5, color:"var(--ink-50)", display:"flex", gap:8, alignItems:"center"}}>
+              <Icon.shield style={{color:"var(--copper-light)"}}/>
+              Données chiffrées · suppression à la demande
+            </div>
+          </div>
+        )}
+        {status === "completed" && (
+          <div style={{color:"var(--ink-70)", fontSize:13.5, marginLeft:38, marginTop:6}}>
+            Vos coordonnées sont enregistrées
+          </div>
+        )}
+      </div>
+    );
+  }
+  if (step.id === "otp") {
+    const [otpPhoneState, setOtpPhoneState] = useFormState("phone");
+    const [otpPhone, setOtpPhone] = useFormState("+33 6 12 34 56 78");
+    const [otpCode, setOtpCode] = useFormState(["","","",""]);
+    const [otpTimer, setOtpTimer] = useFormState(5);
+
+    // Validate phone number - must have at least 10 digits
+    const isPhoneValid = (phone) => {
+      const digitsOnly = phone.replace(/\D/g, "");
+      return digitsOnly.length >= 10;
+    };
+
+    useFormEffect(() => {
+      if (otpPhoneState === "verifying") {
+        const interval = setInterval(() => {
+          setOtpTimer(t => {
+            if (t <= 1) {
+              setOtpPhoneState("code");
+              clearInterval(interval);
+              return 0;
+            }
+            return t - 1;
+          });
+        }, 1000);
+        return () => clearInterval(interval);
+      }
+    }, [otpPhoneState]);
+
+    useFormEffect(() => {
+      if (status === "active") {
+        setOtpPhoneState("phone");
+        setOtpTimer(5);
+      }
+    }, [status]);
+
+    return (
+      <div {...cardProps}>
+        <StepHeader n={idx} title={step.short} status={status} desktop={desktop}/>
+        {status === "active" && (
+          <div style={{marginTop:18}}>
+            <div style={{fontFamily:"var(--serif)", fontSize: desktop?32:24, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:8}}>
+              Sécurisons l'envoi de votre bilan.
+            </div>
+            <div style={{color:"var(--ink-70)", fontSize:13.5, marginBottom:18, lineHeight:1.5, maxWidth:520}}>
+              On envoie un code SMS pour confirmer votre numéro. <span style={{color:"var(--copper-light)"}}>Un seul appel ensuite</span> — pour fixer le rendez-vous visio. Aucune relance.
+            </div>
+
+            {otpPhoneState === "phone" && (
+              <>
+                <div className="eyebrow" style={{marginBottom:6}}>Téléphone</div>
+                <input className="input-field" value={otpPhone} onChange={(e)=> setOtpPhone(e.target.value)} style={{marginBottom:20}}/>
+                <button className="btn btn-primary" disabled={!isPhoneValid(otpPhone)} style={{padding:"14px 22px", fontSize:14, opacity: !isPhoneValid(otpPhone) ? 0.5 : 1, cursor: !isPhoneValid(otpPhone) ? "not-allowed" : "pointer"}} onClick={() => setOtpPhoneState("verifying")}>
+                  Valider <Icon.arrow/>
+                </button>
+              </>
+            )}
+
+            {(otpPhoneState === "verifying" || otpPhoneState === "code") && ReactDOM.createPortal(
+              <div style={{
+                position:"fixed", inset:0,
+                background:"rgba(0,0,0,.96)",
+                backdropFilter:"blur(8px)",
+                WebkitBackdropFilter:"blur(8px)",
+                display:"flex", alignItems:"center", justifyContent:"center",
+                zIndex:99999,
+                animation:"nv-modal-fade-in .3s ease-out"
+              }}>
+                  <div style={{
+                    background:"linear-gradient(135deg, rgba(22,12,6,.95), rgba(28,16,8,.92))",
+                    border:"1px solid rgba(232,158,92,.15)",
+                    borderRadius:28,
+                    padding:"48px 40px",
+                    maxWidth:420,
+                    width:"90%",
+                    textAlign:"center",
+                    boxShadow:"0 32px 80px -12px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.05), inset 0 1px 0 rgba(255,255,255,.08)",
+                    animation:"nv-modal-slide-up .4s cubic-bezier(0.34, 1.56, 0.64, 1)"
+                  }}>
+                    {otpPhoneState === "verifying" && (
+                      <>
+                        <div style={{
+                          width:72, height:72, margin:"0 auto 28px",
+                          borderRadius:"50%",
+                          border:"1.5px solid rgba(232,158,92,.3)",
+                          position:"relative",
+                          background:"radial-gradient(circle, rgba(184,115,51,.25), transparent 70%)"
+                        }}>
+                          <span style={{
+                            position:"absolute", inset:-2, borderRadius:"50%",
+                            border:"1.5px solid transparent",
+                            borderTopColor:"var(--copper-light)",
+                            animation:"nv-spin 1.4s linear infinite"
+                          }}/>
+                        </div>
+                        <div style={{fontFamily:"var(--serif)", fontSize:28, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:14, fontWeight:500}}>
+                          En cours de vérification
+                        </div>
+                        <div style={{fontSize:14.5, color:"var(--ink-70)", marginBottom:32, lineHeight:1.5}}>
+                          Nous vous envoyons un code SMS
+                        </div>
+                        <div style={{fontFamily:"var(--serif)", fontSize:56, letterSpacing:"-0.02em", color:"var(--copper-light)", fontWeight:400, marginBottom:4}}>
+                          {otpTimer.toString().padStart(2,"0")}
+                        </div>
+                        <div style={{fontSize:13, color:"var(--ink-50)"}}>
+                          secondes
+                        </div>
+                      </>
+                    )}
+
+                    {otpPhoneState === "code" && (
+                      <>
+                        <div style={{fontFamily:"var(--serif)", fontSize:28, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:8, fontWeight:500}}>
+                          Entrez votre code
+                        </div>
+                        <div style={{fontSize:14, color:"var(--ink-70)", marginBottom:32, lineHeight:1.5}}>
+                          Vérifiez le SMS envoyé au <span style={{color:"var(--copper-light)"}}>+33 6 ••••••••</span>
+                        </div>
+                        <div style={{display:"flex", gap:12, marginBottom:32, justifyContent:"center"}}>
+                          {[0,1,2,3].map(i=>(
+                            <input
+                              key={i}
+                              type="text"
+                              maxLength="1"
+                              value={otpCode[i]}
+                              onChange={(e)=> {
+                                const newCode = [...otpCode];
+                                newCode[i] = e.target.value.replace(/\D/g, "");
+                                setOtpCode(newCode);
+                                if (newCode[i] && i < 3) {
+                                  document.querySelector(`input[data-otp-index="${i+1}"]`)?.focus();
+                                } else if (newCode.every(digit => digit !== "")) {
+                                  // All 4 digits filled - validate and proceed
+                                  const code = newCode.join("");
+                                  // Accept test codes or any valid 4-digit code for now
+                                  if (code === "1111" || code === "0000" || code.length === 4) {
+                                    setTimeout(() => onNext(), 300);
+                                  }
+                                }
+                              }}
+                              data-otp-index={i}
+                              style={{
+                                width:60, height:60, textAlign:"center",
+                                fontSize:28, fontFamily:"var(--mono)", fontWeight:"bold",
+                                border:"2px solid rgba(232,158,92,.25)", borderRadius:14,
+                                background:"rgba(232,158,92,.06)",
+                                color:"var(--ink-90)",
+                                outline:"none",
+                                transition:"all .2s",
+                                cursor:"text"
+                              }}
+                              className="otp-input"
+                              autoFocus={i === 0}
+                            />
+                          ))}
+                        </div>
+                        <button
+                          onClick={() => {
+                            setOtpPhoneState("phone");
+                            setOtpCode(["","","",""]);
+                          }}
+                          style={{
+                            background:"none",
+                            border:"none",
+                            color:"var(--copper-light)",
+                            fontSize:13.5,
+                            cursor:"pointer",
+                            padding:"8px 12px",
+                            borderRadius:8,
+                            transition:"all .2s",
+                            textDecoration:"underline",
+                            opacity:0.9
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.opacity = "1";
+                            e.target.style.background = "rgba(232,158,92,.08)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.opacity = "0.9";
+                            e.target.style.background = "none";
+                          }}
+                        >
+                          Utiliser un autre numéro
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>,
+                document.getElementById("otp-modal-portal")
+              )}
+
+            <style>{`
+              @keyframes nv-spin { to { transform: rotate(360deg) } }
+              @keyframes nv-modal-fade-in { from { opacity: 0; } to { opacity: 1; } }
+              @keyframes nv-modal-slide-up { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+            `}</style>
+          </div>
+        )}
+      </div>
+    );
+  }
+  if (step.id === "rgpd") {
+    const [consent1, setConsent1] = useFormState(false);
+    const [consent2, setConsent2] = useFormState(false);
+    const canSubmit = consent1 && consent2;
+    return (
+      <div {...cardProps}>
+        <StepHeader n={idx} title={step.short} status={status} desktop={desktop}/>
+        {status === "active" && (
+          <div style={{marginTop:18}}>
+            <div style={{fontFamily:"var(--serif)", fontSize: desktop?32:24, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:18}}>
+              Dernière étape
+            </div>
+            <div style={{padding:"4px 0 8px", borderTop:"1px solid rgba(255,255,255,.06)", marginBottom:20}}>
+              <label style={{
+                display:"grid", gridTemplateColumns:"22px 1fr", gap:14, alignItems:"start",
+                padding:"14px 0", cursor:"pointer", lineHeight:1.5
+              }} onClick={()=> setConsent1(!consent1)}>
+                <span style={{
+                  width:22, height:22, borderRadius:6, marginTop:1,
+                  border: consent1 ? "1.5px solid var(--copper-light)" : "1.5px solid rgba(255,255,255,.18)",
+                  background: consent1 ? "linear-gradient(135deg, rgba(232,158,92,.95), rgba(184,115,51,.85))" : "transparent",
+                  boxShadow: consent1 ? "0 0 0 4px rgba(232,158,92,.10), inset 0 1px 0 rgba(255,255,255,.25)" : "none",
+                  display:"inline-flex", alignItems:"center", justifyContent:"center",
+                  transition:"all .18s",
+                  flexShrink:0
+                }}>
+                  {consent1 && (
+                    <svg viewBox="0 0 16 16" width="13" height="13" fill="none">
+                      <path d="M3 8.2 6.4 11.5 13 5" stroke="#1a0e04" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                </span>
+                <span style={{fontSize:13.5, color:"var(--ink-90)"}}>J'accepte que les informations saisies dans ce formulaire soient traitées par Novi dans le cadre de ma demande de bilan patrimonial offert, conformément à leur politique de confidentialité. <span style={{color:"var(--copper-light)"}}>*</span></span>
+              </label>
+              <label style={{
+                display:"grid", gridTemplateColumns:"22px 1fr", gap:14, alignItems:"start",
+                padding:"14px 0", cursor:"pointer", lineHeight:1.5
+              }} onClick={()=> setConsent2(!consent2)}>
+                <span style={{
+                  width:22, height:22, borderRadius:6, marginTop:1,
+                  border: consent2 ? "1.5px solid var(--copper-light)" : "1.5px solid rgba(255,255,255,.18)",
+                  background: consent2 ? "linear-gradient(135deg, rgba(232,158,92,.95), rgba(184,115,51,.85))" : "transparent",
+                  boxShadow: consent2 ? "0 0 0 4px rgba(232,158,92,.10), inset 0 1px 0 rgba(255,255,255,.25)" : "none",
+                  display:"inline-flex", alignItems:"center", justifyContent:"center",
+                  transition:"all .18s",
+                  flexShrink:0
+                }}>
+                  {consent2 && (
+                    <svg viewBox="0 0 16 16" width="13" height="13" fill="none">
+                      <path d="M3 8.2 6.4 11.5 13 5" stroke="#1a0e04" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                </span>
+                <span style={{fontSize:13.5, color:"var(--ink-90)"}}>J'accepte d'être contacté(e) par un expert partenaire conseiller en gestion de patrimoine (CGP) indépendant, sélectionné par Novi, pour réaliser mon bilan patrimonial. <span style={{color:"var(--copper-light)"}}>*</span></span>
+              </label>
+            </div>
+            <div style={{
+              marginBottom:20,
+              padding:"14px 16px",
+              borderRadius:10,
+              background:"rgba(255,255,255,.02)",
+              border:"1px solid rgba(255,255,255,.05)",
+              fontSize:12, color:"var(--ink-50)", lineHeight:1.55,
+              display:"flex", flexDirection:"column", gap:10, alignItems:"flex-start"
+            }}>
+              <span>Pour connaître et exercer vos droits, notamment de retrait du consentement, consultez notre <a href="rgpd.html" style={{color:"var(--copper-light)", textDecoration:"underline", cursor:"pointer"}}>politique de confidentialité</a>.</span>
+            </div>
+            <button
+              className="btn btn-primary"
+              style={{
+                width:"100%",
+                padding:"28px 32px",
+                fontSize:20,
+                fontWeight:700,
+                letterSpacing:"-0.01em",
+                opacity: canSubmit ? 1 : 0.45,
+                cursor: canSubmit ? "pointer" : "not-allowed",
+                pointerEvents: canSubmit ? "auto" : "none",
+                transition:"all .4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                boxShadow: canSubmit ? "0 20px 60px rgba(184,115,51,.6), inset 0 1px 0 rgba(255,255,255,.4)" : "0 12px 32px rgba(184,115,51,.4), inset 0 1px 0 rgba(255,255,255,.4)",
+                animation: canSubmit ? "nv-cta-pulse 2.5s ease-in-out infinite" : "none",
+                borderRadius:"14px",
+                display:"flex",
+                alignItems:"center",
+                justifyContent:"center",
+                gap:12
+              }}
+              onClick={() => {
+                if (canSubmit) {
+                  setTimeout(() => onNext(), 150);
+                }
+              }}
+              onMouseEnter={(e) => {
+                if (canSubmit) {
+                  e.currentTarget.style.transform = "translateY(-4px) scale(1.02)";
+                  e.currentTarget.style.boxShadow = "0 28px 80px rgba(184,115,51,.75), inset 0 1px 0 rgba(255,255,255,.4)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0) scale(1)";
+                e.currentTarget.style.boxShadow = "0 20px 60px rgba(184,115,51,.6), inset 0 1px 0 rgba(255,255,255,.4)";
+              }}
+            >
+              <span>Recevoir mon bilan</span>
+              <Icon.arrow style={{transition:"all .4s cubic-bezier(0.34, 1.56, 0.64, 1)"}}/>
+            </button>
+            <style>{`
+              @keyframes nv-cta-pulse {
+                0%, 100% {
+                  box-shadow: 0 20px 60px rgba(184,115,51,.6), inset 0 1px 0 rgba(255,255,255,.4);
+                }
+                50% {
+                  box-shadow: 0 24px 80px rgba(184,115,51,.85), inset 0 1px 0 rgba(255,255,255,.5);
+                }
+              }
+            `}</style>
+          </div>
+        )}
+        {status === "completed" && (
+          <div style={{color:"var(--ink-70)", fontSize:13.5, marginLeft:38, marginTop:6}}>
+            Consentement accepté
+          </div>
+        )}
+      </div>
+    );
+  }
+  // Standard option step
+  const def = step.options?.find(o=>o.default)?.v;
+  return (
+    <div {...cardProps}>
+      <StepHeader n={idx} title={step.short} status={status} desktop={desktop}/>
+      {status === "active" && (
+        <div style={{marginTop:18}}>
+          <div style={{fontFamily:"var(--serif)", fontSize: desktop?28:22, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:18}}>
+            {step.title}&nbsp;?
+          </div>
+          <OptionList options={step.options} value={value || def} onChange={onPick}/>
+        </div>
+      )}
+      {status === "completed" && (
+        <CompletedSummary value={value || def} options={step.options}/>
+      )}
+    </div>
+  );
+}
+
+function AnalyseCard({ desktop=false }){
+  return (
+    <div className="glass" style={{padding: desktop?"56px 40px":"40px 24px", borderRadius:24, textAlign:"center", position:"relative"}}>
+      <div style={{
+        width: desktop?64:52, height: desktop?64:52, margin:"0 auto 22px",
+        borderRadius:"50%",
+        border:"1px solid rgba(232,158,92,.4)",
+        position:"relative",
+        background:"radial-gradient(circle, rgba(184,115,51,.18), transparent 70%)"
+      }}>
+        <span style={{
+          position:"absolute", inset:-1, borderRadius:"50%",
+          border:"1px solid transparent",
+          borderTopColor:"var(--copper-light)",
+          animation:"nv-spin 1.4s linear infinite"
+        }}/>
+      </div>
+      <div style={{fontFamily:"var(--serif)", fontSize: desktop?34:26, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:10}}>
+        <span className="serif-it">Analyse en cours</span>
+      </div>
+      <style>{`@keyframes nv-spin { to { transform: rotate(360deg) } }`}</style>
+    </div>
+  );
+}
+
+function VerificationScreen({ phase="loading", desktop=false }){
+  return (
+    <div style={{
+      position:"fixed", inset:0,
+      background:"var(--velvet)",
+      display:"flex", alignItems:"center", justifyContent:"center",
+      zIndex:999,
+      animation:"nv-verify-fade-in .4s ease-out"
+    }}>
+      <div style={{textAlign:"center", maxWidth:480, padding: desktop?"40px":"24px"}}>
+        {phase === "loading" && (
+          <>
+            <div style={{
+              width: desktop?80:64, height: desktop?80:64, margin:"0 auto 32px",
+              borderRadius:"50%",
+              border:"1px solid rgba(232,158,92,.4)",
+              position:"relative",
+              background:"radial-gradient(circle, rgba(184,115,51,.18), transparent 70%)"
+            }}>
+              <span style={{
+                position:"absolute", inset:-1, borderRadius:"50%",
+                border:"1px solid transparent",
+                borderTopColor:"var(--copper-light)",
+                animation:"nv-spin 1.4s linear infinite"
+              }}/>
+            </div>
+            <div style={{fontFamily:"var(--serif)", fontSize: desktop?32:26, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:12}}>
+              Nous analysons votre profil
+            </div>
+          </>
+        )}
+
+        {phase === "congratulations" && (
+          <div style={{animation:"nv-congrats-fade-in .6s ease-out"}}>
+            <div style={{fontFamily:"var(--serif)", fontSize: desktop?42:34, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:8, fontWeight:500}}>
+              Félicitations !
+            </div>
+            <div style={{fontFamily:"var(--serif)", fontSize: desktop?28:24, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:24, fontWeight:400}}>
+              Vous êtes admissible
+            </div>
+            <div style={{fontSize: desktop?16:14.5, color:"var(--ink-70)", lineHeight:1.6}}>
+              Vous faites partie des <span style={{color:"var(--copper-light)", fontWeight:600}}>18 %</span> qui
+              <br/>optimisent leur patrimoine chaque année
+            </div>
+          </div>
+        )}
+      </div>
+      <style>{`
+        @keyframes nv-spin { to { transform: rotate(360deg) } }
+        @keyframes nv-verify-fade-in { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes nv-verify-fade-out { from { opacity: 1; } to { opacity: 0; } }
+        @keyframes nv-congrats-fade-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      `}</style>
+    </div>
+  );
+}
+
+function FormScreen({ desktop=false, activeIdx=0 }){
+  // Steps 0..4 completed, 5 (contact) active by default for hero state.
+  // Force start at step 0 (age) instead of step 5 (contact)
+  const [active, setActive] = useFormState(0);
+  const [picks, setPicks] = useFormState({});
+  const [verifying, setVerifying] = useFormState(false);
+  const [verificationPhase, setVerificationPhase] = useFormState("loading"); // "loading" | "congratulations"
+  const [verificationComplete, setVerificationComplete] = useFormState(false);
+
+  // Check if user is ineligible (both low income AND low assets)
+  const isIneligible = picks.impots === "<2k" && picks.patrimoine === "<20k";
+
+  // Handle eligibility exclusion
+  useFormEffect(()=> {
+    if (isIneligible) {
+      const timer = setTimeout(()=> {
+        window.location.href = "./non-eligible.html";
+      }, 800);
+      return ()=> clearTimeout(timer);
+    }
+  }, [isIneligible]);
+
+  // Verification flow when moving from étape 5 (contact) to étape 6
+  useFormEffect(()=> {
+    if (active === 5 && !verifying) {
+      setVerifying(true);
+      setVerificationPhase("loading");
+
+      // After 0.5 seconds, show congratulations message
+      const timer1 = setTimeout(()=> {
+        setVerificationPhase("congratulations");
+        setVerificationComplete(true);
+      }, 500);
+
+      // After 2 seconds total, hide verification overlay but keep étapes 6-8 visible
+      const timer2 = setTimeout(()=> {
+        setVerifying(false);
+      }, 2000);
+
+      return ()=> {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+      };
+    }
+  }, [active]);
+
+  // Auto-scroll to active question
+  useFormEffect(()=> {
+    setTimeout(()=> {
+      const activeCard = document.querySelector(".step-card.active");
+      if (activeCard) {
+        activeCard.scrollIntoView({ behavior:"smooth", block:"center" });
+      }
+    }, 250);
+  }, [active]);
+
+  const pct = Math.round((active / (STEPS.length-1)) * 100);
+
+  return (
+    <div className={"nv-stage nv-grain " + (desktop?"viewport-desktop":"viewport-mobile")}>
+      <div className="nv-conic"/>
+      <div className="nv-grid"/>
+      <div className="nv-content">
+        {/* Verification screen overlay */}
+        {verifying && <VerificationScreen phase={verificationPhase} desktop={desktop}/>}
+
+        <div style={{
+          transition:"opacity .4s ease",
+          opacity: verifying && verificationPhase === "loading" ? 0.3 : 1,
+          pointerEvents: verifying && verificationPhase === "loading" ? "none" : "auto"
+        }}>
+          <div style={{padding: desktop ? "20px 56px 0" : "12px 22px 0"}}>
+            <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: desktop?20:14}}>
+              <button onClick={() => window.location.href='landing.html'} style={{cursor:"pointer", padding:"8px 12px", marginLeft:"-12px", background:"transparent", border:"none", display:"flex", alignItems:"center", transition:"opacity .2s ease"}}>
+                <NoviLogo size={desktop?20:18}/>
+              </button>
+              <div style={{display:"flex", gap:8, alignItems:"center"}}>
+                <FormCounter desktop={desktop}/>
+              </div>
+            </div>
+            <ProgressTop pct={pct}/>
+          </div>
+
+          <div style={{
+            padding: desktop ? "32px 56px 56px" : "20px 22px 36px",
+            maxWidth: desktop ? "880px" : "100%", margin:"0 auto"
+          }}>
+            <div style={{marginBottom: desktop?40:28}}>
+              <div className="eyebrow" style={{marginBottom:14}}>— Bilan patrimonial</div>
+              <h1 className="serif" style={{fontSize: desktop?72:38, letterSpacing:"-0.04em", lineHeight:0.95, color:"var(--ink-90)"}}>
+                5 questions.<br/><span className="serif-it copper-text">90 secondes.</span>
+              </h1>
+              <div style={{marginTop:14}}>
+                <div style={{color:"var(--ink-50)", fontSize: desktop?14:12.5, fontFamily:"var(--mono)", letterSpacing:".05em", marginBottom:10}}>
+                  ANALYSE GRATUITE · CONSEIL EXPERT ACCRÉDITÉ
+                </div>
+                <div style={{display:"flex", gap:12, alignItems:"center"}}>
+                  <div style={{fontSize:11, color:"var(--ink-40)", fontFamily:"var(--mono)", letterSpacing:".05em", padding:"6px 10px", background:"rgba(255,255,255,.04)", borderRadius:6, border:"1px solid rgba(255,255,255,.06)"}}>ORIAS</div>
+                  <div style={{fontSize:11, color:"var(--ink-40)", fontFamily:"var(--mono)", letterSpacing:".05em", padding:"6px 10px", background:"rgba(255,255,255,.04)", borderRadius:6, border:"1px solid rgba(255,255,255,.06)"}}>AMF</div>
+                </div>
+              </div>
+            </div>
+
+            <div style={{display:"grid", gap: desktop?14:12}}>
+              {STEPS.map((s,i)=>{
+                const status = i<active ? "completed" : i===active ? "active" : "future";
+                const isAfterVerification = (verifying || verificationComplete) && i >= 5;
+                const animationDelay = isAfterVerification && (verificationPhase === "congratulations" || verificationComplete) ? (i - 5) * 0.3 : 0;
+
+                return (
+                  <Step
+                    key={s.id} idx={i} step={s} status={status} active={active} desktop={desktop}
+                    value={picks[s.id]}
+                    onPick={(v)=> {
+                      setPicks(p=> ({...p, [s.id]:v}));
+                      setTimeout(()=> setActive(a=> Math.min(a+1, STEPS.length-1)), 220);
+                    }}
+                    onBack={(j)=> setActive(j)}
+                    onNext={()=> setActive(a=> Math.min(a+1, STEPS.length-1))}
+                    verifying={verifying}
+                    verificationPhase={verificationPhase}
+                    verificationComplete={verificationComplete}
+                    animationDelay={animationDelay}
+                  />
+                );
+              })}
+            </div>
+
+            {/* Silent exclusion - only shown when user is ineligible */}
+            {isIneligible && (
+              <div style={{marginTop: desktop?32:24}}>
+                <div className="eyebrow" style={{marginBottom:14, color:"var(--copper-light)"}}>
+                  — Exclusion silencieuse (état)
+                </div>
+                <AnalyseCard desktop={desktop}/>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes nv-step-fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes nv-step-slide-up {
+          from { opacity: 0; transform: translateY(40px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+Object.assign(window, { FormScreen, AnalyseCard, STEPS });
+</script>
+  <script type="text/babel">/* global React, Icon, NoviLogo */
+
+function HalfSun({ width=320, desktop=false }){
+  const W = width, H = width*0.55;
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} style={{display:"block"}}>
+      <defs>
+        <radialGradient id="sunCore" cx="50%" cy="100%" r="50%">
+          <stop offset="0%" stopColor="#E89E5C" stopOpacity="0.95"/>
+          <stop offset="40%" stopColor="#B87333" stopOpacity="0.6"/>
+          <stop offset="100%" stopColor="#B87333" stopOpacity="0"/>
+        </radialGradient>
+        <linearGradient id="horizon" x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0%" stopColor="rgba(232,158,92,0)"/>
+          <stop offset="50%" stopColor="rgba(232,158,92,.7)"/>
+          <stop offset="100%" stopColor="rgba(232,158,92,0)"/>
+        </linearGradient>
+      </defs>
+
+      {/* halo */}
+      <ellipse cx={W/2} cy={H} rx={W*0.46} ry={H*0.95} fill="url(#sunCore)"/>
+
+      {/* concentric arcs */}
+      {[0.42, 0.36, 0.30, 0.24, 0.18].map((rPct, idx) => (
+        <path key={idx}
+          d={`M ${W/2 - W*rPct} ${H} A ${W*rPct} ${W*rPct} 0 0 1 ${W/2 + W*rPct} ${H}`}
+          fill="none"
+          stroke={`rgba(232,158,92,${0.18 + idx*0.13})`}
+          strokeWidth={idx===4 ? 1.6 : 1}
+        />
+      ))}
+
+      {/* horizon line */}
+      <line x1="0" x2={W} y1={H} y2={H} stroke="url(#horizon)" strokeWidth="1.2"/>
+
+      {/* center disc */}
+      <circle cx={W/2} cy={H} r={W*0.13} fill="rgba(232,158,92,.22)"/>
+      <circle cx={W/2} cy={H} r={W*0.07} fill="#E89E5C"/>
+    </svg>
+  );
+}
+
+function NonEligibleScreen({ desktop=false }){
+  return (
+    <div className={"nv-stage nv-grain " + (desktop?"viewport-desktop":"viewport-mobile")}>
+      <div className="nv-conic"/>
+      <div className="nv-grid"/>
+      <div className="nv-content" style={{minHeight:"100%", display:"flex", flexDirection:"column"}}>
+        <div style={{padding: desktop?"24px 56px":"18px 22px"}}>
+          <NoviLogo size={desktop?20:18}/>
+        </div>
+
+        <div style={{
+          flex:1,
+          display:"flex", flexDirection:"column",
+          alignItems:"center", justifyContent:"center",
+          padding: desktop ? "40px 56px 80px" : "24px 22px 40px",
+          textAlign:"center"
+        }}>
+          <div style={{marginBottom: desktop?32:24}}>
+            <HalfSun width={desktop?440:280} desktop={desktop}/>
+          </div>
+
+          <div className="tag-pill" style={{fontSize: desktop?12:11, marginBottom: desktop?28:20}}>
+            <span className="dot copper"/>
+            <span>Pas aujourd'hui</span>
+          </div>
+
+          <h1 className="serif" style={{
+            fontSize: desktop?96:48,
+            letterSpacing:"-0.045em",
+            lineHeight:0.95,
+            color:"var(--ink-90)",
+            margin:"0 0 28px",
+            textWrap:"balance",
+            maxWidth:900
+          }}>
+            Merci d'avoir<br/>
+            <span className="serif-it copper-text">poussé la porte.</span>
+          </h1>
+
+          <p style={{
+            fontSize: desktop?18:15,
+            color:"var(--ink-70)",
+            lineHeight:1.55,
+            maxWidth: desktop?640:340,
+            margin:"0 auto 36px"
+          }}>
+            Aujourd'hui ce n'est pas le bon moment pour un bilan complet ensemble. On préfère vous le dire honnêtement plutôt que vous faire perdre 30&nbsp;minutes.
+          </p>
+
+          <div className="copper-line" style={{margin:"0 auto 28px", width:64}}/>
+
+          <div className="serif-it" style={{
+            fontSize: desktop?32:22,
+            color:"var(--copper-light)",
+            letterSpacing:"-0.01em",
+            lineHeight:1.3,
+            marginBottom: desktop?56:40,
+            maxWidth: 520
+          }}>
+            «&nbsp;On sera là quand vous reviendrez.&nbsp;»
+          </div>
+
+          <p style={{fontSize: desktop?14.5:13, color:"var(--ink-50)", lineHeight:1.6, maxWidth: desktop?540:320, margin:"0 auto 28px", fontStyle:"italic"}}>
+            Une analyse par mois, sans pub, sans relance. Si un jour vous voulez reprendre la conversation, vous saurez où nous trouver.
+          </p>
+
+          <div style={{
+            display:"flex",
+            flexDirection: desktop?"row":"column",
+            gap:12, justifyContent:"center", width:"100%",
+            maxWidth: desktop?500:340
+          }}>
+
+          </div>
+        </div>
+
+        <div style={{
+          padding: desktop ? "20px 56px 28px" : "18px 22px 24px",
+          borderTop:"1px solid rgba(255,255,255,.04)",
+          display:"flex", justifyContent:"space-between",
+          fontFamily:"var(--mono)", fontSize:10.5, letterSpacing:".06em",
+          color:"var(--ink-50)",
+          flexWrap:"wrap", gap:8
+        }}>
+          <span>NOVI FINANCE · CIF AMF · ORIAS · RGPD</span>
+          <span>go.novifinance.fr/non-eligible</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { NonEligibleScreen, HalfSun });
+</script>
+  <script type="text/babel">
+/* global React, Icon, NoviLogo, InstitutionBadge */
+
+// Stepper "votre parcours" — vertical on mobile, horizontal on desktop.
+function JourneyStep({ n, title, body, when, status, last=false, desktop=false }){
+  // status: "done" | "current" | "next"
+  const isDone = status === "done";
+  const isCurrent = status === "current";
+  const ringColor =
+    isDone ? "var(--copper-light)" :
+    isCurrent ? "var(--copper-light)" :
+    "rgba(255,255,255,.18)";
+  const numColor =
+    isDone ? "var(--copper-light)" :
+    isCurrent ? "var(--ink-90)" :
+    "var(--ink-50)";
+
+  return (
+    <div style={{
+      display:"flex",
+      gap: desktop?20:16,
+      alignItems:"flex-start",
+      position:"relative",
+      paddingBottom: last ? 0 : (desktop?32:28)
+    }}>
+      {/* connector line */}
+      {!last && (
+        <div style={{
+          position:"absolute",
+          left: desktop?23:19,
+          top: desktop?52:44,
+          bottom: 12,
+          width:1,
+          background: isDone
+            ? "linear-gradient(180deg, var(--copper-light), rgba(232,158,92,.15))"
+            : "rgba(255,255,255,.08)"
+        }}/>
+      )}
+
+      {/* node */}
+      <div style={{
+        width: desktop?48:40, height: desktop?48:40,
+        borderRadius:"50%",
+        flexShrink:0,
+        border: `1px solid ${ringColor}`,
+        background: isCurrent
+          ? "radial-gradient(circle at 30% 30%, rgba(232,158,92,.22), rgba(184,115,51,.04) 70%)"
+          : isDone ? "rgba(232,158,92,.08)" : "rgba(255,255,255,.02)",
+        display:"flex", alignItems:"center", justifyContent:"center",
+        color: numColor,
+        fontFamily:"var(--serif)",
+        fontStyle:"italic",
+        fontSize: desktop?20:17,
+        letterSpacing:"-0.02em",
+        position:"relative"
+      }}>
+        {isDone ? (
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none">
+            <path d="M3 8.2 6.4 11.5 13 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        ) : n}
+        {isCurrent && (
+          <span style={{
+            position:"absolute", inset:-4, borderRadius:"50%",
+            border:"1px solid rgba(232,158,92,.4)",
+            animation:"nf-pulse 2.4s ease-in-out infinite"
+          }}/>
+        )}
+      </div>
+
+      {/* body */}
+      <div style={{flex:1, paddingTop: desktop?6:4}}>
+        <div style={{
+          display:"flex",
+          justifyContent:"space-between",
+          alignItems:"baseline",
+          gap:12,
+          marginBottom:6,
+          flexWrap:"wrap"
+        }}>
+          <div style={{
+            fontFamily:"var(--serif)",
+            fontSize: desktop?22:18,
+            letterSpacing:"-0.015em",
+            color: isDone ? "var(--ink-70)" : "var(--ink-90)",
+            textDecoration: isDone ? "none" : "none"
+          }}>
+            {title}
+          </div>
+          <span style={{
+            fontFamily:"var(--mono)", fontSize: desktop?10.5:10,
+            letterSpacing:".1em",
+            color: isCurrent ? "var(--copper-light)" : "var(--ink-50)",
+            textTransform:"uppercase"
+          }}>
+            {when}
+          </span>
+        </div>
+        <div style={{
+          fontSize: desktop?14:13,
+          color:"var(--ink-70)",
+          lineHeight:1.55,
+          maxWidth:520
+        }}>
+          {body}
+        </div>
+        {isCurrent && (
+          <div style={{
+            marginTop:14,
+            display:"inline-flex", alignItems:"center", gap:8,
+            padding:"6px 12px",
+            border:"1px solid rgba(232,158,92,.28)",
+            background:"rgba(232,158,92,.06)",
+            borderRadius:999,
+            fontFamily:"var(--mono)", fontSize:10.5, letterSpacing:".1em",
+            color:"var(--copper-light)"
+          }}>
+            <span className="dot copper" style={{
+              width:6, height:6, borderRadius:"50%",
+              background:"var(--copper-light)",
+              animation:"nf-pulse 1.6s ease-in-out infinite"
+            }}/>
+            VOUS ÊTES ICI
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ThankYouScreen({ desktop=false }){
+  const steps = [
+    {
+      n:1, title:"Vos réponses sont reçues",
+      body:"Vos 5 réponses sont arrivées chiffrées dans notre cabinet. Aucun robot, aucune base revendue.",
+      when:"Maintenant",
+      status:"done"
+    },
+    {
+      n:2, title:"Préparation de votre bilan",
+      body:"Votre conseiller dédié examine vos chiffres en silence. Il prépare une lecture chiffrée et personnalisée — fiscalité, patrimoine, retraite, transmission.",
+      when:"Dans les 24 h",
+      status:"current"
+    },
+    {
+      n:3, title:"Un seul appel, court",
+      body:"Votre conseiller vous appelle une fois pour caler un rendez-vous visio de 30 minutes. C'est le seul appel que vous recevrez de notre part.",
+      when:"Sous 48 h",
+      status:"next"
+    },
+    {
+      n:4, title:"Rendez-vous visio · 30 min",
+      body:"Vous recevez la lecture complète, à voix nue. Aucun produit poussé, aucune carte de paiement demandée. Vous posez vos questions.",
+      when:"Cette semaine",
+      status:"next"
+    },
+    {
+      n:5, title:"Plan écrit · vous décidez",
+      body:"Vous repartez avec un PDF chiffré, signé. Vous choisissez librement de mettre en place — ou pas. Aucune relance commerciale.",
+      when:"Suite au rdv",
+      status:"next"
+    }
+  ];
+
+  return (
+    <div className={"nv-stage nv-grain " + (desktop?"viewport-desktop":"viewport-mobile")}>
+      <div className="nv-conic"/>
+      <div className="nv-grid"/>
+      <div className="nv-content" style={{minHeight:"100%", display:"flex", flexDirection:"column"}}>
+        <div style={{
+          padding: desktop?"22px 56px":"16px 22px",
+          borderBottom:"1px solid rgba(255,255,255,.04)",
+          display:"flex", justifyContent:"space-between", alignItems:"center"
+        }}>
+          <NoviLogo size={desktop?22:18}/>
+          <span className="tag-pill" style={{fontSize: desktop?12:10.5}}>
+            <span className="dot copper" style={{
+              width:6, height:6, borderRadius:"50%",
+              background:"var(--copper-light)",
+              animation:"nf-pulse 2s ease-in-out infinite"
+            }}/>
+            <span>Bilan en cours</span>
+          </span>
+        </div>
+
+        <div style={{
+          padding: desktop ? "64px 56px 32px" : "36px 22px 24px",
+          maxWidth: desktop?"1100px":"100%", margin:"0 auto", width:"100%"
+        }}>
+          <div className="eyebrow" style={{marginBottom:14, color:"var(--copper-light)"}}>
+            — Étape 1/5 · validée
+          </div>
+          <h1 className="serif" style={{
+            fontSize: desktop?"clamp(64px, 8vw, 104px)" : 48,
+            letterSpacing:"-0.045em",
+            lineHeight:0.95,
+            color:"var(--ink-90)",
+            margin:"0 0 28px",
+            textWrap:"balance"
+          }}>
+            Merci.<br/>
+            <span className="serif-it copper-text">Voici la suite.</span>
+          </h1>
+          <p style={{
+            fontSize: desktop?17:14.5,
+            color:"var(--ink-70)",
+            lineHeight:1.55,
+            maxWidth: desktop?620:340,
+            marginBottom: desktop?12:8
+          }}>
+            Vous venez de franchir la première étape de votre bilan patrimonial. Voici le chemin qu'il reste à parcourir, étape par étape — sans surprise, sans démarchage.
+          </p>
+        </div>
+
+        {/* Rarity */}
+        <div style={{
+          padding: desktop ? "0 56px 8px" : "0 22px 8px",
+          maxWidth: desktop?"880px":"100%", margin:"0 auto", width:"100%"
+        }}>
+          <RarityCard desktop={desktop}/>
+        </div>
+
+        {/* Journey */}
+        <div style={{
+          padding: desktop ? "16px 56px 56px" : "8px 22px 32px",
+          maxWidth: desktop?"880px":"100%", margin:"0 auto", width:"100%"
+        }}>
+          <div className="glass" style={{
+            padding: desktop?"40px 44px":"28px 22px",
+            borderRadius: desktop?28:22
+          }}>
+            {steps.map((s,i)=> (
+              <JourneyStep
+                key={s.n}
+                n={s.n}
+                title={s.title}
+                body={s.body}
+                when={s.when}
+                status={s.status}
+                last={i===steps.length-1}
+                desktop={desktop}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* PDF preview */}
+        <div style={{
+          padding: desktop ? "16px 56px 8px" : "8px 22px 8px",
+          maxWidth: desktop?"880px":"100%", margin:"0 auto", width:"100%"
+        }}>
+          <PDFPreview desktop={desktop}/>
+        </div>
+
+        {/* Concrete time slots */}
+        <div style={{
+          padding: desktop ? "16px 56px 8px" : "8px 22px 8px",
+          maxWidth: desktop?"880px":"100%", margin:"0 auto", width:"100%"
+        }}>
+          <ConcreteSlots desktop={desktop}/>
+        </div>
+
+
+        {/* Share with a friend */}
+        <div style={{
+          padding: desktop ? "16px 56px 8px" : "8px 22px 8px",
+          maxWidth: desktop?"880px":"100%", margin:"0 auto", width:"100%"
+        }}>
+          <div className="glass" style={{padding: desktop?"28px 30px":"22px 20px", borderRadius:18}}>
+            <div className="eyebrow" style={{marginBottom:8}}>— Quelqu'un que ça pourrait aider ?</div>
+            <div style={{fontFamily:"var(--serif)", fontSize: desktop?22:18, letterSpacing:"-0.015em", color:"var(--ink-90)", marginBottom:6, lineHeight:1.25}}>
+              Partagez le bilan à un proche.
+            </div>
+            <div style={{fontSize: desktop?13.5:12.5, color:"var(--ink-70)", lineHeight:1.5, marginBottom:18, maxWidth:520}}>
+              Pas de parrainage, pas de commission. Juste un lien vers l'estimation gratuite, si vous pensez que ça peut être utile autour de vous.
+            </div>
+            <div style={{display:"flex", gap:10, flexWrap:"wrap"}}>
+              <a
+                href={"https://wa.me/?text=" + encodeURIComponent("Je viens de faire mon bilan patrimonial gratuit chez Novi (sans démarchage, juste un PDF). Ça pourrait t'intéresser → https://go.novifinance.fr")}
+                target="_blank" rel="noopener"
+                style={{
+                  display:"inline-flex", alignItems:"center", gap:10,
+                  padding:"12px 18px",
+                  background:"linear-gradient(135deg, #25D366, #1ea954)",
+                  color:"#0a3a1c",
+                  borderRadius:12, textDecoration:"none",
+                  fontFamily:"var(--mono)", fontSize:12, letterSpacing:".06em",
+                  fontWeight:700, textTransform:"uppercase",
+                  boxShadow:"0 8px 22px rgba(37,211,102,.22)",
+                  transition:"transform .15s"
+                }}
+                onMouseEnter={(e)=> e.currentTarget.style.transform="translateY(-1px)"}
+                onMouseLeave={(e)=> e.currentTarget.style.transform="translateY(0)"}
+              >
+                <svg viewBox="0 0 32 32" width="18" height="18" fill="currentColor">
+                  <path d="M16 3C9.4 3 4 8.3 4 15c0 2.3.6 4.5 1.8 6.4L4 29l7.9-2c1.8 1 3.9 1.5 6.1 1.5 6.6 0 12-5.3 12-12S22.6 3 16 3zm0 22c-1.9 0-3.7-.5-5.3-1.5l-.4-.2-4.3 1.1 1.2-4.2-.3-.4C5.7 18.4 5 16.7 5 15c0-5.5 4.9-10 11-10s11 4.5 11 10-4.9 10-11 10zm5.5-7.4c-.3-.2-1.8-.9-2.1-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.5-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4 0 1.4 1 2.8 1.2 3 .1.2 2 3 4.8 4.2 2.8 1.2 2.8.8 3.3.7.5-.1 1.6-.6 1.8-1.3.2-.7.2-1.2.1-1.3-.1-.1-.3-.2-.6-.4z"/>
+                </svg>
+                WhatsApp
+              </a>
+
+              <a
+                href="https://www.facebook.com/dialog/send?app_id=140586622674265&link=https%3A%2F%2Fgo.novifinance.fr&redirect_uri=https%3A%2F%2Fgo.novifinance.fr%2Fmerci"
+                target="_blank" rel="noopener"
+                style={{
+                  display:"inline-flex", alignItems:"center", gap:10,
+                  padding:"12px 18px",
+                  background:"linear-gradient(135deg, #00B2FF, #006AFF)",
+                  color:"#fff",
+                  borderRadius:12, textDecoration:"none",
+                  fontFamily:"var(--mono)", fontSize:12, letterSpacing:".06em",
+                  fontWeight:700, textTransform:"uppercase",
+                  boxShadow:"0 8px 22px rgba(0,106,255,.28)",
+                  transition:"transform .15s"
+                }}
+                onMouseEnter={(e)=> e.currentTarget.style.transform="translateY(-1px)"}
+                onMouseLeave={(e)=> e.currentTarget.style.transform="translateY(0)"}
+              >
+                <svg viewBox="0 0 32 32" width="18" height="18" fill="currentColor">
+                  <path d="M16 3C8.8 3 3 8.4 3 15.1c0 3.7 1.7 7 4.5 9.2V29l4.1-2.3c1.4.4 2.8.6 4.4.6 7.2 0 13-5.4 13-12.2S23.2 3 16 3zm1.4 16.4l-3.3-3.5-6.4 3.5L14.8 12l3.4 3.5L24.5 12l-7.1 7.4z"/>
+                </svg>
+                Messenger
+              </a>
+
+              <a
+                href={"sms:?body=" + encodeURIComponent("Je viens de faire mon bilan patrimonial gratuit chez Novi. Ça pourrait t'intéresser → https://go.novifinance.fr")}
+                style={{
+                  display:"inline-flex", alignItems:"center", gap:10,
+                  padding:"12px 18px",
+                  background:"rgba(255,255,255,.04)",
+                  color:"var(--ink-90)",
+                  border:"1px solid rgba(255,255,255,.12)",
+                  borderRadius:12, textDecoration:"none",
+                  fontFamily:"var(--mono)", fontSize:12, letterSpacing:".06em",
+                  fontWeight:600, textTransform:"uppercase",
+                  transition:"transform .15s, background .15s"
+                }}
+                onMouseEnter={(e)=> { e.currentTarget.style.transform="translateY(-1px)"; e.currentTarget.style.background="rgba(255,255,255,.07)"; }}
+                onMouseLeave={(e)=> { e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.background="rgba(255,255,255,.04)"; }}
+              >
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 11.5a8.4 8.4 0 0 1-12.9 7.1L3 20l1.4-5.1A8.5 8.5 0 1 1 21 11.5z"/>
+                </svg>
+                SMS
+              </a>
+
+              <button
+                onClick={()=>{ navigator.clipboard.writeText("https://go.novifinance.fr"); }}
+                style={{
+                  display:"inline-flex", alignItems:"center", gap:10,
+                  padding:"12px 18px",
+                  background:"rgba(255,255,255,.04)",
+                  color:"var(--ink-70)",
+                  border:"1px solid rgba(255,255,255,.12)",
+                  borderRadius:12, cursor:"pointer",
+                  fontFamily:"var(--mono)", fontSize:12, letterSpacing:".06em",
+                  fontWeight:600, textTransform:"uppercase"
+                }}
+              >
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/>
+                  <path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>
+                </svg>
+                Copier le lien
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Conseiller reminder */}
+        <div style={{
+          padding: desktop ? "16px 56px 32px" : "8px 22px 24px",
+          maxWidth: desktop?"880px":"100%", margin:"0 auto", width:"100%"
+        }}>
+          <div className="glass" style={{
+            padding: desktop?"24px 28px":"20px 18px",
+            borderRadius: 18,
+            display:"flex", flexDirection: desktop?"row":"column",
+            gap: desktop?20:14,
+            alignItems: desktop?"center":"flex-start"
+          }}>
+            <div style={{
+              width: desktop?64:52, height: desktop?64:52,
+              borderRadius:"50%", flexShrink:0,
+              background:"linear-gradient(135deg, rgba(232,158,92,.22), rgba(184,115,51,.06) 60%, rgba(255,255,255,.04))",
+              border:"1px solid rgba(255,255,255,.08)",
+              display:"flex", alignItems:"center", justifyContent:"center",
+              position:"relative"
+            }}>
+              <span style={{position:"absolute", inset:4, borderRadius:"50%", border:"1px dashed rgba(232,158,92,.25)"}}/>
+              <svg viewBox="0 0 24 24" width={desktop?26:22} height={desktop?26:22} fill="none" stroke="currentColor" strokeWidth="1.4" style={{color:"var(--copper-light)"}}>
+                <circle cx="12" cy="9" r="3.2"/>
+                <path d="M5 19.5c1.6-3.4 4.3-5 7-5s5.4 1.6 7 5" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <div style={{flex:1}}>
+              <div className="eyebrow" style={{marginBottom:6}}>— Votre conseiller dédié</div>
+              <div style={{fontFamily:"var(--serif)", fontSize: desktop?22:18, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:4}}>
+                Un conseiller dédié
+              </div>
+              <div style={{fontSize: desktop?13:12.5, color:"var(--ink-70)", lineHeight:1.5}}>
+                Un Conseiller en Investissements Financiers s'occupe seul de votre dossier — de la lecture des chiffres au rendez-vous visio. Pas de relais, pas de transfert d'appel.
+              </div>
+            </div>
+            <div style={{
+              display:"flex", gap:8, flexWrap:"wrap",
+              alignSelf: desktop?"center":"flex-start"
+            }}>
+              <span style={{
+            display:"inline-flex", alignItems:"center", gap:10,
+            padding:"6px 14px 6px 6px",
+            background:"rgba(255,255,255,.06)",
+            border:"1px solid rgba(255,255,255,.12)",
+            borderRadius:14
+          }}>
+            <span style={{
+              width:42, height:30, borderRadius:8,
+              background:"#fff",
+              display:"inline-flex", alignItems:"center", justifyContent:"center",
+              padding:4, flexShrink:0
+            }}>
+              <img src="assets/orias.png" alt="ORIAS" style={{maxWidth:"100%", maxHeight:"100%", objectFit:"contain"}}/>
+            </span>
+            <span style={{display:"inline-flex", flexDirection:"column", lineHeight:1.15}}>
+              <span style={{fontFamily:"var(--mono)", fontSize:9, letterSpacing:".14em", color:"var(--ink-50)", textTransform:"uppercase"}}>Certifié</span>
+              <span style={{fontFamily:"var(--mono)", fontSize:11.5, letterSpacing:".12em", color:"var(--ink-90)", textTransform:"uppercase", fontWeight:600}}>ORIAS</span>
+            </span>
+          </span>
+              <span style={{
+            display:"inline-flex", alignItems:"center", gap:10,
+            padding:"6px 14px 6px 6px",
+            background:"rgba(255,255,255,.06)",
+            border:"1px solid rgba(255,255,255,.12)",
+            borderRadius:14
+          }}>
+            <span style={{
+              width:42, height:30, borderRadius:8,
+              background:"#fff",
+              display:"inline-flex", alignItems:"center", justifyContent:"center",
+              padding:4, flexShrink:0
+            }}>
+              <img src="assets/amf.png" alt="AMF" style={{maxWidth:"100%", maxHeight:"100%", objectFit:"contain"}}/>
+            </span>
+            <span style={{display:"inline-flex", flexDirection:"column", lineHeight:1.15}}>
+              <span style={{fontFamily:"var(--mono)", fontSize:9, letterSpacing:".14em", color:"var(--ink-50)", textTransform:"uppercase"}}>Certifié</span>
+              <span style={{fontFamily:"var(--mono)", fontSize:11.5, letterSpacing:".12em", color:"var(--ink-90)", textTransform:"uppercase", fontWeight:600}}>AMF</span>
+            </span>
+          </span>
+            </div>
+          </div>
+        </div>
+
+        {/* En attendant */}
+        <div style={{
+          padding: desktop ? "16px 56px 64px" : "8px 22px 40px",
+          maxWidth: desktop?"880px":"100%", margin:"0 auto", width:"100%"
+        }}>
+          <div className="eyebrow" style={{marginBottom:18}}>— En attendant</div>
+          <div style={{
+            display:"grid",
+            gridTemplateColumns: desktop?"1fr 1fr":"1fr",
+            gap: desktop?14:12
+          }}>
+            <div className="glass" style={{padding: desktop?"24px 26px":"20px 20px", borderRadius:18}}>
+              <div style={{fontFamily:"var(--serif)", fontSize: desktop?20:17, color:"var(--ink-90)", letterSpacing:"-0.015em", marginBottom:8}}>
+                Préparez vos chiffres
+              </div>
+              <div style={{fontSize: desktop?13.5:12.5, color:"var(--ink-70)", lineHeight:1.55}}>
+                Avant le rendez-vous visio, rassemblez votre dernier avis d'imposition, vos relevés d'épargne, et vos contrats existants (PER, PEA, AV). Aucun document à envoyer maintenant.
+              </div>
+            </div>
+            <div className="glass" style={{padding: desktop?"24px 26px":"20px 20px", borderRadius:18}}>
+              <div style={{fontFamily:"var(--serif)", fontSize: desktop?20:17, color:"var(--ink-90)", letterSpacing:"-0.015em", marginBottom:8}}>
+                Notez vos questions
+              </div>
+              <div style={{fontSize: desktop?13.5:12.5, color:"var(--ink-70)", lineHeight:1.55}}>
+                30 minutes passent vite. Notez ce qui vous tracasse vraiment — fiscalité, retraite, succession — pour ne rien oublier le jour J.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{
+          padding: desktop ? "20px 56px 28px" : "18px 22px 24px",
+          borderTop:"1px solid rgba(255,255,255,.04)",
+          display:"flex", justifyContent:"space-between",
+          fontFamily:"var(--mono)", fontSize:10.5, letterSpacing:".06em",
+          color:"var(--ink-50)",
+          flexWrap:"wrap", gap:8
+        }}>
+          <span>NOVI FINANCE · CIF AMF · ORIAS · RGPD</span>
+          <span>go.novifinance.fr/merci</span>
+        </div>
+
+        <style>{`@keyframes nf-pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: .35; transform: scale(1.18); }
+        }`}</style>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { ThankYouScreen, JourneyStep });
+
+  </script>
+  <script type="text/babel">
+/* global React */
+const { useState: useStateD, useEffect: useEffectD } = React;
+
+function useCountUp(target, opts = {}) {
+  const duration = opts.duration || 1400;
+  const delay = opts.delay || 0;
+  const decimals = opts.decimals || 0;
+  const [v, setV] = useStateD(0);
+  useEffectD(() => {
+    let raf, start;
+    const t = setTimeout(() => {
+      const step = (ts) => {
+        if (!start) start = ts;
+        const p = Math.min(1, (ts - start) / duration);
+        const eased = 1 - Math.pow(1 - p, 3);
+        setV(target * eased);
+        if (p < 1) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    }, delay);
+    return () => { clearTimeout(t); if (raf) cancelAnimationFrame(raf); };
+  }, [target]);
+  return Number(v).toFixed(decimals);
+}
+
+function fmtEuroD(n) {
+  return Math.round(n).toLocaleString("fr-FR").replace(/,/g, " ");
+}
+
+function AnimatedEuro({ target, prefix="−", suffix=" €", duration=1600, delay=200 }) {
+  const v = useCountUp(target, { duration, delay });
+  return React.createElement("span", null, prefix + fmtEuroD(v) + suffix);
+}
+
+function LiveLossTicker({ perYear=2380, desktop=false }) {
+  const perSec = perYear / (365 * 24 * 3600);
+  const [acc, setAcc] = useStateD(0);
+  useEffectD(() => {
+    const start = Date.now();
+    const id = setInterval(() => setAcc((Date.now() - start) / 1000 * perSec), 100);
+    return () => clearInterval(id);
+  }, [perSec]);
+  return (
+    <div style={{
+      display:"inline-flex", alignItems:"center", gap:8,
+      padding:"5px 12px",
+      background:"rgba(232,158,92,.06)",
+      border:"1px solid rgba(232,158,92,.2)",
+      borderRadius:999,
+      fontFamily:"var(--mono)", fontSize: desktop?11:10, letterSpacing:".08em",
+      color:"var(--copper-light)"
+    }}>
+      <span style={{
+        width:6, height:6, borderRadius:"50%",
+        background:"var(--copper-light)",
+        animation:"dop-pulse 1.2s ease-in-out infinite"
+      }}/>
+      <span>EN CE MOMENT · −{acc.toFixed(2).replace(".", ",")} €</span>
+    </div>
+  );
+}
+
+function PDFPreview({ desktop=false }) {
+  const sections = [
+    "Synthèse patrimoniale",
+    "Optimisation fiscale",
+    "Couverture & Prévoyance",
+    "Stratégie retraite",
+    "Transmission & succession",
+    "Plan d'action chiffré"
+  ];
+  const [done, setDone] = useStateD(0);
+  useEffectD(() => {
+    if (done >= sections.length) return;
+    const t = setTimeout(() => setDone(d => d + 1), 700);
+    return () => clearTimeout(t);
+  }, [done]);
+  const lineWidths = [80,65,75,60,70,55,68,72];
+  return (
+    <div className="glass" style={{
+      padding: desktop?"28px 30px":"22px 20px",
+      borderRadius:18,
+      display:"flex", flexDirection: desktop?"row":"column",
+      gap: desktop?28:20, alignItems:"flex-start"
+    }}>
+      <div style={{
+        flexShrink:0, width: desktop?180:140, aspectRatio:"1 / 1.35",
+        background:"linear-gradient(155deg, #1a1612, #0f0c0a)",
+        border:"1px solid rgba(232,158,92,.18)",
+        borderRadius:6, position:"relative", overflow:"hidden",
+        boxShadow:"0 18px 56px rgba(184,115,51,.22)"
+      }}>
+        <div style={{position:"absolute", top:14, left:14, right:14}}>
+          <div style={{height:5, width:"50%", background:"rgba(232,158,92,.4)", borderRadius:2, marginBottom:8}}/>
+          <div style={{height:3, width:"70%", background:"rgba(255,255,255,.15)", borderRadius:2, marginBottom:14}}/>
+          {lineWidths.map((w,i)=> (
+            <div key={i} style={{
+              height:2.5, width: w + "%",
+              background: "rgba(255,255,255," + (i<done*1.4 ? 0.4 : 0.08) + ")",
+              borderRadius:2, marginBottom:5,
+              transition:"background .4s ease"
+            }}/>
+          ))}
+        </div>
+        <div style={{
+          position:"absolute", bottom:10, left:14, right:14,
+          fontFamily:"var(--mono)", fontSize:7, letterSpacing:".15em",
+          color:"rgba(232,158,92,.5)"
+        }}>NOVI · BILAN PATRIMONIAL</div>
+        {done >= sections.length && (
+          <div style={{
+            position:"absolute", inset:0,
+            background:"radial-gradient(circle at 50% 60%, rgba(232,158,92,.18), transparent 60%)",
+            display:"flex", alignItems:"center", justifyContent:"center"
+          }}>
+            <div style={{
+              width:48, height:48, borderRadius:"50%",
+              background:"rgba(232,158,92,.18)",
+              border:"1px solid rgba(232,158,92,.4)",
+              display:"flex", alignItems:"center", justifyContent:"center"
+            }}>
+              <svg viewBox="0 0 16 16" width="20" height="20" fill="none">
+                <path d="M3 8.2 6.4 11.5 13 5" stroke="#E89E5C" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        )}
+      </div>
+      <div style={{flex:1, width:"100%"}}>
+        <div className="eyebrow" style={{marginBottom:14}}>— Votre PDF en préparation</div>
+        <div style={{display:"flex", flexDirection:"column", gap:10}}>
+          {sections.map((s, i) => {
+            const status = i < done ? "done" : i === done ? "current" : "wait";
+            return (
+              <div key={i} style={{
+                display:"flex", alignItems:"center", gap:12,
+                opacity: status==="wait" ? .35 : 1,
+                transition:"opacity .4s"
+              }}>
+                <span style={{
+                  width:18, height:18, borderRadius:"50%", flexShrink:0,
+                  background: status==="done" ? "rgba(232,158,92,.15)" : "rgba(255,255,255,.04)",
+                  border: "1px solid " + (status==="done" ? "rgba(232,158,92,.4)" : "rgba(255,255,255,.12)"),
+                  display:"flex", alignItems:"center", justifyContent:"center"
+                }}>
+                  {status==="done" && (
+                    <svg viewBox="0 0 16 16" width="10" height="10" fill="none">
+                      <path d="M3 8.2 6.4 11.5 13 5" stroke="#E89E5C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                  {status==="current" && (
+                    <span style={{
+                      width:6, height:6, borderRadius:"50%",
+                      background:"var(--copper-light)",
+                      animation:"dop-pulse 1s ease-in-out infinite"
+                    }}/>
+                  )}
+                </span>
+                <span style={{
+                  fontFamily:"var(--serif)",
+                  fontSize: desktop?16:14.5, letterSpacing:"-0.01em",
+                  color: status==="done" ? "var(--ink-70)" : "var(--ink-90)"
+                }}>{s}</span>
+                {status==="current" && (
+                  <span style={{
+                    fontFamily:"var(--mono)", fontSize:9.5, letterSpacing:".1em",
+                    color:"var(--copper-light)", marginLeft:"auto"
+                  }}>EN COURS…</span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ConcreteSlots({ desktop=false }) {
+  // Générer dynamiquement les créneaux basés sur aujourd'hui
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0=dimanche, 1=lundi, ..., 6=samedi
+
+  // Calculer le nombre de jours jusqu'au lundi de la semaine suivante
+  const daysUntilNextMonday = (1 - dayOfWeek + 7) % 7 || 7;
+  const nextMonday = new Date(today);
+  nextMonday.setDate(today.getDate() + daysUntilNextMonday);
+
+  // Calculer mercredi et vendredi
+  const nextWednesday = new Date(nextMonday);
+  nextWednesday.setDate(nextMonday.getDate() + 2);
+
+  const nextFriday = new Date(nextMonday);
+  nextFriday.setDate(nextMonday.getDate() + 4);
+
+  // Formater les dates
+  const formatDate = (date) => {
+    const monthNames = ["JAN", "FEV", "MAR", "AVR", "MAI", "JUN", "JUL", "AOU", "SEP", "OCT", "NOV", "DEC"];
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = monthNames[date.getMonth()];
+    return `${day} ${month}`;
+  };
+
+  const dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+
+  const slots = [
+    { day: dayNames[nextMonday.getDay()], date: formatDate(nextMonday), time: "11h00" },
+    { day: dayNames[nextWednesday.getDay()], date: formatDate(nextWednesday), time: "14h30" },
+    { day: dayNames[nextFriday.getDay()], date: formatDate(nextFriday), time: "09h00" }
+  ];
+  return (
+    <div className="glass" style={{padding: desktop?"28px 30px":"22px 20px", borderRadius:18}}>
+      <div className="eyebrow" style={{marginBottom:14}}>— Créneaux disponibles semaine prochaine</div>
+      <div style={{
+        display:"grid", gap:10,
+        gridTemplateColumns: desktop?"repeat(3, 1fr)":"1fr"
+      }}>
+        {slots.map((s,i)=> (
+          <div key={i} style={{
+            padding:"16px 18px",
+            background:"rgba(255,255,255,.025)",
+            border:"1px solid rgba(255,255,255,.08)",
+            borderRadius:14,
+            display:"flex", alignItems:"center", justifyContent:"space-between"
+          }}>
+            <div>
+              <div style={{fontFamily:"var(--mono)", fontSize:10.5, letterSpacing:".12em", color:"var(--ink-50)", marginBottom:4}}>{s.date}</div>
+              <div style={{fontFamily:"var(--serif)", fontSize: desktop?20:18, letterSpacing:"-0.015em", color:"var(--ink-90)"}}>{s.day}</div>
+            </div>
+            <div style={{
+              fontFamily:"var(--serif)", fontSize: desktop?22:19,
+              fontStyle:"italic", color:"var(--copper-light)",
+              letterSpacing:"-0.02em"
+            }}>{s.time}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{marginTop:14, fontSize:12, color:"var(--ink-50)", fontStyle:"italic", lineHeight:1.4}}>
+        Votre conseiller vous proposera l'un de ces créneaux par téléphone. Aucun engagement.
+      </div>
+    </div>
+  );
+}
+
+function RarityCard({ desktop=false }) {
+  return (
+    <div style={{
+      padding: desktop?"22px 28px":"18px 20px",
+      borderRadius:16,
+      background:"linear-gradient(135deg, rgba(232,158,92,.12), rgba(184,115,51,.04) 60%, rgba(255,255,255,.02))",
+      border:"1px solid rgba(232,158,92,.18)",
+      display:"flex", alignItems:"center", gap: desktop?20:14,
+      flexWrap:"wrap"
+    }}>
+      <div style={{
+        fontFamily:"var(--serif)", fontStyle:"italic",
+        fontSize: desktop?64:48,
+        color:"var(--copper-light)",
+        letterSpacing:"-0.04em", lineHeight:0.9
+      }}>18 %</div>
+      <div style={{flex:1, minWidth:200}}>
+        <div className="eyebrow" style={{marginBottom:6}}>— Votre profil</div>
+        <div style={{
+          fontFamily:"var(--serif)", fontSize: desktop?20:17,
+          letterSpacing:"-0.015em", color:"var(--ink-90)", lineHeight:1.3
+        }}>
+          Vous faites partie des 18 % de profils avec une marge d'optimisation patrimoniale significative.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { useCountUp, AnimatedEuro, LiveLossTicker, PDFPreview, ConcreteSlots, RarityCard });
+</script>
+<style>@keyframes dop-pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.35; transform:scale(1.4); } }</style>
+
+  
+<script type="text/babel">
+
+const { useState, useEffect } = React;
+function useResponsive() {
+  const [d, setD] = useState(typeof window !== "undefined" ? window.innerWidth >= 1100 : true);
+  useEffect(()=>{ const onR=()=>setD(window.innerWidth >= 1100); window.addEventListener("resize", onR); return ()=>window.removeEventListener("resize", onR); }, []);
+  return d;
+}
+function App(){
+  const desktop = useResponsive();
+  useEffect(()=>{
+    const onClick = (e)=>{
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      const t = (btn.textContent||"").toLowerCase();
+      if (t.includes("recevoir mon bilan")) {
+        e.preventDefault(); window.location.href = "merci.html";
+      }
+    };
+    document.addEventListener("click", onClick);
+    return ()=> document.removeEventListener("click", onClick);
+  }, []);
+  return <FormScreen desktop={desktop}/>;
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+
+</script>
+</body>
+</html>
