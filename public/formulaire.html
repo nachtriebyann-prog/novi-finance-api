@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Novi Finance — Combien votre patrimoine vous coûte chaque année ?</title>
+  <title>Novi Finance — Votre bilan patrimonial</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -233,6 +233,8 @@
   border-radius: 18px;
   transition: all .25s ease;
   box-shadow: 0 8px 24px -12px rgba(0,0,0,.5);
+  position: relative;
+  z-index: 1;
 }
 .step-card.completed {
   border-color: rgba(184,115,51,.32);
@@ -571,6 +573,7 @@ body { font-family: "Inter", system-ui, sans-serif; }
 </head>
 <body>
   <div id="root"></div>
+  <div id="otp-modal-portal"></div>
   <script type="text/babel">/* global React */
 const { useState, useEffect, useRef, useMemo } = React;
 
@@ -670,51 +673,50 @@ function InstitutionBadge({ kind="AMF", desktop=false }){
 function TrustLine({ compact=false }) {
   const badge = (logo, label) => (
     <span style={{
-      display:"inline-flex", alignItems:"center", gap:8,
-      padding: compact ? "6px 12px 6px 6px" : "8px 14px 8px 8px",
+      padding: compact ? "10px 14px" : "14px 18px",
       background:"rgba(255,255,255,.05)",
       border:"1px solid rgba(255,255,255,.10)",
-      borderRadius:12, flexShrink:0
+      borderRadius:12,
+      display:"inline-flex",
+      alignItems:"center",
+      gap:8,
+      minWidth: compact ? "120px" : "140px"
     }}>
       <span style={{
-        width: compact?32:36, height: compact?24:28, borderRadius:6,
+        width: compact?32:40, height: compact?28:32, borderRadius:8,
         background:"#fff",
-        display:"inline-flex", alignItems:"center", justifyContent:"center",
-        padding:3, flexShrink:0
+        display:"flex", alignItems:"center", justifyContent:"center",
+        padding:4, flexShrink:0
       }}>
         <img src={logo} alt={label} style={{maxWidth:"100%", maxHeight:"100%", objectFit:"contain"}}/>
       </span>
-      <span style={{display:"inline-flex", flexDirection:"column", lineHeight:1.15}}>
+      <span style={{display:"flex", flexDirection:"column", lineHeight:1.2}}>
         <span style={{fontFamily:"var(--mono)", fontSize: compact?8.5:9, letterSpacing:".14em", color:"var(--ink-50)", textTransform:"uppercase"}}>Certifié</span>
-        <span style={{fontFamily:"var(--mono)", fontSize: compact?10.5:11.5, letterSpacing:".1em", color:"var(--ink-90)", textTransform:"uppercase", fontWeight:600}}>{label}</span>
+        <span style={{fontFamily:"var(--mono)", fontSize: compact?11:12, letterSpacing:".1em", color:"var(--ink-90)", textTransform:"uppercase", fontWeight:600}}>{label}</span>
       </span>
     </span>
   );
-
   return (
-    <div style={{display:"flex", flexDirection:"column", alignItems:"center", gap: compact?18:20}}>
-      {/* Certifications row */}
-      <div style={{display:"flex", flexWrap:"wrap", alignItems:"center", justifyContent:"center", gap: compact?14:16, flexDirection: compact?"column":"row"}}>
-        <span style={{display:"inline-flex", alignItems:"center", gap:5, color:"var(--ink-70)", fontSize: compact?11:12, flexShrink:0}}>
-          {[1,2,3,4].map(i=> <Icon.star key={i} style={{color:"var(--copper-light)", width:16, height:16}}/>)}
-          <Icon.star style={{color:"rgba(255,255,255,.18)", width:16, height:16}}/>
-          <span style={{marginLeft:4}}>4.7 · Trustpilot</span>
-        </span>
+    <div style={{display:"flex", flexDirection:"column", gap: compact?16:20, alignItems:"center"}}>
+      <div style={{display:"flex", flexWrap:"wrap", gap:compact?12:16, alignItems:"center", justifyContent:"center"}}>
         {badge("assets/orias.png", "ORIAS")}
         {badge("assets/amf.png", "AMF")}
       </div>
-
-      {/* Independence statement */}
-      <div style={{
-        display:"flex", flexWrap:"wrap", alignItems:"center", justifyContent:"center", gap: compact?14:16,
-        fontFamily:"var(--mono)", fontSize: compact?11:12, letterSpacing:".08em",
-        color:"var(--copper-light)", textTransform:"uppercase", fontWeight:500
-      }}>
-        <span>Ni courtier</span>
-        <span style={{width:3, height:3, borderRadius:"50%", background:"rgba(232,158,92,.4)"}}/>
-        <span>Ni vendeur</span>
-        <span style={{width:3, height:3, borderRadius:"50%", background:"rgba(232,158,92,.4)"}}/>
-        <span>Conseil indépendant</span>
+      <div style={{display:"flex", flexWrap:"wrap", gap:compact?12:16, alignItems:"center", justifyContent:"center"}}>
+        <span style={{display:"inline-flex", alignItems:"center", gap:6, padding: compact?"10px 13px":"12px 16px", background:"rgba(255,255,255,.05)", border:"1px solid rgba(255,255,255,.10)", borderRadius:999}}>
+          {[1,2,3,4].map(i=> <Icon.star key={i} style={{color:"var(--copper-light)", width:compact?14:16, height:compact?14:16}}/>)}
+          <Icon.star style={{color:"rgba(255,255,255,.18)", width:compact?14:16, height:compact?14:16}}/>
+          <span style={{marginLeft:8, fontFamily:"var(--mono)", fontSize: compact?11:12, letterSpacing:".05em"}}>4.7 · Trustpilot</span>
+        </span>
+      </div>
+      <div style={{display:"flex", flexWrap:"wrap", gap:compact?12:16, alignItems:"center", justifyContent:"center", borderTop:"2px solid rgba(232,158,92,.28)", paddingTop: compact?12:16, width:"100%"}}>
+        <span style={{display:"inline-flex", alignItems:"center", gap:8, fontFamily:"var(--mono)", fontSize: compact?10.5:11, letterSpacing:".08em", color:"var(--copper-light)", textTransform:"uppercase", fontWeight:600}}>
+          <span>Ni courtier</span>
+          <span style={{width:3, height:3, borderRadius:"50%", background:"rgba(232,158,92,.6)"}}/>
+          <span>Ni vendeur</span>
+          <span style={{width:3, height:3, borderRadius:"50%", background:"rgba(232,158,92,.6)"}}/>
+          <span>Conseil indépendant</span>
+        </span>
       </div>
     </div>
   );
@@ -723,22 +725,27 @@ function TrustLine({ compact=false }) {
 function EngagementsBand({ desktop=false }){
   const items = ["Aucun Pinel", "Aucun produit maison", "Architecture ouverte", "Aucun démarchage"];
   return (
-    <div style={{display:"flex", flexWrap:"wrap", gap: desktop?14:10, justifyContent:"center", alignItems:"center"}}>
-      {items.map((it,i)=> (
-        <span key={i} style={{
-          display:"inline-flex", alignItems:"center", gap:8,
-          padding: desktop?"10px 16px":"9px 13px",
-          border:"1px solid rgba(232,158,92,.22)",
-          background:"rgba(232,158,92,.04)",
-          borderRadius:999, fontSize: desktop?12.5:11.5,
-          color:"var(--ink-90)", letterSpacing:"-0.005em"
-        }}>
-          <svg viewBox="0 0 16 16" width="11" height="11" fill="none" style={{color:"var(--copper-light)"}}>
-            <path d="M3 8.2 6.4 11.5 13 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          {it}
-        </span>
-      ))}
+    <div style={{display:"flex", flexDirection:"column", gap: desktop?16:12, alignItems:"center"}}>
+      <div style={{fontFamily:"var(--mono)", fontSize: desktop?11:10.5, letterSpacing:".08em", color:"var(--copper-light)", textTransform:"uppercase", fontWeight:600}}>
+        Nos engagements envers vous
+      </div>
+      <div style={{display:"flex", flexWrap:"wrap", gap: desktop?14:12, justifyContent:"center", alignItems:"center"}}>
+        {items.map((it,i)=> (
+          <span key={i} style={{
+            display:"inline-flex", alignItems:"center", gap:8,
+            padding: desktop?"12px 16px":"10px 13px",
+            border:"1px solid rgba(232,158,92,.28)",
+            background:"rgba(232,158,92,.06)",
+            borderRadius:999, fontSize: desktop?12.5:11.5,
+            color:"var(--ink-90)", letterSpacing:"-0.005em"
+          }}>
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="none" style={{color:"var(--copper-light)", flexShrink:0}}>
+              <path d="M3 8.2 6.4 11.5 13 5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            {it}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
@@ -746,9 +753,9 @@ function EngagementsBand({ desktop=false }){
 function ConseillerCard({ desktop=false }){
   return (
     <div className="glass" style={{
-      padding: desktop?"32px 36px":"28px 24px", borderRadius:22,
+      padding: desktop?"32px 36px":"24px 22px", borderRadius:22,
       display:"flex", flexDirection: desktop?"row":"column",
-      gap: desktop?28:22, alignItems: desktop?"center":"flex-start"
+      gap: desktop?28:18, alignItems: desktop?"center":"flex-start"
     }}>
       <div style={{
         width: desktop?112:88, height: desktop?112:88, borderRadius:"50%", flexShrink:0,
@@ -1100,23 +1107,23 @@ function HeroBlock({ desktop=false, variant="curve", profile=1, onProfile }){
           width: desktop ? "auto" : "100%",
           padding: desktop ? "18px 32px" : "16px 24px",
           fontSize: desktop?16:15
-        }} onClick={() => window.location.href = "/formulaire.html"}>
+        }}>
           Mon estimation personnalisée <Icon.arrow/>
         </button>
         <button className="btn btn-secondary" style={{
           width: desktop ? "auto" : "100%",
           padding: desktop ? "18px 28px" : "16px 24px",
           fontSize: desktop?15:14
-        }} onClick={() => window.location.href = "/formulaire.html"}>
+        }}>
           5 questions · 90 sec
         </button>
       </div>
 
-      <div style={{display:"flex", justifyContent:"center", marginBottom: desktop?28:26, marginTop: desktop?0:8}}>
+      <div style={{display:"flex", justifyContent:"center", marginBottom: desktop?28:22}}>
         <TrustLine compact={!desktop}/>
       </div>
 
-      <div style={{display:"flex", justifyContent:"center", marginBottom: desktop?0:4}}>
+      <div style={{display:"flex", justifyContent:"center"}}>
         <EngagementsBand desktop={desktop}/>
       </div>
     </div>
@@ -1352,10 +1359,10 @@ function LegalLayout({ slug, title, eyebrow="L É G A L", toc, children, onBack 
             </a>
           </div>
           <div style={{flex:1, display:"flex", justifyContent:"flex-end", gap:14, flexWrap:"wrap"}}>
-            <a href="#mentions" className="lab" onClick={(e)=>{e.preventDefault(); window.open("mentions.html", "_blank");}} style={{color:"var(--ink-50)", textDecoration:"none", cursor:"pointer"}}>Mentions légales</a>
-            <a href="#rgpd" className="lab" onClick={(e)=>{e.preventDefault(); window.open("rgpd.html", "_blank");}} style={{color:"var(--ink-50)", textDecoration:"none", cursor:"pointer"}}>RGPD</a>
-            <a href="#cgu" className="lab" onClick={(e)=>{e.preventDefault(); window.open("cgu.html", "_blank");}} style={{color:"var(--ink-50)", textDecoration:"none", cursor:"pointer"}}>CGU</a>
-            <a href="#reclamations" className="lab" onClick={(e)=>{e.preventDefault(); window.open("reclamations.html", "_blank");}} style={{color:"var(--ink-50)", textDecoration:"none", cursor:"pointer"}}>Réclamations</a>
+            <a href="#mentions" className="lab" onClick={(e)=>{e.preventDefault(); window.location.href="mentions.html";}} style={{color:"var(--ink-50)", textDecoration:"none", cursor:"pointer"}}>Mentions légales</a>
+            <a href="#rgpd" className="lab" onClick={(e)=>{e.preventDefault(); window.location.href="rgpd.html";}} style={{color:"var(--ink-50)", textDecoration:"none", cursor:"pointer"}}>RGPD</a>
+            <a href="#cgu" className="lab" onClick={(e)=>{e.preventDefault(); window.location.href="cgu.html";}} style={{color:"var(--ink-50)", textDecoration:"none", cursor:"pointer"}}>CGU</a>
+            <a href="#reclamations" className="lab" onClick={(e)=>{e.preventDefault(); window.location.href="reclamations.html";}} style={{color:"var(--ink-50)", textDecoration:"none", cursor:"pointer"}}>Réclamations</a>
           </div>
         </div>
 
@@ -1818,14 +1825,14 @@ const STEPS = [
     ]},
   { id:"impots", title:"Montant d'impôts annuel", short:"Impôts",
     options:[
-      {v:"<2k",  l:"Moins de 2 000 € / an", excluded:true},
+      {v:"<2k",  l:"Moins de 2 000 € / an"},
       {v:"2-5k", l:"Entre 2 000 € et 5 000 € / an"},
       {v:"5-10k",l:"Entre 5 000 € et 10 000 € / an", default:true},
       {v:">10k", l:"Plus de 10 000 € / an"},
     ]},
   { id:"patrimoine", title:"Patrimoine financier", short:"Patrimoine",
     options:[
-      {v:"<20k",  l:"Moins de 20 000 €", excluded:true},
+      {v:"<20k",  l:"Moins de 20 000 €"},
       {v:"20-100k",l:"Entre 20 000 € et 100 000 €"},
       {v:"100-300k",l:"Entre 100 000 € et 300 000 €", default:true},
       {v:">300k", l:"Plus de 300 000 €"},
@@ -1839,6 +1846,7 @@ const STEPS = [
     ]},
   { id:"contact", title:"Vos coordonnées", short:"Coordonnées" },
   { id:"otp",   title:"Vérifiez votre numéro", short:"OTP" },
+  { id:"rgpd",  title:"Consentement RGPD", short:"Consentement" },
 ];
 
 function FormCounter({ desktop=false }){
@@ -1956,14 +1964,36 @@ function CompletedSummary({ value, options }){
   );
 }
 
-function Step({ idx, step, status, value, onPick, onBack, onNext, desktop=false }){
+function Step({ idx, step, status, active, value, onPick, onBack, onNext, desktop=false, verifying=false, verificationPhase="loading", verificationComplete=false, animationDelay=0 }){
   // status: future | active | completed
+
+  // For étapes 6, 7, 8 (indices 5, 6, 7): show them when verification is complete, with animation
+  const isPostVerification = [5,6,7].includes(idx);
+  const shouldShow = !isPostVerification || (verifying && verificationPhase === "congratulations") || verificationComplete;
+  const animationStyle = isPostVerification && (verifying && verificationPhase === "congratulations" || verificationComplete) ? {
+    animation: `nv-step-slide-up 0.6s ease-out ${animationDelay}s both`,
+  } : {};
+
   const cardProps = {
     className: "step-card " + status,
     onClick: status==="completed" ? ()=> onBack?.(idx) : undefined,
-    style: status==="completed" ? {cursor:"pointer"} : undefined
+    style: {
+      ...(status==="completed" ? {cursor:"pointer"} : {}),
+      ...(shouldShow ? animationStyle : {display: "none"})
+    }
   };
   if (step.id === "contact") {
+    const [fullName, setFullName] = useFormState("");
+    const [email, setEmail] = useFormState("");
+
+    // Validation email strict
+    const isValidEmail = (email) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+      return emailRegex.test(email);
+    };
+
+    const isFormValid = fullName.trim().length > 0 && isValidEmail(email);
+
     return (
       <div {...cardProps}>
         <StepHeader n={idx} title={step.short} status={status} desktop={desktop}/>
@@ -1972,27 +2002,31 @@ function Step({ idx, step, status, value, onPick, onBack, onNext, desktop=false 
             <div style={{fontFamily:"var(--serif)", fontSize: desktop?32:24, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:18}}>
               Où on vous envoie le bilan ?
             </div>
-            <div style={{display:"grid", gridTemplateColumns: desktop?"1fr 1fr":"1fr", gap:12, marginBottom:12}}>
-              <div>
-                <div className="eyebrow" style={{marginBottom:6}}>Prénom</div>
-                <input className="input-field" placeholder="Votre prénom"/>
-              </div>
-              <div>
-                <div className="eyebrow" style={{marginBottom:6}}>Nom</div>
-                <input className="input-field" defaultValue="Dupont" placeholder="Dupont"/>
-              </div>
+            <div style={{marginBottom:12}}>
+              <div className="eyebrow" style={{marginBottom:6}}>Nom complet</div>
+              <input className="input-field" placeholder="Jean Dupont" value={fullName} onChange={(e) => setFullName(e.target.value)}/>
             </div>
             <div className="eyebrow" style={{marginBottom:6}}>Email</div>
-            <input className="input-field" placeholder="vous@email.com" style={{marginBottom:6}}/>
+            <input className="input-field" placeholder="vous@email.com" value={email} onChange={(e) => setEmail(e.target.value)} style={{marginBottom:6}}/>
+            {email && !isValidEmail(email) && (
+              <div style={{fontSize:11.5, color:"#E89E5C", marginBottom:12}}>
+                Veuillez entrer une adresse email valide
+              </div>
+            )}
             <div style={{fontSize:11.5, color:"var(--ink-50)", marginBottom:18, fontStyle:"italic"}}>
               Pour vous envoyer le bilan. <span style={{color:"var(--copper-light)"}}>Pas d'appel sans votre accord.</span>
             </div>
-            <button className="btn btn-primary" style={{padding:"14px 22px", fontSize:14}} onClick={onNext}>
+            <button
+              className="btn btn-primary"
+              style={{padding:"14px 22px", fontSize:14, opacity: isFormValid ? 1 : 0.5, cursor: isFormValid ? "pointer" : "not-allowed"}}
+              onClick={() => isFormValid && onNext()}
+              disabled={!isFormValid}
+            >
               Continuer <Icon.arrow/>
             </button>
             <div style={{marginTop:12, fontSize:11.5, color:"var(--ink-50)", display:"flex", gap:8, alignItems:"center"}}>
               <Icon.shield style={{color:"var(--copper-light)"}}/>
-              Données chiffrées · jamais revendues · suppression à la demande
+              Données chiffrées · suppression à la demande
             </div>
           </div>
         )}
@@ -2005,7 +2039,40 @@ function Step({ idx, step, status, value, onPick, onBack, onNext, desktop=false 
     );
   }
   if (step.id === "otp") {
-    const code = ["8","4","2","",""," "];
+    const [otpPhoneState, setOtpPhoneState] = useFormState("phone");
+    const [otpPhone, setOtpPhone] = useFormState("+33 6 12 34 56 78");
+    const [otpCode, setOtpCode] = useFormState(["","","",""]);
+    const [otpTimer, setOtpTimer] = useFormState(5);
+
+    // Validate phone number - must have at least 10 digits
+    const isPhoneValid = (phone) => {
+      const digitsOnly = phone.replace(/\D/g, "");
+      return digitsOnly.length >= 10;
+    };
+
+    useFormEffect(() => {
+      if (otpPhoneState === "verifying") {
+        const interval = setInterval(() => {
+          setOtpTimer(t => {
+            if (t <= 1) {
+              setOtpPhoneState("code");
+              clearInterval(interval);
+              return 0;
+            }
+            return t - 1;
+          });
+        }, 1000);
+        return () => clearInterval(interval);
+      }
+    }, [otpPhoneState]);
+
+    useFormEffect(() => {
+      if (status === "active") {
+        setOtpPhoneState("phone");
+        setOtpTimer(5);
+      }
+    }, [status]);
+
     return (
       <div {...cardProps}>
         <StepHeader n={idx} title={step.short} status={status} desktop={desktop}/>
@@ -2017,66 +2084,281 @@ function Step({ idx, step, status, value, onPick, onBack, onNext, desktop=false 
             <div style={{color:"var(--ink-70)", fontSize:13.5, marginBottom:18, lineHeight:1.5, maxWidth:520}}>
               On envoie un code SMS pour confirmer votre numéro. <span style={{color:"var(--copper-light)"}}>Un seul appel ensuite</span> — pour fixer le rendez-vous visio. Aucune relance.
             </div>
-            <div className="eyebrow" style={{marginBottom:6}}>Téléphone</div>
-            <input className="input-field" defaultValue="+33 6 12 34 56 78" style={{marginBottom:20}}/>
-            <div className="eyebrow" style={{marginBottom:8}}>Code SMS</div>
-            <div style={{display:"flex", gap:10, marginBottom:14, flexWrap:"wrap"}}>
-              {[0,1,2,3,4,5].map(i=>(
-                <div key={i} className={"otp-slot " + (code[i] && code[i]!==" " ? "filled" : (i===3 ? "cursor":""))}>
-                  {code[i]}
-                </div>
-              ))}
-            </div>
-            <div style={{fontSize:12, color:"var(--ink-50)", marginBottom:20}}>
-              Renvoyer le code (00:30)
-            </div>
 
-            <div style={{
-              padding:"4px 0 8px",
-              borderTop:"1px solid rgba(255,255,255,.06)",
-              marginTop:8
-            }}>
-              <ConsentCheckbox>
-                J'accepte que les informations saisies dans ce formulaire soient traitées par Novi dans le cadre de ma demande de bilan patrimonial offert, conformément à leur politique de confidentialité.
-              </ConsentCheckbox>
-              <ConsentCheckbox>
-                J'accepte d'être contacté(e) par un expert partenaire conseiller en gestion de patrimoine (CGP) indépendant, sélectionné par Novi, pour réaliser mon bilan patrimonial.
-              </ConsentCheckbox>
-              <div style={{
-                marginTop:10, marginBottom:18,
-                padding:"14px 16px",
-                borderRadius:10,
-                background:"rgba(255,255,255,.02)",
-                border:"1px solid rgba(255,255,255,.05)",
-                fontSize:12, color:"var(--ink-50)", lineHeight:1.55,
-                display:"flex", flexDirection:"column", gap:10, alignItems:"flex-start"
-              }}>
-                <span>Pour connaître et exercer vos droits, notamment de retrait du consentement, consultez notre politique de confidentialité.</span>
-                <button
-                  type="button"
-                  onClick={(e)=>{e.preventDefault(); e.stopPropagation(); window.location.href="rgpd.html";}}
-                  style={{
-                    display:"inline-flex", alignItems:"center", gap:8,
-                    padding:"8px 14px", borderRadius:999,
-                    background:"rgba(232,158,92,.08)",
-                    border:"1px solid rgba(232,158,92,.28)",
-                    color:"var(--copper-light)",
-                    fontFamily:"var(--mono)", fontSize:10.5, letterSpacing:".1em",
-                    textTransform:"uppercase", cursor:"pointer",
-                    transition:"all .15s"
-                  }}
-                  onMouseEnter={(e)=>{e.currentTarget.style.background="rgba(232,158,92,.14)";}}
-                  onMouseLeave={(e)=>{e.currentTarget.style.background="rgba(232,158,92,.08)";}}
-                >
-                  Politique de confidentialité
-                  <svg viewBox="0 0 16 16" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M6 3l5 5-5 5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            {otpPhoneState === "phone" && (
+              <>
+                <div className="eyebrow" style={{marginBottom:6}}>Téléphone</div>
+                <input className="input-field" value={otpPhone} onChange={(e)=> setOtpPhone(e.target.value)} style={{marginBottom:20}}/>
+                <button className="btn btn-primary" disabled={!isPhoneValid(otpPhone)} style={{padding:"14px 22px", fontSize:14, opacity: !isPhoneValid(otpPhone) ? 0.5 : 1, cursor: !isPhoneValid(otpPhone) ? "not-allowed" : "pointer"}} onClick={() => setOtpPhoneState("verifying")}>
+                  Valider <Icon.arrow/>
                 </button>
-              </div>
-            </div>
+              </>
+            )}
 
-            <button className="btn btn-primary" style={{padding:"14px 22px", fontSize:14}}>
-              Recevoir mon bilan <Icon.arrow/>
+            {(otpPhoneState === "verifying" || otpPhoneState === "code") && ReactDOM.createPortal(
+              <div style={{
+                position:"fixed", inset:0,
+                background:"rgba(0,0,0,.96)",
+                backdropFilter:"blur(8px)",
+                WebkitBackdropFilter:"blur(8px)",
+                display:"flex", alignItems:"center", justifyContent:"center",
+                zIndex:99999,
+                animation:"nv-modal-fade-in .3s ease-out"
+              }}>
+                  <div style={{
+                    background:"linear-gradient(135deg, rgba(22,12,6,.95), rgba(28,16,8,.92))",
+                    border:"1px solid rgba(232,158,92,.15)",
+                    borderRadius:28,
+                    padding:"48px 40px",
+                    maxWidth:420,
+                    width:"90%",
+                    textAlign:"center",
+                    boxShadow:"0 32px 80px -12px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.05), inset 0 1px 0 rgba(255,255,255,.08)",
+                    animation:"nv-modal-slide-up .4s cubic-bezier(0.34, 1.56, 0.64, 1)"
+                  }}>
+                    {otpPhoneState === "verifying" && (
+                      <>
+                        <div style={{
+                          width:72, height:72, margin:"0 auto 28px",
+                          borderRadius:"50%",
+                          border:"1.5px solid rgba(232,158,92,.3)",
+                          position:"relative",
+                          background:"radial-gradient(circle, rgba(184,115,51,.25), transparent 70%)"
+                        }}>
+                          <span style={{
+                            position:"absolute", inset:-2, borderRadius:"50%",
+                            border:"1.5px solid transparent",
+                            borderTopColor:"var(--copper-light)",
+                            animation:"nv-spin 1.4s linear infinite"
+                          }}/>
+                        </div>
+                        <div style={{fontFamily:"var(--serif)", fontSize:28, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:14, fontWeight:500}}>
+                          En cours de vérification
+                        </div>
+                        <div style={{fontSize:14.5, color:"var(--ink-70)", marginBottom:32, lineHeight:1.5}}>
+                          Nous vous envoyons un code SMS
+                        </div>
+                        <div style={{fontFamily:"var(--serif)", fontSize:56, letterSpacing:"-0.02em", color:"var(--copper-light)", fontWeight:400, marginBottom:4}}>
+                          {otpTimer.toString().padStart(2,"0")}
+                        </div>
+                        <div style={{fontSize:13, color:"var(--ink-50)"}}>
+                          secondes
+                        </div>
+                      </>
+                    )}
+
+                    {otpPhoneState === "code" && (
+                      <>
+                        <div style={{fontFamily:"var(--serif)", fontSize:28, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:8, fontWeight:500}}>
+                          Entrez votre code
+                        </div>
+                        <div style={{fontSize:14, color:"var(--ink-70)", marginBottom:32, lineHeight:1.5}}>
+                          Vérifiez le SMS envoyé au <span style={{color:"var(--copper-light)"}}>+33 6 ••••••••</span>
+                        </div>
+                        <div style={{display:"flex", gap:12, marginBottom:32, justifyContent:"center"}}>
+                          {[0,1,2,3].map(i=>(
+                            <input
+                              key={i}
+                              type="text"
+                              maxLength="1"
+                              value={otpCode[i]}
+                              onChange={(e)=> {
+                                const newCode = [...otpCode];
+                                newCode[i] = e.target.value.replace(/\D/g, "");
+                                setOtpCode(newCode);
+                                if (newCode[i] && i < 3) {
+                                  document.querySelector(`input[data-otp-index="${i+1}"]`)?.focus();
+                                } else if (newCode.every(digit => digit !== "")) {
+                                  // All 4 digits filled - validate and proceed
+                                  const code = newCode.join("");
+                                  // Accept test codes or any valid 4-digit code for now
+                                  if (code === "1111" || code === "0000" || code.length === 4) {
+                                    setTimeout(() => onNext(), 300);
+                                  }
+                                }
+                              }}
+                              data-otp-index={i}
+                              style={{
+                                width:60, height:60, textAlign:"center",
+                                fontSize:28, fontFamily:"var(--mono)", fontWeight:"bold",
+                                border:"2px solid rgba(232,158,92,.25)", borderRadius:14,
+                                background:"rgba(232,158,92,.06)",
+                                color:"var(--ink-90)",
+                                outline:"none",
+                                transition:"all .2s",
+                                cursor:"text"
+                              }}
+                              className="otp-input"
+                              autoFocus={i === 0}
+                            />
+                          ))}
+                        </div>
+                        <button
+                          onClick={() => {
+                            setOtpPhoneState("phone");
+                            setOtpCode(["","","",""]);
+                          }}
+                          style={{
+                            background:"none",
+                            border:"none",
+                            color:"var(--copper-light)",
+                            fontSize:13.5,
+                            cursor:"pointer",
+                            padding:"8px 12px",
+                            borderRadius:8,
+                            transition:"all .2s",
+                            textDecoration:"underline",
+                            opacity:0.9
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.opacity = "1";
+                            e.target.style.background = "rgba(232,158,92,.08)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.opacity = "0.9";
+                            e.target.style.background = "none";
+                          }}
+                        >
+                          Utiliser un autre numéro
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>,
+                document.getElementById("otp-modal-portal")
+              )}
+
+            <style>{`
+              @keyframes nv-spin { to { transform: rotate(360deg) } }
+              @keyframes nv-modal-fade-in { from { opacity: 0; } to { opacity: 1; } }
+              @keyframes nv-modal-slide-up { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+            `}</style>
+          </div>
+        )}
+      </div>
+    );
+  }
+  if (step.id === "rgpd") {
+    const [consent1, setConsent1] = useFormState(false);
+    const [consent2, setConsent2] = useFormState(false);
+    const canSubmit = consent1 && consent2;
+    return (
+      <div {...cardProps}>
+        <StepHeader n={idx} title={step.short} status={status} desktop={desktop}/>
+        {status === "active" && (
+          <div style={{marginTop:18}}>
+            <div style={{fontFamily:"var(--serif)", fontSize: desktop?32:24, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:18}}>
+              Dernière étape
+            </div>
+            <div style={{padding:"4px 0 8px", borderTop:"1px solid rgba(255,255,255,.06)", marginBottom:20}}>
+              <label style={{
+                display:"grid", gridTemplateColumns:"22px 1fr", gap:14, alignItems:"start",
+                padding:"14px 0", cursor:"pointer", lineHeight:1.5
+              }} onClick={()=> setConsent1(!consent1)}>
+                <span style={{
+                  width:22, height:22, borderRadius:6, marginTop:1,
+                  border: consent1 ? "1.5px solid var(--copper-light)" : "1.5px solid rgba(255,255,255,.18)",
+                  background: consent1 ? "linear-gradient(135deg, rgba(232,158,92,.95), rgba(184,115,51,.85))" : "transparent",
+                  boxShadow: consent1 ? "0 0 0 4px rgba(232,158,92,.10), inset 0 1px 0 rgba(255,255,255,.25)" : "none",
+                  display:"inline-flex", alignItems:"center", justifyContent:"center",
+                  transition:"all .18s",
+                  flexShrink:0
+                }}>
+                  {consent1 && (
+                    <svg viewBox="0 0 16 16" width="13" height="13" fill="none">
+                      <path d="M3 8.2 6.4 11.5 13 5" stroke="#1a0e04" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                </span>
+                <span style={{fontSize:13.5, color:"var(--ink-90)"}}>J'accepte que les informations saisies dans ce formulaire soient traitées par Novi dans le cadre de ma demande de bilan patrimonial offert, conformément à leur politique de confidentialité. <span style={{color:"var(--copper-light)"}}>*</span></span>
+              </label>
+              <label style={{
+                display:"grid", gridTemplateColumns:"22px 1fr", gap:14, alignItems:"start",
+                padding:"14px 0", cursor:"pointer", lineHeight:1.5
+              }} onClick={()=> setConsent2(!consent2)}>
+                <span style={{
+                  width:22, height:22, borderRadius:6, marginTop:1,
+                  border: consent2 ? "1.5px solid var(--copper-light)" : "1.5px solid rgba(255,255,255,.18)",
+                  background: consent2 ? "linear-gradient(135deg, rgba(232,158,92,.95), rgba(184,115,51,.85))" : "transparent",
+                  boxShadow: consent2 ? "0 0 0 4px rgba(232,158,92,.10), inset 0 1px 0 rgba(255,255,255,.25)" : "none",
+                  display:"inline-flex", alignItems:"center", justifyContent:"center",
+                  transition:"all .18s",
+                  flexShrink:0
+                }}>
+                  {consent2 && (
+                    <svg viewBox="0 0 16 16" width="13" height="13" fill="none">
+                      <path d="M3 8.2 6.4 11.5 13 5" stroke="#1a0e04" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
+                </span>
+                <span style={{fontSize:13.5, color:"var(--ink-90)"}}>J'accepte d'être contacté(e) par un expert partenaire conseiller en gestion de patrimoine (CGP) indépendant, sélectionné par Novi, pour réaliser mon bilan patrimonial. <span style={{color:"var(--copper-light)"}}>*</span></span>
+              </label>
+            </div>
+            <div style={{
+              marginBottom:20,
+              padding:"14px 16px",
+              borderRadius:10,
+              background:"rgba(255,255,255,.02)",
+              border:"1px solid rgba(255,255,255,.05)",
+              fontSize:12, color:"var(--ink-50)", lineHeight:1.55,
+              display:"flex", flexDirection:"column", gap:10, alignItems:"flex-start"
+            }}>
+              <span>Pour connaître et exercer vos droits, notamment de retrait du consentement, consultez notre <a href="rgpd.html" style={{color:"var(--copper-light)", textDecoration:"underline", cursor:"pointer"}}>politique de confidentialité</a>.</span>
+            </div>
+            <button
+              className="btn btn-primary"
+              style={{
+                width:"100%",
+                padding:"28px 32px",
+                fontSize:20,
+                fontWeight:700,
+                letterSpacing:"-0.01em",
+                opacity: canSubmit ? 1 : 0.45,
+                cursor: canSubmit ? "pointer" : "not-allowed",
+                pointerEvents: canSubmit ? "auto" : "none",
+                transition:"all .4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                boxShadow: canSubmit ? "0 20px 60px rgba(184,115,51,.6), inset 0 1px 0 rgba(255,255,255,.4)" : "0 12px 32px rgba(184,115,51,.4), inset 0 1px 0 rgba(255,255,255,.4)",
+                animation: canSubmit ? "nv-cta-pulse 2.5s ease-in-out infinite" : "none",
+                borderRadius:"14px",
+                display:"flex",
+                alignItems:"center",
+                justifyContent:"center",
+                gap:12
+              }}
+              onClick={() => {
+                if (canSubmit) {
+                  setTimeout(() => onNext(), 150);
+                }
+              }}
+              onMouseEnter={(e) => {
+                if (canSubmit) {
+                  e.currentTarget.style.transform = "translateY(-4px) scale(1.02)";
+                  e.currentTarget.style.boxShadow = "0 28px 80px rgba(184,115,51,.75), inset 0 1px 0 rgba(255,255,255,.4)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0) scale(1)";
+                e.currentTarget.style.boxShadow = "0 20px 60px rgba(184,115,51,.6), inset 0 1px 0 rgba(255,255,255,.4)";
+              }}
+            >
+              <span>Recevoir mon bilan</span>
+              <Icon.arrow style={{transition:"all .4s cubic-bezier(0.34, 1.56, 0.64, 1)"}}/>
             </button>
+            <style>{`
+              @keyframes nv-cta-pulse {
+                0%, 100% {
+                  box-shadow: 0 20px 60px rgba(184,115,51,.6), inset 0 1px 0 rgba(255,255,255,.4);
+                }
+                50% {
+                  box-shadow: 0 24px 80px rgba(184,115,51,.85), inset 0 1px 0 rgba(255,255,255,.5);
+                }
+              }
+            `}</style>
+          </div>
+        )}
+        {status === "completed" && (
+          <div style={{color:"var(--ink-70)", fontSize:13.5, marginLeft:38, marginTop:6}}>
+            Consentement accepté
           </div>
         )}
       </div>
@@ -2122,21 +2404,124 @@ function AnalyseCard({ desktop=false }){
       <div style={{fontFamily:"var(--serif)", fontSize: desktop?34:26, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:10}}>
         <span className="serif-it">Analyse en cours</span>
       </div>
-      <div style={{fontSize:13, color:"var(--ink-50)", lineHeight:1.55, maxWidth:340, margin:"0 auto"}}>
-        800 ms — redirection silencieuse vers /non-eligible.<br/>
-        Aucun message d'éviction. Aucune relance.
-      </div>
       <style>{`@keyframes nv-spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   );
 }
 
-function FormScreen({ desktop=false, activeIdx=5 }){
+function VerificationScreen({ phase="loading", desktop=false }){
+  return (
+    <div style={{
+      position:"fixed", inset:0,
+      background:"var(--velvet)",
+      display:"flex", alignItems:"center", justifyContent:"center",
+      zIndex:999,
+      animation:"nv-verify-fade-in .4s ease-out"
+    }}>
+      <div style={{textAlign:"center", maxWidth:480, padding: desktop?"40px":"24px"}}>
+        {phase === "loading" && (
+          <>
+            <div style={{
+              width: desktop?80:64, height: desktop?80:64, margin:"0 auto 32px",
+              borderRadius:"50%",
+              border:"1px solid rgba(232,158,92,.4)",
+              position:"relative",
+              background:"radial-gradient(circle, rgba(184,115,51,.18), transparent 70%)"
+            }}>
+              <span style={{
+                position:"absolute", inset:-1, borderRadius:"50%",
+                border:"1px solid transparent",
+                borderTopColor:"var(--copper-light)",
+                animation:"nv-spin 1.4s linear infinite"
+              }}/>
+            </div>
+            <div style={{fontFamily:"var(--serif)", fontSize: desktop?32:26, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:12}}>
+              Nous analysons votre profil
+            </div>
+          </>
+        )}
+
+        {phase === "congratulations" && (
+          <div style={{animation:"nv-congrats-fade-in .6s ease-out"}}>
+            <div style={{fontFamily:"var(--serif)", fontSize: desktop?42:34, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:8, fontWeight:500}}>
+              Félicitations !
+            </div>
+            <div style={{fontFamily:"var(--serif)", fontSize: desktop?28:24, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:24, fontWeight:400}}>
+              Vous êtes admissible
+            </div>
+            <div style={{fontSize: desktop?16:14.5, color:"var(--ink-70)", lineHeight:1.6}}>
+              Vous faites partie des <span style={{color:"var(--copper-light)", fontWeight:600}}>18 %</span> qui
+              <br/>optimisent leur patrimoine chaque année
+            </div>
+          </div>
+        )}
+      </div>
+      <style>{`
+        @keyframes nv-spin { to { transform: rotate(360deg) } }
+        @keyframes nv-verify-fade-in { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes nv-verify-fade-out { from { opacity: 1; } to { opacity: 0; } }
+        @keyframes nv-congrats-fade-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      `}</style>
+    </div>
+  );
+}
+
+function FormScreen({ desktop=false, activeIdx=0 }){
   // Steps 0..4 completed, 5 (contact) active by default for hero state.
-  const [active, setActive] = useFormState(activeIdx);
-  const [picks, setPicks] = useFormState({
-    age:"30-40", famille:"couple_2", impots:"5-10k", patrimoine:"100-300k", objectif:"retraite"
-  });
+  // Force start at step 0 (age) instead of step 5 (contact)
+  const [active, setActive] = useFormState(0);
+  const [picks, setPicks] = useFormState({});
+  const [verifying, setVerifying] = useFormState(false);
+  const [verificationPhase, setVerificationPhase] = useFormState("loading"); // "loading" | "congratulations"
+  const [verificationComplete, setVerificationComplete] = useFormState(false);
+
+  // Check if user is ineligible (both low income AND low assets)
+  const isIneligible = picks.impots === "<2k" && picks.patrimoine === "<20k";
+
+  // Handle eligibility exclusion
+  useFormEffect(()=> {
+    if (isIneligible) {
+      const timer = setTimeout(()=> {
+        window.location.href = "./non-eligible.html";
+      }, 800);
+      return ()=> clearTimeout(timer);
+    }
+  }, [isIneligible]);
+
+  // Verification flow when moving from étape 5 (contact) to étape 6
+  useFormEffect(()=> {
+    if (active === 5 && !verifying) {
+      setVerifying(true);
+      setVerificationPhase("loading");
+
+      // After 0.5 seconds, show congratulations message
+      const timer1 = setTimeout(()=> {
+        setVerificationPhase("congratulations");
+        setVerificationComplete(true);
+      }, 500);
+
+      // After 2 seconds total, hide verification overlay but keep étapes 6-8 visible
+      const timer2 = setTimeout(()=> {
+        setVerifying(false);
+      }, 2000);
+
+      return ()=> {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+      };
+    }
+  }, [active]);
+
+  // Auto-scroll to active question
+  useFormEffect(()=> {
+    setTimeout(()=> {
+      const activeCard = document.querySelector(".step-card.active");
+      if (activeCard) {
+        activeCard.scrollIntoView({ behavior:"smooth", block:"center" });
+      }
+    }, 250);
+  }, [active]);
+
   const pct = Math.round((active / (STEPS.length-1)) * 100);
 
   return (
@@ -2144,57 +2529,94 @@ function FormScreen({ desktop=false, activeIdx=5 }){
       <div className="nv-conic"/>
       <div className="nv-grid"/>
       <div className="nv-content">
-        <div style={{padding: desktop ? "20px 56px 0" : "12px 22px 0"}}>
-          <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: desktop?20:14}}>
-            <NoviLogo size={desktop?20:18}/>
-            <div style={{display:"flex", gap:8, alignItems:"center"}}>
-              <FormCounter desktop={desktop}/>
-            </div>
-          </div>
-          <ProgressTop pct={pct}/>
-        </div>
+        {/* Verification screen overlay */}
+        {verifying && <VerificationScreen phase={verificationPhase} desktop={desktop}/>}
 
         <div style={{
-          padding: desktop ? "32px 56px 56px" : "20px 22px 36px",
-          maxWidth: desktop ? "880px" : "100%", margin:"0 auto"
+          transition:"opacity .4s ease",
+          opacity: verifying && verificationPhase === "loading" ? 0.3 : 1,
+          pointerEvents: verifying && verificationPhase === "loading" ? "none" : "auto"
         }}>
-          <div style={{marginBottom: desktop?40:28}}>
-            <div className="eyebrow" style={{marginBottom:14}}>— Bilan patrimonial</div>
-            <h1 className="serif" style={{fontSize: desktop?72:38, letterSpacing:"-0.04em", lineHeight:0.95, color:"var(--ink-90)"}}>
-              5 questions.<br/><span className="serif-it copper-text">90 secondes.</span>
-            </h1>
-            <div style={{color:"var(--ink-50)", fontSize: desktop?14:12.5, marginTop:14, fontFamily:"var(--mono)", letterSpacing:".05em"}}>
-              VOUS · 30–40 ANS
+          <div style={{padding: desktop ? "20px 56px 0" : "12px 22px 0"}}>
+            <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom: desktop?20:14}}>
+              <button onClick={() => window.location.href='landing.html'} style={{cursor:"pointer", padding:"8px 12px", marginLeft:"-12px", background:"transparent", border:"none", display:"flex", alignItems:"center", transition:"opacity .2s ease"}}>
+                <NoviLogo size={desktop?20:18}/>
+              </button>
+              <div style={{display:"flex", gap:8, alignItems:"center"}}>
+                <FormCounter desktop={desktop}/>
+              </div>
             </div>
+            <ProgressTop pct={pct}/>
           </div>
 
-          <div style={{display:"grid", gap: desktop?14:12}}>
-            {STEPS.map((s,i)=>{
-              const status = i<active ? "completed" : i===active ? "active" : "future";
-              return (
-                <Step
-                  key={s.id} idx={i} step={s} status={status} desktop={desktop}
-                  value={picks[s.id]}
-                  onPick={(v)=> {
-                    setPicks(p=> ({...p, [s.id]:v}));
-                    setTimeout(()=> setActive(a=> Math.min(a+1, STEPS.length-1)), 220);
-                  }}
-                  onBack={(j)=> setActive(j)}
-                  onNext={()=> setActive(a=> Math.min(a+1, STEPS.length-1))}
-                />
-              );
-            })}
-          </div>
-
-          {/* Silent exclusion preview */}
-          <div style={{marginTop: desktop?32:24}}>
-            <div className="eyebrow" style={{marginBottom:14, color:"var(--copper-light)"}}>
-              — Exclusion silencieuse (état)
+          <div style={{
+            padding: desktop ? "32px 56px 56px" : "20px 22px 36px",
+            maxWidth: desktop ? "880px" : "100%", margin:"0 auto"
+          }}>
+            <div style={{marginBottom: desktop?40:28}}>
+              <div className="eyebrow" style={{marginBottom:14}}>— Bilan patrimonial</div>
+              <h1 className="serif" style={{fontSize: desktop?72:38, letterSpacing:"-0.04em", lineHeight:0.95, color:"var(--ink-90)"}}>
+                5 questions.<br/><span className="serif-it copper-text">90 secondes.</span>
+              </h1>
+              <div style={{marginTop:14}}>
+                <div style={{color:"var(--ink-50)", fontSize: desktop?14:12.5, fontFamily:"var(--mono)", letterSpacing:".05em", marginBottom:10}}>
+                  ANALYSE GRATUITE · CONSEIL EXPERT ACCRÉDITÉ
+                </div>
+                <div style={{display:"flex", gap:12, alignItems:"center"}}>
+                  <div style={{fontSize:11, color:"var(--ink-40)", fontFamily:"var(--mono)", letterSpacing:".05em", padding:"6px 10px", background:"rgba(255,255,255,.04)", borderRadius:6, border:"1px solid rgba(255,255,255,.06)"}}>ORIAS</div>
+                  <div style={{fontSize:11, color:"var(--ink-40)", fontFamily:"var(--mono)", letterSpacing:".05em", padding:"6px 10px", background:"rgba(255,255,255,.04)", borderRadius:6, border:"1px solid rgba(255,255,255,.06)"}}>AMF</div>
+                </div>
+              </div>
             </div>
-            <AnalyseCard desktop={desktop}/>
+
+            <div style={{display:"grid", gap: desktop?14:12}}>
+              {STEPS.map((s,i)=>{
+                const status = i<active ? "completed" : i===active ? "active" : "future";
+                const isAfterVerification = (verifying || verificationComplete) && i >= 5;
+                const animationDelay = isAfterVerification && (verificationPhase === "congratulations" || verificationComplete) ? (i - 5) * 0.3 : 0;
+
+                return (
+                  <Step
+                    key={s.id} idx={i} step={s} status={status} active={active} desktop={desktop}
+                    value={picks[s.id]}
+                    onPick={(v)=> {
+                      setPicks(p=> ({...p, [s.id]:v}));
+                      setTimeout(()=> setActive(a=> Math.min(a+1, STEPS.length-1)), 220);
+                    }}
+                    onBack={(j)=> setActive(j)}
+                    onNext={()=> setActive(a=> Math.min(a+1, STEPS.length-1))}
+                    verifying={verifying}
+                    verificationPhase={verificationPhase}
+                    verificationComplete={verificationComplete}
+                    animationDelay={animationDelay}
+                  />
+                );
+              })}
+            </div>
+
+            {/* Silent exclusion - only shown when user is ineligible */}
+            {isIneligible && (
+              <div style={{marginTop: desktop?32:24}}>
+                <div className="eyebrow" style={{marginBottom:14, color:"var(--copper-light)"}}>
+                  — Exclusion silencieuse (état)
+                </div>
+                <AnalyseCard desktop={desktop}/>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes nv-step-fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes nv-step-slide-up {
+          from { opacity: 0; transform: translateY(40px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }
@@ -3022,14 +3444,40 @@ function PDFPreview({ desktop=false }) {
 }
 
 function ConcreteSlots({ desktop=false }) {
+  // Générer dynamiquement les créneaux basés sur aujourd'hui
+  const today = new Date();
+  const dayOfWeek = today.getDay(); // 0=dimanche, 1=lundi, ..., 6=samedi
+
+  // Calculer le nombre de jours jusqu'au lundi de la semaine suivante
+  const daysUntilNextMonday = (1 - dayOfWeek + 7) % 7 || 7;
+  const nextMonday = new Date(today);
+  nextMonday.setDate(today.getDate() + daysUntilNextMonday);
+
+  // Calculer mercredi et vendredi
+  const nextWednesday = new Date(nextMonday);
+  nextWednesday.setDate(nextMonday.getDate() + 2);
+
+  const nextFriday = new Date(nextMonday);
+  nextFriday.setDate(nextMonday.getDate() + 4);
+
+  // Formater les dates
+  const formatDate = (date) => {
+    const monthNames = ["JAN", "FEV", "MAR", "AVR", "MAI", "JUN", "JUL", "AOU", "SEP", "OCT", "NOV", "DEC"];
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = monthNames[date.getMonth()];
+    return `${day} ${month}`;
+  };
+
+  const dayNames = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+
   const slots = [
-    { day:"Mardi", date:"12 NOV", time:"11h00" },
-    { day:"Mercredi", date:"13 NOV", time:"14h30" },
-    { day:"Vendredi", date:"15 NOV", time:"09h00" }
+    { day: dayNames[nextMonday.getDay()], date: formatDate(nextMonday), time: "11h00" },
+    { day: dayNames[nextWednesday.getDay()], date: formatDate(nextWednesday), time: "14h30" },
+    { day: dayNames[nextFriday.getDay()], date: formatDate(nextFriday), time: "09h00" }
   ];
   return (
     <div className="glass" style={{padding: desktop?"28px 30px":"22px 20px", borderRadius:18}}>
-      <div className="eyebrow" style={{marginBottom:14}}>— Créneaux disponibles cette semaine</div>
+      <div className="eyebrow" style={{marginBottom:14}}>— Créneaux disponibles semaine prochaine</div>
       <div style={{
         display:"grid", gap:10,
         gridTemplateColumns: desktop?"repeat(3, 1fr)":"1fr"
@@ -3110,14 +3558,14 @@ function App(){
       const btn = e.target.closest("button");
       if (!btn) return;
       const t = (btn.textContent||"").toLowerCase();
-      if (t.includes("estimation") || t.includes("démarrer") || t.includes("90 sec")) {
-        e.preventDefault(); window.location.href = "formulaire.html";
+      if (t.includes("recevoir mon bilan")) {
+        e.preventDefault(); window.location.href = "merci.html";
       }
     };
     document.addEventListener("click", onClick);
     return ()=> document.removeEventListener("click", onClick);
   }, []);
-  return <LandingScreen desktop={desktop}/>;
+  return <FormScreen desktop={desktop}/>;
 }
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 
