@@ -2442,23 +2442,34 @@ function JourneyStep({ n, title, body, when, status, last=false, desktop=false }
           {body}
         </div>
         {isCurrent && (
-          <div style={{
-            marginTop:14,
-            display:"inline-flex", alignItems:"center", gap:8,
-            padding:"6px 12px",
-            border:"1px solid rgba(232,158,92,.28)",
-            background:"rgba(232,158,92,.06)",
-            borderRadius:999,
-            fontFamily:"var(--mono)", fontSize:10.5, letterSpacing:".1em",
-            color:"var(--copper-light)"
-          }}>
-            <span className="dot copper" style={{
-              width:6, height:6, borderRadius:"50%",
-              background:"var(--copper-light)",
-              animation:"nf-pulse 1.6s ease-in-out infinite"
-            }}/>
-            VOUS ÊTES ICI
-          </div>
+          <>
+            <div style={{
+              marginTop:12,
+              fontSize: desktop?12.5:12,
+              color:"var(--ink-50)",
+              fontStyle:"italic",
+              lineHeight:1.45
+            }}>
+              Gardez votre téléphone à portée — votre conseiller vous appellera dans les 24 h.
+            </div>
+            <div style={{
+              marginTop:12,
+              display:"inline-flex", alignItems:"center", gap:8,
+              padding:"6px 12px",
+              border:"1px solid rgba(232,158,92,.28)",
+              background:"rgba(232,158,92,.06)",
+              borderRadius:999,
+              fontFamily:"var(--mono)", fontSize:10.5, letterSpacing:".1em",
+              color:"var(--copper-light)"
+            }}>
+              <span className="dot copper" style={{
+                width:6, height:6, borderRadius:"50%",
+                background:"var(--copper-light)",
+                animation:"nf-pulse 1.6s ease-in-out infinite"
+              }}/>
+              VOUS ÊTES ICI
+            </div>
+          </>
         )}
       </div>
     </div>
@@ -2535,8 +2546,8 @@ function ThankYouScreen({ desktop=false }){
             margin:"0 0 28px",
             textWrap:"balance"
           }}>
-            Merci.<br/>
-            <span className="serif-it copper-text">Voici la suite.</span>
+            C'est en route.<br/>
+            <span className="serif-it copper-text">Votre bilan est lancé.</span>
           </h1>
           <p style={{
             fontSize: desktop?17:14.5,
@@ -2545,7 +2556,7 @@ function ThankYouScreen({ desktop=false }){
             maxWidth: desktop?620:340,
             marginBottom: desktop?12:8
           }}>
-            Vous venez de franchir la première étape de votre bilan patrimonial. Voici le chemin qu'il reste à parcourir, étape par étape — sans surprise, sans démarchage.
+            Votre dossier est entre les mains d'un conseiller dédié. Vous recevrez un appel — un seul, court — pour fixer votre rendez-vous visio. Aucune relance, aucune surprise.
           </p>
         </div>
 
@@ -2609,7 +2620,7 @@ function ThankYouScreen({ desktop=false }){
               Partagez le bilan à un proche.
             </div>
             <div style={{fontSize: desktop?13.5:12.5, color:"var(--ink-70)", lineHeight:1.5, marginBottom:18, maxWidth:520}}>
-              Pas de parrainage, pas de commission. Juste un lien vers l'estimation gratuite, si vous pensez que ça peut être utile autour de vous.
+              9 contribuables sur 10 paient plus d'impôts qu'ils ne le devraient. Si quelqu'un autour de vous est dans ce cas, ce lien peut être le déclic — gratuit, sans relance, 90 secondes.
             </div>
             <div style={{display:"flex", gap:10, flexWrap:"wrap"}}>
               <a
@@ -2794,7 +2805,7 @@ function ThankYouScreen({ desktop=false }){
           <div className="eyebrow" style={{marginBottom:18}}>— En attendant</div>
           <div style={{
             display:"grid",
-            gridTemplateColumns: desktop?"1fr 1fr":"1fr",
+            gridTemplateColumns: desktop?"1fr 1fr 1fr":"1fr",
             gap: desktop?14:12
           }}>
             <div className="glass" style={{padding: desktop?"24px 26px":"20px 20px", borderRadius:18}}>
@@ -2811,6 +2822,14 @@ function ThankYouScreen({ desktop=false }){
               </div>
               <div style={{fontSize: desktop?13.5:12.5, color:"var(--ink-70)", lineHeight:1.55}}>
                 30 minutes passent vite. Notez ce qui vous tracasse vraiment — fiscalité, retraite, succession — pour ne rien oublier le jour J.
+              </div>
+            </div>
+            <div className="glass" style={{padding: desktop?"24px 26px":"20px 20px", borderRadius:18}}>
+              <div style={{fontFamily:"var(--serif)", fontSize: desktop?20:17, color:"var(--ink-90)", letterSpacing:"-0.015em", marginBottom:8}}>
+                Ne changez rien
+              </div>
+              <div style={{fontSize: desktop?13.5:12.5, color:"var(--ink-70)", lineHeight:1.55}}>
+                Pas besoin de déplacer votre argent ni de souscrire quoi que ce soit avant le rendez-vous. Attendez l'avis de votre conseiller.
               </div>
             </div>
           </div>
@@ -3107,7 +3126,7 @@ function RarityCard({ desktop=false }) {
           fontFamily:"var(--serif)", fontSize: desktop?20:17,
           letterSpacing:"-0.015em", color:"var(--ink-90)", lineHeight:1.3
         }}>
-          Vous faites partie des 18 % de profils avec une marge d'optimisation patrimoniale significative.
+          Votre profil entre dans notre plage d'optimisation active. La plupart des bilans de ce type révèlent 2 à 4 leviers d'action — fiscal, retraite ou épargne dormante.
         </div>
       </div>
     </div>
