@@ -2041,7 +2041,7 @@ function Step({ idx, step, status, active, value, onPick, onBack, onNext, deskto
   if (step.id === "otp") {
     const [otpPhoneState, setOtpPhoneState] = useFormState("phone");
     const [otpPhone, setOtpPhone] = useFormState("");
-    const [otpCode, setOtpCode] = useFormState(["","","",""]);
+    const [otpCode, setOtpCode] = useFormState("");
     const [otpTimer, setOtpTimer] = useFormState(5);
     const [otpError, setOtpError] = useFormState("");
     const [otpSending, setOtpSending] = useFormState(false);
@@ -2181,61 +2181,84 @@ function Step({ idx, step, status, active, value, onPick, onBack, onNext, deskto
                         <div style={{fontSize:14, color:"var(--ink-70)", marginBottom:32, lineHeight:1.5}}>
                           Vérifiez le SMS envoyé au <span style={{color:"var(--copper-light)"}}>{maskPhone(otpPhone)}</span>
                         </div>
-                        <div style={{display:"flex", gap:12, marginBottom:32, justifyContent:"center"}}>
+                        <div style={{display:"flex", gap:12, marginBottom:32, justifyContent:"center", position:"relative"}}>
+                          {/* 4 cases visuelles */}
                           {[0,1,2,3].map(i=>(
-                            <input
+                            <div
                               key={i}
-                              type="text"
-                              maxLength="1"
-                              value={otpCode[i]}
-                              onChange={(e)=> {
-                                const newCode = [...otpCode];
-                                newCode[i] = e.target.value.replace(/\D/g, "");
-                                setOtpCode(newCode);
-                                if (newCode[i] && i < 3) {
-                                  document.querySelector(`input[data-otp-index="${i+1}"]`)?.focus();
-                                } else if (newCode.every(digit => digit !== "")) {
-                                  const code = newCode.join("");
-                                  setOtpVerifying(true);
-                                  setOtpError("");
-                                  fetch("/api/verify-otp", {
-                                    method: "POST",
-                                    headers: {"Content-Type": "application/json"},
-                                    body: JSON.stringify({phone: otpPhone, code})
-                                  }).then(r => r.json().then(d => ({ok: r.ok, d}))).then(({ok, d}) => {
-                                    if (!ok) throw new Error(d.error || "Code incorrect");
-                                    setTimeout(() => onNext(), 300);
-                                  }).catch(e => {
-                                    setOtpError(e.message);
-                                    setOtpCode(["","","",""]);
-                                    setTimeout(() => document.querySelector('[data-otp-index="0"]')?.focus(), 100);
-                                  }).finally(() => {
-                                    setOtpVerifying(false);
-                                  });
-                                }
-                              }}
-                              data-otp-index={i}
                               style={{
                                 width:60, height:60, textAlign:"center",
                                 fontSize:28, fontFamily:"var(--mono)", fontWeight:"bold",
-                                border:"2px solid rgba(232,158,92,.25)", borderRadius:14,
-                                background:"rgba(232,158,92,.06)",
+                                border: i === otpCode.length
+                                  ? "2px solid var(--copper-light)"
+                                  : otpCode[i]
+                                    ? "2px solid rgba(232,158,92,.5)"
+                                    : "2px solid rgba(232,158,92,.22)",
+                                borderRadius:14,
+                                background: i === otpCode.length
+                                  ? "rgba(232,158,92,.10)"
+                                  : "rgba(232,158,92,.05)",
                                 color:"var(--ink-90)",
-                                outline:"none",
+                                display:"flex", alignItems:"center", justifyContent:"center",
                                 transition:"all .2s",
-                                cursor:"text"
+                                boxShadow: i === otpCode.length ? "0 0 0 3px rgba(232,158,92,.12)" : "none",
+                                userSelect:"none",
+                                pointerEvents:"none"
                               }}
-                              className="otp-input"
-                              autoFocus={i === 0}
-                            />
+                            >
+                              {otpCode[i] ? "•" : ""}
+                            </div>
                           ))}
+                          {/* Input invisible qui couvre toute la zone — 1 seul clavier mobile */}
+                          <input
+                            id="nv-otp-input"
+                            type="tel"
+                            inputMode="numeric"
+                            autoComplete="one-time-code"
+                            maxLength={4}
+                            value={otpCode}
+                            autoFocus
+                            onChange={(e)=> {
+                              const val = e.target.value.replace(/\D/g, "").slice(0, 4);
+                              setOtpCode(val);
+                              setOtpError("");
+                              if (val.length === 4) {
+                                setOtpVerifying(true);
+                                fetch("/api/verify-otp", {
+                                  method: "POST",
+                                  headers: {"Content-Type": "application/json"},
+                                  body: JSON.stringify({phone: otpPhone, code: val})
+                                }).then(r => r.json().then(d => ({ok: r.ok, d}))).then(({ok, d}) => {
+                                  if (!ok) throw new Error(d.error || "Code incorrect");
+                                  setTimeout(() => onNext(), 300);
+                                }).catch(e => {
+                                  setOtpError(e.message);
+                                  setOtpCode("");
+                                  setTimeout(() => document.getElementById("nv-otp-input")?.focus(), 100);
+                                }).finally(() => {
+                                  setOtpVerifying(false);
+                                });
+                              }
+                            }}
+                            style={{
+                              position:"absolute",
+                              top:0, left:0, width:"100%", height:"100%",
+                              opacity:0,
+                              fontSize:16,
+                              cursor:"default",
+                              zIndex:1,
+                              background:"transparent",
+                              border:"none",
+                              outline:"none"
+                            }}
+                          />
                         </div>
                         {otpError && <div style={{color:"#e05252", fontSize:13, marginBottom:16, padding:"8px 12px", background:"rgba(224,82,82,.1)", borderRadius:8}}>{otpError}</div>}
                         {otpVerifying && <div style={{fontSize:13, color:"var(--ink-50)", marginBottom:16}}>Vérification en cours...</div>}
                         <button
                           onClick={() => {
                             setOtpPhoneState("phone");
-                            setOtpCode(["","","",""]);
+                            setOtpCode("");
                             setOtpError("");
                           }}
                           style={{
