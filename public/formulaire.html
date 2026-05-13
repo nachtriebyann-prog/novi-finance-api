@@ -1810,34 +1810,34 @@ Object.assign(window, { LandingScreen, HeroOnly, HeroBlock, NavBar });
 const { useState: useFormState, useEffect: useFormEffect } = React;
 
 const STEPS = [
-  { id:"age", title:"Tranche d'âge", short:"Âge",
+  { id:"age", title:"Vous avez quel âge", short:"Âge",
     options:[
       {v:"20-30", l:"20–30 ans"},
       {v:"30-40", l:"30–40 ans", default:true},
       {v:"40-50", l:"40–50 ans"},
       {v:"50+",   l:"50 ans et +"},
     ]},
-  { id:"famille", title:"Situation familiale", short:"Foyer",
+  { id:"famille", title:"Votre situation", short:"Foyer",
     options:[
       {v:"celib", l:"Célibataire"},
       {v:"couple", l:"En couple", default:true},
       {v:"famille", l:"En couple avec enfants"},
     ]},
-  { id:"impots", title:"Montant d'impôts annuel", short:"Impôts",
+  { id:"impots", title:"Vous payez combien d'impôts", short:"Impôts",
     options:[
       {v:"<2k",  l:"Moins de 2 000 € / an"},
       {v:"2-5k", l:"Entre 2 000 € et 5 000 € / an"},
       {v:"5-10k",l:"Entre 5 000 € et 10 000 € / an", default:true},
       {v:">10k", l:"Plus de 10 000 € / an"},
     ]},
-  { id:"patrimoine", title:"Patrimoine financier", short:"Patrimoine",
+  { id:"patrimoine", title:"Votre épargne en ce moment", short:"Patrimoine",
     options:[
       {v:"<20k",  l:"Moins de 20 000 €"},
       {v:"20-100k",l:"Entre 20 000 € et 100 000 €"},
       {v:"100-300k",l:"Entre 100 000 € et 300 000 €", default:true},
       {v:">300k", l:"Plus de 300 000 €"},
     ]},
-  { id:"objectif", title:"Objectif principal", short:"Objectif",
+  { id:"objectif", title:"Ce qui vous préoccupe le plus", short:"Objectif",
     options:[
       {v:"impots",   l:"Réduire mes impôts"},
       {v:"retraite", l:"Préparer ma retraite", default:true},
@@ -2333,7 +2333,7 @@ function Step({ idx, step, status, active, value, onPick, onBack, onNext, deskto
                     </svg>
                   )}
                 </span>
-                <span style={{fontSize:13.5, color:"var(--ink-90)"}}>J'accepte que les informations saisies dans ce formulaire soient traitées par Novi dans le cadre de ma demande de bilan patrimonial offert, conformément à leur politique de confidentialité. <span style={{color:"var(--copper-light)"}}>*</span></span>
+                <span style={{fontSize:13.5, color:"var(--ink-90)"}}>J'accepte que mes informations soient utilisées pour préparer mon bilan gratuit, conformément à la <a href="rgpd.html" style={{color:"var(--copper-light)"}}>politique de confidentialité</a>. <span style={{color:"var(--copper-light)"}}>*</span></span>
               </label>
               <label style={{
                 display:"grid", gridTemplateColumns:"22px 1fr", gap:14, alignItems:"start",
@@ -2354,7 +2354,7 @@ function Step({ idx, step, status, active, value, onPick, onBack, onNext, deskto
                     </svg>
                   )}
                 </span>
-                <span style={{fontSize:13.5, color:"var(--ink-90)"}}>J'accepte d'être contacté(e) par un expert partenaire conseiller en gestion de patrimoine (CGP) indépendant, sélectionné par Novi, pour réaliser mon bilan patrimonial. <span style={{color:"var(--copper-light)"}}>*</span></span>
+                <span style={{fontSize:13.5, color:"var(--ink-90)"}}>J'accepte d'être contacté(e) par un conseiller indépendant, sélectionné par Novi, pour réaliser mon bilan. <span style={{color:"var(--copper-light)"}}>*</span></span>
               </label>
             </div>
             <div style={{
@@ -2456,9 +2456,19 @@ function Step({ idx, step, status, active, value, onPick, onBack, onNext, deskto
       <StepHeader n={idx} title={step.short} status={status} desktop={desktop}/>
       {status === "active" && (
         <div style={{marginTop:18}}>
-          <div style={{fontFamily:"var(--serif)", fontSize: desktop?28:22, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom:18}}>
+          <div style={{fontFamily:"var(--serif)", fontSize: desktop?28:22, letterSpacing:"-0.02em", color:"var(--ink-90)", marginBottom: (step.id === "impots" || step.id === "patrimoine") ? 8 : 18}}>
             {step.title}&nbsp;?
           </div>
+          {step.id === "impots" && (
+            <div style={{fontSize:13, color:"var(--ink-50)", fontStyle:"italic", marginBottom:16, lineHeight:1.5}}>
+              Ce chiffre détermine les leviers d'optimisation disponibles pour vous.
+            </div>
+          )}
+          {step.id === "patrimoine" && (
+            <div style={{fontSize:13, color:"var(--ink-50)", fontStyle:"italic", marginBottom:16, lineHeight:1.5}}>
+              Épargne, assurance-vie, PEA, immobilier… une estimation approximative suffit.
+            </div>
+          )}
           <OptionList options={step.options} value={value || def} onChange={onPick}/>
         </div>
       )}
