@@ -64,6 +64,7 @@ export default async function handler(req, res) {
       phone,
       locationId: GHL_LOCATION_ID,
       customFields,
+      tags: ["bilan-novi"],
     };
 
     if (contactId) {
