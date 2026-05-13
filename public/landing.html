@@ -1087,6 +1087,15 @@ function HeroBlock({ desktop=false, variant="curve", profile=1, onProfile }){
         <span className="serif-it" style={{color:"var(--copper-light)"}}>vous coûte</span> chaque année&nbsp;?
       </h1>
 
+      <p style={{
+        textAlign:"center", maxWidth:560, margin:"0 auto",
+        marginBottom: desktop?28:22,
+        fontSize: desktop?17:14.5, color:"var(--ink-70)", lineHeight:1.6
+      }}>
+        En 5 questions, un conseiller indépendant identifie ce que vous payez en trop —{" "}
+        <span style={{color:"var(--ink-90)"}}>fiscalité, épargne mal placée, retraite sous-optimisée.</span>
+      </p>
+
       <div style={{marginBottom: desktop?32:24}}>
         <CounterCard desktop={desktop} variant={variant}/>
       </div>
@@ -1101,7 +1110,7 @@ function HeroBlock({ desktop=false, variant="curve", profile=1, onProfile }){
           padding: desktop ? "18px 32px" : "16px 24px",
           fontSize: desktop?16:15
         }} onClick={() => window.location.href = "/formulaire.html"}>
-          Mon estimation personnalisée <Icon.arrow/>
+          Calculer ce que je perds <Icon.arrow/>
         </button>
         <button className="btn btn-secondary" style={{
           width: desktop ? "auto" : "100%",
@@ -1177,6 +1186,16 @@ function Testimonials({ desktop=false }){
         <h2 className="serif" style={{fontSize: desktop?56:32, letterSpacing:"-0.03em", lineHeight:1, color:"var(--ink-90)"}}>
           Trois clients, <span className="serif-it copper-text">trois plans.</span>
         </h2>
+        <div style={{
+          display:"inline-flex", alignItems:"center", gap:10,
+          marginTop:18, padding:"10px 20px",
+          background:"rgba(232,158,92,.08)", border:"1px solid rgba(232,158,92,.22)",
+          borderRadius:999, fontSize: desktop?13:12, color:"var(--copper-light)",
+          fontFamily:"var(--mono)", letterSpacing:".06em"
+        }}>
+          <span style={{width:7, height:7, borderRadius:"50%", background:"#5cd97c", boxShadow:"0 0 0 3px rgba(92,217,124,.2)", flexShrink:0, display:"inline-block"}}/>
+          847 BILANS RÉALISÉS · NOTE MOYENNE 4,7/5
+        </div>
       </div>
       <div style={{
         display:"grid",
@@ -1203,7 +1222,7 @@ function Testimonials({ desktop=false }){
 // ───────── FAQ ─────────
 function FAQ({ desktop=false }){
   const items = [
-    { q:"Pourquoi c'est gratuit — vraiment ?", a:"Le bilan ne vous coûte rien, ni au départ ni à la fin. Si vous décidez de mettre en place certaines préconisations via nos partenaires, c'est eux qui nous rémunèrent. Vous, vous ne payez jamais. Une option en honoraires fixes existe si vous préférez — on vous l'explique en transparence." },
+    { q:"C'est gratuit — mais comment vous gagnez de l'argent ?", a:"Transparence totale : si vous décidez de mettre en place certaines recommandations via un partenaire (assureur, plateforme d'investissement), c'est ce partenaire qui nous rémunère — pas vous. Vous ne payez jamais rien, ni au départ ni à la fin. Une option en honoraires fixes existe si vous préférez un conseiller sans aucune commission — on vous l'explique dès le premier échange." },
     { q:"Le bilan est-il vraiment sans engagement ?", a:"Oui. Aucune carte de paiement demandée. Si nous ne pouvons pas vous aider, nous vous le disons. Architecture ouverte : aucun produit maison, aucun Pinel poussé." },
     { q:"Que faites-vous de mes données ?", a:"Stockage chiffré en France, accès limité au conseiller en charge. Suppression sur simple demande. RGPD." },
     { q:"Suis-je obligé de souscrire un produit ?", a:"Non. Le rapport est écrit. Vous le lisez. Vous décidez. Aucune action commerciale n'est lancée à votre insu." },
@@ -1276,13 +1295,14 @@ function FinalCTA({ desktop=false }){
             fontSize: desktop?80:42, letterSpacing:"-0.04em", lineHeight:1,
             color:"var(--ink-90)", marginBottom:24
           }}>
-            90 secondes.<br/><span className="serif-it copper-text">Pas une seconde de plus.</span>
+            Dans 90 secondes,<br/><span className="serif-it copper-text">vous saurez.</span>
           </h2>
           <p style={{fontSize: desktop?17:14.5, color:"var(--ink-70)", maxWidth:560, margin:"0 auto 32px", lineHeight:1.5}}>
-            Cinq questions, un rapport écrit, aucun rappel commercial. Vous repartez avec un avis honnête — ou rien.
+            Ce que vous perdez chaque année. Et comment l'arrêter.
           </p>
-          <button className="btn btn-primary" style={{padding: desktop?"18px 32px":"16px 26px"}}>
-            Démarrer mon bilan <Icon.arrow/>
+          <button className="btn btn-primary" style={{padding: desktop?"18px 32px":"16px 26px"}}
+            onClick={() => window.location.href = "/formulaire.html"}>
+            Calculer ce que je perds <Icon.arrow/>
           </button>
         </div>
       </div>
