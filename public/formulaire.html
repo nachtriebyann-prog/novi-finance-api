@@ -2591,9 +2591,18 @@ function FormScreen({ desktop=false, activeIdx=0 }){
         setVerifying(false);
       }, 2000);
 
+      // After overlay disappears, scroll to the contact step card
+      const timer3 = setTimeout(()=> {
+        const activeCard = document.querySelector(".step-card.active");
+        if (activeCard) {
+          activeCard.scrollIntoView({ behavior:"smooth", block:"start" });
+        }
+      }, 2150);
+
       return ()=> {
         clearTimeout(timer1);
         clearTimeout(timer2);
+        clearTimeout(timer3);
       };
     }
   }, [active]);
