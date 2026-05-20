@@ -4,7 +4,7 @@
     {
       "name": "landing-page",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8001", "--directory", "C:\\Users\\PC\\OneDrive\\Bureau\\Claude Code\\Dossier Funnel Novi - Bilan Patrimonial"],
+      "runtimeArgs": ["-m", "http.server", "8001", "--directory", "C:\\Users\\PC\\OneDrive\\Bureau\\Claude Code\\polaris-site"],
       "port": 8001
     }
   ]
