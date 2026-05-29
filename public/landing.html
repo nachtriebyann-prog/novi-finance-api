@@ -4,6 +4,10 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Novi Finance — Combien votre patrimoine vous coûte chaque année ?</title>
+  <!-- Tracking d'origine : capte UTM/fbclid, génère un lead_id, persiste en sessionStorage -->
+  <script>
+  (function(){try{var qs=new URLSearchParams(location.search);var KEYS=['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid'];var s=JSON.parse(sessionStorage.getItem('novi_tracking')||'{}');KEYS.forEach(function(k){var v=qs.get(k);if(v)s[k]=v;});if(!s.lead_id){s.lead_id=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():(Date.now()+'-'+Math.random().toString(16).slice(2));}if(!s.landing_at){s.landing_at=new Date().toISOString();}if(!s.referrer){s.referrer=document.referrer||'';}sessionStorage.setItem('novi_tracking',JSON.stringify(s));window._noviTracking=s;}catch(e){}})();
+  </script>
   <meta name="description" content="Découvrez combien votre patrimoine vous coûte chaque année. Bilan patrimonial gratuit en 5 questions — conseil indépendant certifié AMF et ORIAS, sans engagement, sans démarchage."/>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
   <link rel="apple-touch-icon" href="assets/favicon.svg"/>

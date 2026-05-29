@@ -4,6 +4,10 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Novi Finance — Votre bilan patrimonial</title>
+  <!-- Tracking d'origine : capte UTM/fbclid, génère un lead_id, persiste en sessionStorage -->
+  <script>
+  (function(){try{var qs=new URLSearchParams(location.search);var KEYS=['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid','gclid'];var s=JSON.parse(sessionStorage.getItem('novi_tracking')||'{}');KEYS.forEach(function(k){var v=qs.get(k);if(v)s[k]=v;});if(!s.lead_id){s.lead_id=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():(Date.now()+'-'+Math.random().toString(16).slice(2));}if(!s.landing_at){s.landing_at=new Date().toISOString();}if(!s.referrer){s.referrer=document.referrer||'';}sessionStorage.setItem('novi_tracking',JSON.stringify(s));window._noviTracking=s;}catch(e){}})();
+  </script>
   <meta name="description" content="Complétez votre bilan patrimonial en 90 secondes. 5 questions pour identifier vos leviers d'optimisation fiscale, retraite et épargne — gratuit, sans engagement."/>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg"/>
   <link rel="apple-touch-icon" href="assets/favicon.svg"/>
@@ -2417,7 +2421,8 @@ function Step({ idx, step, status, active, value, onPick, onBack, onNext, deskto
                     taxrange: taxMap[p.impots]||p.impots||"",
                     patrimoine_range: patriMap[p.patrimoine]||p.patrimoine||"",
                     objective_target: objMap[p.objectif]||p.objectif||"",
-                    rgpdConsent: true
+                    rgpdConsent: true,
+                    tracking: window._noviTracking || {}
                   })
                 }).then(r => r.json()).then(d => {
                   window.location.href = d.eligible === false ? "non-eligible.html" : "thank-you.html";
