@@ -1308,7 +1308,7 @@ function FinalCTA({ desktop=false }){
 }
 
 // ───────── Legal pages (Mentions / RGPD / CGU / Réclamations) ─────────
-const LEGAL_UPDATED = "Mai 2026";
+const LEGAL_UPDATED = "Juillet 2026";
 const LEGAL_IDENTITY = {
   name: "Yann Nachtrieb",
   statut: "Entrepreneur Individuel (EI)",
@@ -1412,6 +1412,7 @@ function MentionsScreen(){
           <div className="row"><span className="k">Email</span><span className="v">{I.email}</span></div>
           <div className="row"><span className="k">Site web</span><span className="v">{I.site}</span></div>
           <div className="row"><span className="k">N° ORIAS</span><span className="v"><span className="legal-warn-pill">{I.orias}</span></span></div>
+          <div className="row"><span className="k">RC Pro</span><span className="v">{I.rcpro.assureur} — Police n°&nbsp;{I.rcpro.police} — {I.rcpro.garantie} — {I.rcpro.periode}</span></div>
         </div>
       </LegalSection>
 
@@ -1473,6 +1474,7 @@ function RgpdScreen(){
           <div className="row"><span className="k">Adresse</span><span className="v">{I.adresse}</span></div>
           <div className="row"><span className="k">Contact</span><span className="v"><a href={"mailto:"+I.email}>{I.email}</a></span></div>
           <div className="row"><span className="k">N° ORIAS</span><span className="v"><span className="legal-warn-pill">{I.orias}</span></span></div>
+          <div className="row"><span className="k">RC Pro</span><span className="v">{I.rcpro.assureur} — Police n°&nbsp;{I.rcpro.police} — {I.rcpro.garantie} — {I.rcpro.periode}</span></div>
           <div className="row"><span className="k">Hébergeur</span><span className="v">{I.hebergeur.nom} — {I.hebergeur.adresse}</span></div>
         </div>
       </LegalSection>
