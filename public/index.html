@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8"/>
@@ -678,7 +678,7 @@ function InstitutionBadge({ kind="AMF", desktop=false }){
 
 // ───────── Trust badges row ─────────
 function TrustLine({ compact=false }) {
-  const badge = (logo, label) => (
+  const badge = (logo, label, num=null) => (
     <span style={{
       display:"inline-flex", alignItems:"center", gap:8,
       padding: compact ? "6px 12px 6px 6px" : "8px 14px 8px 8px",
@@ -697,6 +697,7 @@ function TrustLine({ compact=false }) {
       <span style={{display:"inline-flex", flexDirection:"column", lineHeight:1.15}}>
         <span style={{fontFamily:"var(--mono)", fontSize: compact?8.5:9, letterSpacing:".14em", color:"var(--ink-50)", textTransform:"uppercase"}}>Certifié</span>
         <span style={{fontFamily:"var(--mono)", fontSize: compact?10.5:11.5, letterSpacing:".1em", color:"var(--ink-90)", textTransform:"uppercase", fontWeight:600}}>{label}</span>
+        {num && <span style={{fontFamily:"var(--mono)", fontSize: compact?8:9, letterSpacing:".12em", color:"var(--copper-light)", textTransform:"none", marginTop:1}}>n°&#160;{num}</span>}
       </span>
     </span>
   );
@@ -710,7 +711,7 @@ function TrustLine({ compact=false }) {
           <Icon.star style={{color:"rgba(255,255,255,.18)", width:16, height:16}}/>
           <span style={{marginLeft:4}}>4.7 · Trustpilot</span>
         </span>
-        {badge("assets/orias.png", "ORIAS")}
+        {badge("assets/orias.png", "ORIAS", LEGAL_IDENTITY.orias)}
         {badge("assets/amf.png", "AMF")}
       </div>
 
@@ -1310,7 +1311,7 @@ const LEGAL_IDENTITY = {
   adresse: "10 rue Paul Eluard, 87570 Rilhac-Rancon, France",
   email: "equipe@novifinance.fr",
   site: "novifinance.fr",
-  orias: "En cours d'immatriculation",
+  orias: "26009903",
   hebergeur: {
     nom: "HighLevel Inc. (GoHighLevel)",
     adresse: "400 North Saint Mary's Street, San Antonio, TX 78205, États-Unis",
@@ -1404,7 +1405,7 @@ function MentionsScreen(){
           <div className="row"><span className="k">Adresse</span><span className="v">{I.adresse}</span></div>
           <div className="row"><span className="k">Email</span><span className="v">{I.email}</span></div>
           <div className="row"><span className="k">Site web</span><span className="v">{I.site}</span></div>
-          <div className="row"><span className="k">N° ORIAS</span><span className="v"><span className="legal-warn-pill">⚠ {I.orias}</span></span></div>
+          <div className="row"><span className="k">N° ORIAS</span><span className="v"><span className="legal-warn-pill">{I.orias}</span></span></div>
         </div>
       </LegalSection>
 
@@ -1465,7 +1466,7 @@ function RgpdScreen(){
           <div className="row"><span className="k">SIREN</span><span className="v" style={{fontFamily:"var(--mono)", letterSpacing:".05em"}}>{I.siren}</span></div>
           <div className="row"><span className="k">Adresse</span><span className="v">{I.adresse}</span></div>
           <div className="row"><span className="k">Contact</span><span className="v"><a href={"mailto:"+I.email}>{I.email}</a></span></div>
-          <div className="row"><span className="k">N° ORIAS</span><span className="v"><span className="legal-warn-pill">⚠ {I.orias}</span></span></div>
+          <div className="row"><span className="k">N° ORIAS</span><span className="v"><span className="legal-warn-pill">{I.orias}</span></span></div>
           <div className="row"><span className="k">Hébergeur</span><span className="v">{I.hebergeur.nom} — {I.hebergeur.adresse}</span></div>
         </div>
       </LegalSection>
