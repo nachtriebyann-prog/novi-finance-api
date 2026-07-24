@@ -1329,7 +1329,7 @@ function LegalLayout({ slug, title, eyebrow="L É G A L", toc, children, onBack 
   const back = () => { if (onBack) onBack(); else window.location.href="landing.html"; };
   return (
     <div className="nv-stage responsive" style={{minHeight:"100vh", background:"var(--velvet)", color:"var(--ink-90)"}}>
-      <div style={{maxWidth: 760, margin: "0 auto", padding: "clamp(36px, 6vw, 80px) clamp(22px, 4vw, 56px) 72px"}}>
+      <div className="nv-content" style={{maxWidth: 760, margin: "0 auto", padding: "clamp(36px, 6vw, 80px) clamp(22px, 4vw, 56px) 72px"}}>
         <button className="legal-back" onClick={back}>
           <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="1.6"><path d="M10 3L5 8l5 5" strokeLinecap="round" strokeLinejoin="round"/></svg>
           Retour au site
